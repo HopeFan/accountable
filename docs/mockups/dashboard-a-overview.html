@@ -1,0 +1,627 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=1440">
+<title>Dashboard mockup A: Overview</title>
+<style>
+@font-face{font-family:"Instrument Sans";font-weight:400;src:url(fonts/instrument-sans-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:"Instrument Sans";font-weight:500;src:url(fonts/instrument-sans-latin-500-normal.woff2) format("woff2")}
+@font-face{font-family:"Instrument Sans";font-weight:600;src:url(fonts/instrument-sans-latin-600-normal.woff2) format("woff2")}
+@font-face{font-family:"Instrument Sans";font-weight:700;src:url(fonts/instrument-sans-latin-700-normal.woff2) format("woff2")}
+@font-face{font-family:"Instrument Serif";font-weight:400;src:url(fonts/instrument-serif-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:"JetBrains Mono";font-weight:400;src:url(fonts/jetbrains-mono-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:"JetBrains Mono";font-weight:500;src:url(fonts/jetbrains-mono-latin-500-normal.woff2) format("woff2")}
+@font-face{font-family:"JetBrains Mono";font-weight:600;src:url(fonts/jetbrains-mono-latin-600-normal.woff2) format("woff2")}
+:root{
+  --page:#F0F4F5;--panel:#fff;--ink:#073B4C;--muted:#4C7280;--soft:#E6EDEF;
+  --primary:#06D6A0;--secondary:#FFC145;--tertiary:#F78C6B;--info:#118AB2;--alert:#EF476F;--mist:#CDD8DB;
+  --primary-text:#05795B;--info-text:#0E7394;--alert-text:#C2284F;--alert-tint:#FDE6EC;--primary-tint:#DDF8F0;--info-tint:#DCEFF5;--marigold-tint:#FFF1D6;--coral-tint:#FDE7DF;
+  --shadow:0 1px 2px rgba(7,59,76,.06),0 4px 16px rgba(7,59,76,.05);
+}
+*{box-sizing:border-box;margin:0}
+body{font-family:"Instrument Sans",system-ui,sans-serif;font-size:14px;line-height:1.4;color:var(--ink);background:var(--page);-webkit-font-smoothing:antialiased;width:1440px}
+.mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+.app{display:flex;min-height:100vh}
+.side{width:232px;flex:none;background:var(--ink);color:var(--mist);padding:24px 16px;display:flex;flex-direction:column;gap:28px}
+.brand{display:flex;align-items:center;gap:10px;padding:0 8px;color:#fff;font-weight:700;font-size:19px;letter-spacing:-.01em}
+.mark{width:30px;height:30px;border-radius:9px;background:var(--primary);color:var(--ink);display:grid;place-items:center;font-weight:700;font-size:17px}
+.nav{display:flex;flex-direction:column;gap:4px}
+.nav a{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;color:var(--mist);font-weight:500;text-decoration:none}
+.nav a.on{background:var(--primary);color:var(--ink);font-weight:600}
+.side .foot{margin-top:auto;padding:0 8px;font-size:12px;color:#8FA9B2}
+.main{flex:1;padding:32px;min-width:0}
+.top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:24px}
+.date{color:var(--muted);font-size:13px;margin-bottom:2px}
+h1.hello{font-family:"Instrument Serif",serif;font-weight:400;font-size:40px;line-height:1.05;letter-spacing:-.01em}
+.actions{display:flex;gap:10px}
+.btn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:10px;font:600 14px "Instrument Sans",system-ui,sans-serif;border:0;background:var(--panel);color:var(--ink);box-shadow:var(--shadow)}
+.btn.primary{background:var(--primary);color:var(--ink);box-shadow:none}
+.panel{background:var(--panel);border-radius:12px;box-shadow:var(--shadow);padding:22px 24px}
+.ph{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;gap:12px}
+.ph h2{font-size:16px;font-weight:600;letter-spacing:-.005em}
+.ph .sub{font-size:13px;color:var(--muted);margin-top:2px}
+.ph .side-fig{text-align:right}
+.ph .side-fig b{font-family:"JetBrains Mono";font-weight:600;font-size:15px;display:block}
+.ph .side-fig span{font-size:12px;color:var(--muted)}
+.tile{display:flex;flex-direction:column;gap:10px}
+.tile .lab{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:13px;font-weight:500}
+.chip{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;flex:none}
+.chip.green{background:var(--primary-tint);color:var(--primary-text)}
+.chip.blue{background:var(--info-tint);color:var(--info-text)}
+.chip.gold{background:var(--marigold-tint);color:#8A5A00}
+.chip.red{background:var(--alert-tint);color:var(--alert-text)}
+.chip.ink{background:var(--soft);color:var(--ink)}
+.num{font-family:"JetBrains Mono";font-weight:600;font-size:28px;letter-spacing:-.02em;line-height:1}
+.num small{font-size:13px;font-weight:500;color:var(--muted);margin-right:6px;letter-spacing:0}
+.tile .foot{font-size:13px;color:var(--muted)}
+.chart text{font-family:"Instrument Sans"}
+.chart .tick{font-family:"JetBrains Mono";font-size:11px;fill:#4C7280}
+.chart .xl{font-size:12px;fill:#4C7280}
+.tag{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:2px 9px;border-radius:999px}
+.tag i{width:8px;height:8px;border-radius:50%;display:inline-block}
+.fu{display:flex;flex-direction:column}
+.fu h3,.gh{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:10px 0 6px}
+.fu h3.red{color:var(--alert-text)}
+.fi{display:grid;grid-template-columns:20px 1fr auto;gap:12px;align-items:start;padding:10px 0}
+.fi + .fi{margin-top:0}
+.cb{width:18px;height:18px;border-radius:5px;border:2px solid #9DB5BE;margin-top:2px}
+.fi .t{font-weight:600;font-size:14px}
+.fi .m{font-size:12.5px;color:var(--muted);margin-top:1px}
+.fi .m b{color:var(--info-text);font-weight:600}
+.due{font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;white-space:nowrap;background:var(--soft);color:var(--ink)}
+.due.over{background:var(--alert-tint);color:var(--alert-text)}
+.ai{display:grid;grid-template-columns:34px 1fr auto;gap:12px;align-items:center;padding:10px 0}
+.ai .ico{width:34px;height:34px;border-radius:50%;display:grid;place-items:center}
+.ai .d{font-weight:500}
+.ai .m{font-size:12.5px;color:var(--muted);margin-top:1px}
+.ai .m b{color:var(--info-text);font-weight:600}
+.ai .w{font-size:12px;color:var(--muted);white-space:nowrap}
+.k-call{background:var(--info-tint);color:var(--info-text)}
+.k-email{background:var(--marigold-tint);color:#8A5A00}
+.k-note{background:var(--soft);color:var(--ink)}
+.k-stage{background:var(--primary-tint);color:var(--primary-text)}
+
+
+.funnelbars{display:flex;flex-direction:column;gap:14px}
+.fnh{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.fnn{display:flex;align-items:center;gap:8px;font-weight:600}
+.fnn i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.fnv{font-size:12.5px;font-weight:500}
+.fntrack{display:flex;justify-content:center}
+.fnbar{height:20px;border-radius:7px}
+.lostnote{margin-top:16px;padding-top:0;font-size:13px;color:var(--muted);display:flex;justify-content:space-between;background:#F6F9FA;border-radius:10px;padding:10px 12px}
+.lostnote b{font-family:"JetBrains Mono";font-weight:600;color:var(--ink)}
+
+
+.pipe{margin-bottom:20px}
+.seg{display:flex;gap:16px}
+.sg .blk{border-radius:10px;padding:12px 14px;height:64px;display:flex;flex-direction:column;justify-content:space-between}
+.sg .blk b{font-weight:600}
+.sg .blk span{font-family:"JetBrains Mono";font-size:13px;font-weight:500}
+.sg .ex{margin-top:10px}
+.sg .trk{height:8px;border-radius:4px}
+.sg .fillbar{height:8px;border-radius:4px}
+.sg .cap{display:flex;justify-content:space-between;font-size:12.5px;margin-top:6px;color:var(--muted)}
+.sg .cap b{font-family:"JetBrains Mono";font-weight:600;color:var(--ink)}
+
+
+
+.pstrip{display:flex;gap:44px;align-items:center;margin-bottom:16px;padding:16px 24px}
+.pstrip span{display:block;font-size:12.5px;color:var(--muted)}
+.pstrip b{font-size:22px;font-weight:600;letter-spacing:-.02em}
+.pstrip .hint{margin-left:auto;font-size:13px;color:var(--muted);max-width:300px;text-align:right}
+.board{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;align-items:start}
+.pcol{background:rgba(205,216,219,.4);border-radius:12px;padding:10px;transition:background .15s}
+.pcol.over{background:rgba(6,214,160,.16)}
+.pch{padding:4px 4px 12px}
+.pct{display:flex;align-items:center;gap:8px}
+.pct i{width:10px;height:10px;border-radius:3px}
+.pct b{font-weight:600;font-size:14px}
+.pcn{margin-left:auto;font-size:12px;font-weight:600;background:#fff;border-radius:999px;padding:1px 8px}
+.pcv{font-size:15px;font-weight:600;margin-top:8px}
+.pce{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:2px}
+.pce b{font-size:12px;font-weight:500;color:var(--ink)}
+.plist{display:flex;flex-direction:column;gap:8px;min-height:60px}
+.card{background:#fff;border-radius:10px;padding:11px 12px;box-shadow:var(--shadow);cursor:grab}
+.card:active{cursor:grabbing}
+.card.dragging{opacity:.4;transform:rotate(1.5deg)}
+.card .cn{font-weight:600;font-size:13px;line-height:1.25}
+.card .co{font-size:12px;color:var(--muted);margin-top:2px}
+.card .cv{font-size:13px;font-weight:600;margin-top:8px}
+.card .cm{display:flex;align-items:center;gap:6px;margin-top:6px;font-size:11.5px;flex-wrap:wrap}
+.card .pp{background:var(--soft);border-radius:999px;padding:1px 7px;font-weight:500}
+.card .cd{color:var(--muted)}
+.latetag{display:none;background:var(--alert-tint);color:var(--alert-text);font-weight:600;border-radius:999px;padding:1px 7px;font-size:11px}
+.card.late .latetag{display:inline-block}
+.card.late .cd{color:var(--alert-text);font-weight:600}
+.more{text-align:center;font-size:12px;color:var(--muted);padding:10px 0 2px}
+.addd{margin-top:8px;width:100%;display:flex;align-items:center;justify-content:center;gap:6px;border:0;background:transparent;color:var(--muted);font:600 13px "Instrument Sans",system-ui,sans-serif;padding:8px;border-radius:8px;cursor:pointer}
+.addd:hover{background:rgba(255,255,255,.7);color:var(--ink)}
+
+.nav a{cursor:pointer}
+.nav a:hover:not(.on){background:rgba(255,255,255,.08);color:#fff}
+.view{display:none}.view.on{display:block}
+.fi{transition:opacity .35s}
+.fi.done{opacity:.35}
+.fi.done .t{text-decoration:line-through}
+.cb{cursor:pointer;display:grid;place-items:center;transition:background .15s,border-color .15s}
+.cb:hover{border-color:var(--primary-text)}
+.cb.on{background:var(--primary);border-color:var(--primary)}
+.cb.on::after{content:"";width:5px;height:9px;border:solid #073B4C;border-width:0 2px 2px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.btn{cursor:pointer}
+#tip{position:fixed;z-index:20;pointer-events:none;background:var(--ink);color:#fff;font:600 12px "JetBrains Mono",monospace;padding:6px 10px;border-radius:8px;opacity:0;transition:opacity .1s;white-space:nowrap}
+#toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;background:var(--ink);color:#fff;border-radius:10px;padding:11px 16px;display:flex;gap:16px;align-items:center;box-shadow:0 8px 24px rgba(7,59,76,.25);transition:all .25s;z-index:30}
+#toast.show{opacity:1;transform:translateX(-50%);pointer-events:auto}
+#toast button{background:none;border:0;color:var(--primary);font:600 14px "Instrument Sans",system-ui,sans-serif;cursor:pointer}
+.ph-page{margin-top:8px}
+.ph-page .panel{padding:48px;text-align:center;color:var(--muted);max-width:640px}
+.ph-page h2{color:var(--ink);font-size:20px;margin-bottom:8px}
+.ph-page a{color:var(--info-text);font-weight:600;cursor:pointer;display:inline-block;margin-top:18px}
+
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:20px}
+.g{display:grid;grid-template-columns:740px 384px;gap:20px;margin-bottom:20px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+.stat{background:#F6F9FA;border-radius:10px;padding:12px 14px}
+.stat span{display:block;font-size:12px;color:var(--muted)}
+.stat b{font-family:"JetBrains Mono";font-weight:600;font-size:15px}
+</style></head>
+<body><div class="app">
+<aside class="side">
+  <div class="brand"><span class="mark">A</span>Accountable</div>
+  <nav class="nav">
+    <a class="on" data-page="dashboard"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>Dashboard</a>
+    <a data-page="organizations"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg>Organizations</a>
+    <a data-page="contacts"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Contacts</a>
+    <a data-page="deals"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 18V6"/></svg>Deals</a>
+    <a data-page="pipeline"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 5v11"/><path d="M12 5v6"/><path d="M18 5v14"/></svg>Pipeline</a>
+  </nav>
+  <div class="foot">Data is saved on this computer</div>
+</aside><main class="main"><div class="view on" id="v-dashboard">
+
+<div class="top">
+  <div><div class="date">Tuesday 17 November 2026</div><h1 class="hello">Good morning</h1></div>
+  <div class="actions"><button class="btn primary"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Add deal</button></div>
+</div>
+<div class="tiles">
+  
+<div class="panel tile " style="">
+  <div class="lab"><span class="chip blue"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 5v11"/><path d="M12 5v6"/><path d="M18 5v14"/></svg></span>Open pipeline</div>
+  <div class="num" style=""><small>USD</small>688,000</div>
+  <div class="foot">20 open deals</div>
+</div>
+  
+<div class="panel tile " style="">
+  <div class="lab"><span class="chip green"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span>Expected revenue</div>
+  <div class="num" style=""><small>USD</small>260,500</div>
+  <div class="foot">Value times probability of close</div>
+</div>
+  
+<div class="panel tile " style="">
+  <div class="lab"><span class="chip gold"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg></span>Won this month</div>
+  <div class="num" style=""><small>USD</small>45,000</div>
+  <div class="foot">1 deal won in November</div>
+</div>
+  
+<div class="panel tile">
+  <div class="lab"><span class="chip red"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M5 3 2 6"/><path d="m22 6-3-3"/></svg></span>Overdue follow-ups</div>
+  <div class="num" style="color:var(--alert-text)" id="t-over">3</div>
+  <div class="foot" id="t-over-foot">8 more due in the next 2 weeks</div>
+</div>
+</div>
+<section class="panel pipe">
+  <div class="ph"><div><h2>Open pipeline by stage</h2><div class="sub">Bar width is deal value. The lower bar shows the share we expect to close, and what that is worth.</div></div>
+    <div class="side-fig"><b>USD 260,500</b><span>expected of USD 688,000</span></div></div>
+  <div class="seg"><div class="sg" style="width:16.28%">
+      <div class="blk" style="background:#118AB2;color:#fff"><b>New · 6 deals</b><span>USD 112,000</span></div>
+      <div class="ex"><div class="trk" style="background:#CFE7F0"><div class="fillbar" style="width:5%;background:#118AB2"></div></div>
+      <div class="cap"><span>5%</span><b>USD 5,600</b></div></div></div><div class="sg" style="width:22.97%">
+      <div class="blk" style="background:#FFC145;color:#073B4C"><b>Qualified · 5 deals</b><span>USD 158,000</span></div>
+      <div class="ex"><div class="trk" style="background:#FFEBC4"><div class="fillbar" style="width:20%;background:#FFC145"></div></div>
+      <div class="cap"><span>20%</span><b>USD 31,600</b></div></div></div><div class="sg" style="width:33.58%">
+      <div class="blk" style="background:#F78C6B;color:#073B4C"><b>Proposal · 5 deals</b><span>USD 231,000</span></div>
+      <div class="ex"><div class="trk" style="background:#FCDDD2"><div class="fillbar" style="width:40%;background:#F78C6B"></div></div>
+      <div class="cap"><span>40%</span><b>USD 92,400</b></div></div></div><div class="sg" style="width:27.18%">
+      <div class="blk" style="background:#06D6A0;color:#073B4C"><b>Negotiation · 4 deals</b><span>USD 187,000</span></div>
+      <div class="ex"><div class="trk" style="background:#BDF3E3"><div class="fillbar" style="width:70%;background:#06D6A0"></div></div>
+      <div class="cap"><span>70%</span><b>USD 130,900</b></div></div></div></div>
+</section>
+<div class="g">
+  <section class="panel">
+    <div class="ph"><div><h2>Revenue won</h2><div class="sub">Each month, last 12 months</div></div>
+      <div class="side-fig"><b>USD 477,500</b><span>12 deals won</span></div></div>
+    <svg class="chart" width="692" height="320" viewBox="0 0 692 320" role="img" aria-label="Revenue won each month for the last 12 months"><line x1="66" x2="670" y1="286" y2="286" stroke="#E6EDEF"/><text class="tick" x="54" y="290" text-anchor="end">USD 0</text><line x1="66" x2="670" y1="219" y2="219" stroke="#E6EDEF"/><text class="tick" x="54" y="223" text-anchor="end">USD 25k</text><line x1="66" x2="670" y1="152" y2="152" stroke="#E6EDEF"/><text class="tick" x="54" y="156" text-anchor="end">USD 50k</text><line x1="66" x2="670" y1="85" y2="85" stroke="#E6EDEF"/><text class="tick" x="54" y="89" text-anchor="end">USD 75k</text><line x1="66" x2="670" y1="18" y2="18" stroke="#E6EDEF"/><text class="tick" x="54" y="22" text-anchor="end">USD 100k</text><path d="M 66 221.68 C 93.45454545454545 221.68 93.45454545454545 286 120.9090909090909 286 C 148.36363636363637 286 148.36363636363637 236.42 175.8181818181818 236.42 C 203.27272727272725 236.42 203.27272727272725 176.12000000000003 230.72727272727272 176.12000000000003 C 258.1818181818182 176.12000000000003 258.1818181818182 105.1 285.6363636363636 105.1 C 313.0909090909091 105.1 313.0909090909091 200.23999999999998 340.54545454545456 200.23999999999998 C 368 200.23999999999998 368 286 395.45454545454544 286 C 422.9090909090909 286 422.9090909090909 28.72000000000001 450.3636363636364 28.72000000000001 C 477.8181818181818 28.72000000000001 477.8181818181818 212.29999999999998 505.27272727272725 212.29999999999998 C 532.7272727272727 212.29999999999998 532.7272727272727 146.64 560.1818181818182 146.64 C 587.6363636363637 146.64 587.6363636363637 87.68 615.0909090909091 87.68 C 642.5454545454545 87.68 642.5454545454545 165.4 670 165.4 L 670 286 L 66 286 Z" fill="#06D6A0" opacity=".13"/><path d="M 66 221.68 C 93.45454545454545 221.68 93.45454545454545 286 120.9090909090909 286 C 148.36363636363637 286 148.36363636363637 236.42 175.8181818181818 236.42 C 203.27272727272725 236.42 203.27272727272725 176.12000000000003 230.72727272727272 176.12000000000003 C 258.1818181818182 176.12000000000003 258.1818181818182 105.1 285.6363636363636 105.1 C 313.0909090909091 105.1 313.0909090909091 200.23999999999998 340.54545454545456 200.23999999999998 C 368 200.23999999999998 368 286 395.45454545454544 286 C 422.9090909090909 286 422.9090909090909 28.72000000000001 450.3636363636364 28.72000000000001 C 477.8181818181818 28.72000000000001 477.8181818181818 212.29999999999998 505.27272727272725 212.29999999999998 C 532.7272727272727 212.29999999999998 532.7272727272727 146.64 560.1818181818182 146.64 C 587.6363636363637 146.64 587.6363636363637 87.68 615.0909090909091 87.68 C 642.5454545454545 87.68 642.5454545454545 165.4 670 165.4" fill="none" stroke="#06D6A0" stroke-width="3" stroke-linecap="round"/><circle cx="66" cy="221.68" r="4" fill="#fff" stroke="#06D6A0" stroke-width="2.5"/><circle cx="120.9090909090909" cy="286" r="4" fill="#fff" stroke="#06D6A0" stroke-width="2.5"/><circle cx="175.8181818181818" cy="236.42" r="4" fill="#fff" stroke="#06D6A0" stroke-width="2.5"/><circle cx="230.72727272727272" cy="176.12000000000003" r="4" fill="#fff" stroke="#06D6A0" stroke-width="2.5"/><circle cx="285.6363636363636" cy="105.1" r="4" fill="#fff" stroke="#06D6A0" stroke-width="2.5"/><circle cx="340.54545454545456" cy="200.23999999999998" r="4" fill="#fff" stroke="#06D6A0" stroke-width="2.5"/><circle cx="395.45454545454544" cy="286" r="4" fill="#fff" stroke="#06D6A0" stroke-width="2.5"/><circle cx="450.3636363636364" cy="28.72000000000001" r="4" fill="#fff" stroke="#06D6A0" stroke-width="2.5"/><circle cx="505.27272727272725" cy="212.29999999999998" r="4" fill="#fff" stroke="#06D6A0" stroke-width="2.5"/><circle cx="560.1818181818182" cy="146.64" r="4" fill="#fff" stroke="#06D6A0" stroke-width="2.5"/><circle cx="615.0909090909091" cy="87.68" r="4" fill="#fff" stroke="#06D6A0" stroke-width="2.5"/><circle cx="670" cy="165.4" r="6" fill="#06D6A0" stroke="#fff" stroke-width="3"/><circle data-tip="Dec · USD 24,000" cx="66" cy="221.68" r="14" fill="transparent"/><circle data-tip="Jan · USD 0" cx="120.9090909090909" cy="286" r="14" fill="transparent"/><circle data-tip="Feb · USD 18,500" cx="175.8181818181818" cy="236.42" r="14" fill="transparent"/><circle data-tip="Mar · USD 41,000" cx="230.72727272727272" cy="176.12000000000003" r="14" fill="transparent"/><circle data-tip="Apr · USD 67,500" cx="285.6363636363636" cy="105.1" r="14" fill="transparent"/><circle data-tip="May · USD 32,000" cx="340.54545454545456" cy="200.23999999999998" r="14" fill="transparent"/><circle data-tip="Jun · USD 0" cx="395.45454545454544" cy="286" r="14" fill="transparent"/><circle data-tip="Jul · USD 96,000" cx="450.3636363636364" cy="28.72000000000001" r="14" fill="transparent"/><circle data-tip="Aug · USD 27,500" cx="505.27272727272725" cy="212.29999999999998" r="14" fill="transparent"/><circle data-tip="Sep · USD 52,000" cx="560.1818181818182" cy="146.64" r="14" fill="transparent"/><circle data-tip="Oct · USD 74,000" cx="615.0909090909091" cy="87.68" r="14" fill="transparent"/><circle data-tip="Nov · USD 45,000" cx="670" cy="165.4" r="14" fill="transparent"/><rect x="558" y="181.4" width="124" height="30" rx="8" fill="#073B4C"/><text x="620" y="201.4" text-anchor="middle" font-family="JetBrains Mono" font-weight="600" font-size="12" fill="#fff">USD 45,000</text><text class="xl" x="66" y="310" text-anchor="middle">Dec</text><text class="xl" x="120.9090909090909" y="310" text-anchor="middle">Jan</text><text class="xl" x="175.8181818181818" y="310" text-anchor="middle">Feb</text><text class="xl" x="230.72727272727272" y="310" text-anchor="middle">Mar</text><text class="xl" x="285.6363636363636" y="310" text-anchor="middle">Apr</text><text class="xl" x="340.54545454545456" y="310" text-anchor="middle">May</text><text class="xl" x="395.45454545454544" y="310" text-anchor="middle">Jun</text><text class="xl" x="450.3636363636364" y="310" text-anchor="middle">Jul</text><text class="xl" x="505.27272727272725" y="310" text-anchor="middle">Aug</text><text class="xl" x="560.1818181818182" y="310" text-anchor="middle">Sep</text><text class="xl" x="615.0909090909091" y="310" text-anchor="middle">Oct</text><text class="xl" x="670" y="310" text-anchor="middle">Nov</text></svg>
+  </section>
+  <section class="panel">
+    <div class="ph"><div><h2>Sales funnel</h2><div class="sub">Value that reaches each stage</div></div></div>
+    <div class="funnelbars">
+  <div class="fn">
+    <div class="fnh"><span class="fnn"><i style="background:#118AB2"></i>New</span><span class="mono fnv">USD 1,165,500</span></div>
+    <div class="fntrack"><div class="fnbar" style="width:100.0%;background:#118AB2"></div></div>
+  </div>
+  <div class="fn">
+    <div class="fnh"><span class="fnn"><i style="background:#FFC145"></i>Qualified</span><span class="mono fnv">USD 1,053,500</span></div>
+    <div class="fntrack"><div class="fnbar" style="width:90.4%;background:#FFC145"></div></div>
+  </div>
+  <div class="fn">
+    <div class="fnh"><span class="fnn"><i style="background:#F78C6B"></i>Proposal</span><span class="mono fnv">USD 895,500</span></div>
+    <div class="fntrack"><div class="fnbar" style="width:76.8%;background:#F78C6B"></div></div>
+  </div>
+  <div class="fn">
+    <div class="fnh"><span class="fnn"><i style="background:#06D6A0"></i>Negotiation</span><span class="mono fnv">USD 664,500</span></div>
+    <div class="fntrack"><div class="fnbar" style="width:57.0%;background:#06D6A0"></div></div>
+  </div>
+  <div class="fn">
+    <div class="fnh"><span class="fnn"><i style="background:#073B4C"></i>Won</span><span class="mono fnv">USD 477,500</span></div>
+    <div class="fntrack"><div class="fnbar" style="width:41.0%;background:#073B4C"></div></div>
+  </div></div>
+    <div class="lostnote"><span>Lost deals, not counted above</span><b>USD 96,000</b></div>
+  </section>
+</div>
+<div class="g">
+  <section class="panel">
+    <div class="ph"><div><h2>Deals won</h2><div class="sub">Number of deals each month</div></div></div>
+    <svg class="chart" width="692" height="330" viewBox="0 0 692 330" role="img" aria-label="Deals won each month for the last 12 months"><line x1="34" x2="670" y1="296" y2="296" stroke="#E6EDEF"/><text class="tick" x="22" y="300" text-anchor="end">0</text><line x1="34" x2="670" y1="158" y2="158" stroke="#E6EDEF"/><text class="tick" x="22" y="162" text-anchor="end">1</text><line x1="34" x2="670" y1="20" y2="20" stroke="#E6EDEF"/><text class="tick" x="22" y="24" text-anchor="end">2</text><path d="M 47.5 296 V 165 Q 47.5 158 54.5 158 H 66.5 Q 73.5 158 73.5 165 V 296 Z" fill="#118AB2"/><text class="tick" x="60.5" y="151" text-anchor="middle" style="fill:#073B4C;font-weight:600">1</text><rect x="100.5" y="293" width="26" height="3" rx="1.5" fill="#CDD8DB"/><path d="M 153.5 296 V 165 Q 153.5 158 160.5 158 H 172.5 Q 179.5 158 179.5 165 V 296 Z" fill="#118AB2"/><text class="tick" x="166.5" y="151" text-anchor="middle" style="fill:#073B4C;font-weight:600">1</text><path d="M 206.5 296 V 165 Q 206.5 158 213.5 158 H 225.5 Q 232.5 158 232.5 165 V 296 Z" fill="#118AB2"/><text class="tick" x="219.5" y="151" text-anchor="middle" style="fill:#073B4C;font-weight:600">1</text><path d="M 259.5 296 V 27 Q 259.5 20 266.5 20 H 278.5 Q 285.5 20 285.5 27 V 296 Z" fill="#118AB2"/><text class="tick" x="272.5" y="13" text-anchor="middle" style="fill:#073B4C;font-weight:600">2</text><path d="M 312.5 296 V 165 Q 312.5 158 319.5 158 H 331.5 Q 338.5 158 338.5 165 V 296 Z" fill="#118AB2"/><text class="tick" x="325.5" y="151" text-anchor="middle" style="fill:#073B4C;font-weight:600">1</text><rect x="365.5" y="293" width="26" height="3" rx="1.5" fill="#CDD8DB"/><path d="M 418.5 296 V 27 Q 418.5 20 425.5 20 H 437.5 Q 444.5 20 444.5 27 V 296 Z" fill="#118AB2"/><text class="tick" x="431.5" y="13" text-anchor="middle" style="fill:#073B4C;font-weight:600">2</text><path d="M 471.5 296 V 165 Q 471.5 158 478.5 158 H 490.5 Q 497.5 158 497.5 165 V 296 Z" fill="#118AB2"/><text class="tick" x="484.5" y="151" text-anchor="middle" style="fill:#073B4C;font-weight:600">1</text><path d="M 524.5 296 V 165 Q 524.5 158 531.5 158 H 543.5 Q 550.5 158 550.5 165 V 296 Z" fill="#118AB2"/><text class="tick" x="537.5" y="151" text-anchor="middle" style="fill:#073B4C;font-weight:600">1</text><path d="M 577.5 296 V 165 Q 577.5 158 584.5 158 H 596.5 Q 603.5 158 603.5 165 V 296 Z" fill="#118AB2"/><text class="tick" x="590.5" y="151" text-anchor="middle" style="fill:#073B4C;font-weight:600">1</text><path d="M 630.5 296 V 165 Q 630.5 158 637.5 158 H 649.5 Q 656.5 158 656.5 165 V 296 Z" fill="#118AB2"/><text class="tick" x="643.5" y="151" text-anchor="middle" style="fill:#073B4C;font-weight:600">1</text><rect data-tip="Dec · 1 deal won" x="34" y="20" width="53" height="276" fill="transparent"/><rect data-tip="Jan · 0 deals won" x="87" y="20" width="53" height="276" fill="transparent"/><rect data-tip="Feb · 1 deal won" x="140" y="20" width="53" height="276" fill="transparent"/><rect data-tip="Mar · 1 deal won" x="193" y="20" width="53" height="276" fill="transparent"/><rect data-tip="Apr · 2 deals won" x="246" y="20" width="53" height="276" fill="transparent"/><rect data-tip="May · 1 deal won" x="299" y="20" width="53" height="276" fill="transparent"/><rect data-tip="Jun · 0 deals won" x="352" y="20" width="53" height="276" fill="transparent"/><rect data-tip="Jul · 2 deals won" x="405" y="20" width="53" height="276" fill="transparent"/><rect data-tip="Aug · 1 deal won" x="458" y="20" width="53" height="276" fill="transparent"/><rect data-tip="Sep · 1 deal won" x="511" y="20" width="53" height="276" fill="transparent"/><rect data-tip="Oct · 1 deal won" x="564" y="20" width="53" height="276" fill="transparent"/><rect data-tip="Nov · 1 deal won" x="617" y="20" width="53" height="276" fill="transparent"/><text class="xl" x="60.5" y="320" text-anchor="middle">Dec</text><text class="xl" x="113.5" y="320" text-anchor="middle">Jan</text><text class="xl" x="166.5" y="320" text-anchor="middle">Feb</text><text class="xl" x="219.5" y="320" text-anchor="middle">Mar</text><text class="xl" x="272.5" y="320" text-anchor="middle">Apr</text><text class="xl" x="325.5" y="320" text-anchor="middle">May</text><text class="xl" x="378.5" y="320" text-anchor="middle">Jun</text><text class="xl" x="431.5" y="320" text-anchor="middle">Jul</text><text class="xl" x="484.5" y="320" text-anchor="middle">Aug</text><text class="xl" x="537.5" y="320" text-anchor="middle">Sep</text><text class="xl" x="590.5" y="320" text-anchor="middle">Oct</text><text class="xl" x="643.5" y="320" text-anchor="middle">Nov</text></svg>
+    <div class="stats">
+      <div class="stat"><span>Best month</span><b>July, 2 deals</b></div>
+      <div class="stat"><span>Average deal</span><b>USD 39,792</b></div>
+      <div class="stat"><span>Months with no wins</span><b>2</b></div>
+    </div>
+  </section>
+  <section class="panel">
+    <div class="ph"><div><h2>Follow-ups</h2><div class="sub" id="fu-sub">11 open, tick one to mark it done</div></div></div>
+    <div class="fu"><h3 class="red" id="fu-over-h">Overdue · 3</h3>
+  <div class="fi" data-fu data-over="1">
+    <span class="cb" role="checkbox" aria-checked="false" tabindex="0"></span>
+    <div><div class="t">Send revised proposal</div><div class="m"><b>Helix Health</b></div></div>
+    <span class="due over">5 days overdue</span>
+  </div>
+  <div class="fi" data-fu data-over="1">
+    <span class="cb" role="checkbox" aria-checked="false" tabindex="0"></span>
+    <div><div class="t">Call back about security review</div><div class="m"><b>Orbit Energy</b></div></div>
+    <span class="due over">4 days overdue</span>
+  </div>
+  <div class="fi" data-fu data-over="1">
+    <span class="cb" role="checkbox" aria-checked="false" tabindex="0"></span>
+    <div><div class="t">Confirm contract terms</div><div class="m"><b>Kestrel Finance</b></div></div>
+    <span class="due over">1 day overdue</span>
+  </div><h3>Upcoming</h3>
+  <div class="fi" data-fu data-over="0">
+    <span class="cb" role="checkbox" aria-checked="false" tabindex="0"></span>
+    <div><div class="t">Demo for the finance team</div><div class="m"><b>Brightline Software</b></div></div>
+    <span class="due">Tomorrow</span>
+  </div>
+  <div class="fi" data-fu data-over="0">
+    <span class="cb" role="checkbox" aria-checked="false" tabindex="0"></span>
+    <div><div class="t">Share the plant case study</div><div class="m"><b>Marlow Manufacturing</b></div></div>
+    <span class="due">Thu 19 Nov</span>
+  </div>
+  <div class="fi" data-fu data-over="0">
+    <span class="cb" role="checkbox" aria-checked="false" tabindex="0"></span>
+    <div><div class="t">Check in after pilot week</div><div class="m"><b>Northwind Logistics</b></div></div>
+    <span class="due">Fri 20 Nov</span>
+  </div></div>
+  </section>
+</div>
+<section class="panel">
+  <div class="ph"><div><h2>Recent activity</h2><div class="sub">Notes, calls, emails and stage changes</div></div></div>
+  <div>
+  <div class="ai">
+    <span class="ico k-stage"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/></svg></span>
+    <div><div class="d">Moved from Proposal to Negotiation</div><div class="m"><b>Harbor Retail</b> · POS rollout</div></div>
+    <span class="w mono">2 hours ago</span>
+  </div>
+  <div class="ai">
+    <span class="ico k-call"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
+    <div><div class="d">Call with Priya Nair: she wants a fixed fee for the revised scope</div><div class="m"><b>Helix Health</b> · Clinic scheduling suite</div></div>
+    <span class="w mono">Today, 09:15</span>
+  </div>
+  <div class="ai">
+    <span class="ico k-stage"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/></svg></span>
+    <div><div class="d">Moved from Negotiation to Won</div><div class="m"><b>Atlas Freight</b> · Dock scheduling</div></div>
+    <span class="w mono">Yesterday, 14:05</span>
+  </div>
+  <div class="ai">
+    <span class="ico k-email"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span>
+    <div><div class="d">Sent answers to the security questionnaire</div><div class="m"><b>Orbit Energy</b> · Grid monitoring rollout</div></div>
+    <span class="w mono">Yesterday, 16:40</span>
+  </div>
+  <div class="ai">
+    <span class="ico k-note"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg></span>
+    <div><div class="d">Budget confirmed for Q1, needs board sign-off</div><div class="m"><b>Kestrel Finance</b> · Compliance platform</div></div>
+    <span class="w mono">Yesterday, 11:20</span>
+  </div>
+  <div class="ai">
+    <span class="ico k-stage"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/></svg></span>
+    <div><div class="d">Moved from Qualified to Proposal</div><div class="m"><b>Marlow Manufacturing</b> · Plant analytics</div></div>
+    <span class="w mono">Yesterday, 09:30</span>
+  </div>
+  <div class="ai">
+    <span class="ico k-call"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
+    <div><div class="d">Intro call, interested in the route optimizer</div><div class="m"><b>Northwind Logistics</b> · Route optimizer</div></div>
+    <span class="w mono">Fri 13 Nov</span>
+  </div>
+  <div class="ai">
+    <span class="ico k-email"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span>
+    <div><div class="d">Sent proposal version 2</div><div class="m"><b>Cedar Learning</b> · Course platform</div></div>
+    <span class="w mono">Fri 13 Nov</span>
+  </div>
+  <div class="ai">
+    <span class="ico k-stage"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/></svg></span>
+    <div><div class="d">Moved from New to Qualified</div><div class="m"><b>Redwood Education</b> · Student portal</div></div>
+    <span class="w mono">Thu 12 Nov</span>
+  </div>
+  <div class="ai">
+    <span class="ico k-note"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg></span>
+    <div><div class="d">Champion changed roles, need a new sponsor</div><div class="m"><b>Brightline Software</b> · Billing integration</div></div>
+    <span class="w mono">Thu 12 Nov</span>
+  </div></div>
+</section>
+</div><div class="view" id="v-organizations">
+  <div class="top"><div><div class="date">Tuesday 17 November 2026</div><h1 class="hello">Organizations</h1></div></div>
+  <div class="ph-page"><div class="panel"><h2>Not mocked up yet</h2><div>The companies you do business with, in a table with search, sorting and an Add button. Open one to see its contacts and deals.</div><a data-page="dashboard">Back to the dashboard</a></div></div>
+</div><div class="view" id="v-contacts">
+  <div class="top"><div><div class="date">Tuesday 17 November 2026</div><h1 class="hello">Contacts</h1></div></div>
+  <div class="ph-page"><div class="panel"><h2>Not mocked up yet</h2><div>The people you deal with, with a filter for lead, qualified or customer. Open one to see their timeline.</div><a data-page="dashboard">Back to the dashboard</a></div></div>
+</div><div class="view" id="v-deals">
+  <div class="top"><div><div class="date">Tuesday 17 November 2026</div><h1 class="hello">Deals</h1></div></div>
+  <div class="ph-page"><div class="panel"><h2>Not mocked up yet</h2><div>Every potential sale with its stage, value and close date. Late deals stand out.</div><a data-page="dashboard">Back to the dashboard</a></div></div>
+</div><div class="view" id="v-pipeline">
+  <div class="top"><div><div class="date">Tuesday 17 November 2026</div><h1 class="hello">Pipeline</h1></div>
+    <div class="actions"><button class="btn primary"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Add deal</button></div></div>
+  <div class="panel pstrip">
+    <div><span>Open deals</span><b class="mono" id="ps-n">0</b></div>
+    <div><span>Total value</span><b class="mono" id="ps-v"></b></div>
+    <div><span>Expected revenue</span><b class="mono" id="ps-e"></b></div>
+    <div class="hint">Drag a card to another column to change its stage, or up and down to change its place.</div>
+  </div>
+  <div class="board"><div class="pcol" data-stage="new" data-extra-n="0" data-extra-v="0">
+    <div class="pch"><div class="pct"><i style="background:#118AB2"></i><b>New</b><span class="pcn mono">0</span></div>
+      <div class="pcv mono"></div><div class="pce"><span>Expected</span><b class="mono"></b></div></div>
+    <div class="plist"><div class="card" draggable="true" data-v="18000" data-p="5" data-close="2026-12-15">
+    <div class="cn">Warehouse sensors</div><div class="co">Atlas Freight</div>
+    <div class="cv mono">USD 18,000</div>
+    <div class="cm"><span class="pp mono">5%</span><span class="cd mono">15 Dec</span><span class="latetag">Late</span></div>
+  </div><div class="card" draggable="true" data-v="12000" data-p="5" data-close="2026-12-18">
+    <div class="cn">Intake forms</div><div class="co">Helix Health</div>
+    <div class="cv mono">USD 12,000</div>
+    <div class="cm"><span class="pp mono">5%</span><span class="cd mono">18 Dec</span><span class="latetag">Late</span></div>
+  </div><div class="card" draggable="true" data-v="26000" data-p="5" data-close="2027-01-12">
+    <div class="cn">Reporting suite</div><div class="co">Marlow Manufacturing</div>
+    <div class="cv mono">USD 26,000</div>
+    <div class="cm"><span class="pp mono">5%</span><span class="cd mono">12 Jan</span><span class="latetag">Late</span></div>
+  </div><div class="card" draggable="true" data-v="22000" data-p="5" data-close="2027-01-20">
+    <div class="cn">Loyalty app</div><div class="co">Harbor Retail</div>
+    <div class="cv mono">USD 22,000</div>
+    <div class="cm"><span class="pp mono">5%</span><span class="cd mono">20 Jan</span><span class="latetag">Late</span></div>
+  </div><div class="card" draggable="true" data-v="14000" data-p="5" data-close="2026-12-22">
+    <div class="cn">Training portal</div><div class="co">Cedar Learning</div>
+    <div class="cv mono">USD 14,000</div>
+    <div class="cm"><span class="pp mono">5%</span><span class="cd mono">22 Dec</span><span class="latetag">Late</span></div>
+  </div><div class="card" draggable="true" data-v="20000" data-p="5" data-close="2027-01-30">
+    <div class="cn">Fleet dashboard</div><div class="co">Northwind Logistics</div>
+    <div class="cv mono">USD 20,000</div>
+    <div class="cm"><span class="pp mono">5%</span><span class="cd mono">30 Jan</span><span class="latetag">Late</span></div>
+  </div></div>
+    
+    <button class="addd" data-stage="new"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Add deal</button>
+  </div><div class="pcol" data-stage="qualified" data-extra-n="0" data-extra-v="0">
+    <div class="pch"><div class="pct"><i style="background:#FFC145"></i><b>Qualified</b><span class="pcn mono">0</span></div>
+      <div class="pcv mono"></div><div class="pce"><span>Expected</span><b class="mono"></b></div></div>
+    <div class="plist"><div class="card" draggable="true" data-v="45000" data-p="20" data-close="2026-12-10">
+    <div class="cn">Billing integration</div><div class="co">Brightline Software</div>
+    <div class="cv mono">USD 45,000</div>
+    <div class="cm"><span class="pp mono">20%</span><span class="cd mono">10 Dec</span><span class="latetag">Late</span></div>
+  </div><div class="card" draggable="true" data-v="38000" data-p="20" data-close="2026-12-19">
+    <div class="cn">Route optimizer</div><div class="co">Northwind Logistics</div>
+    <div class="cv mono">USD 38,000</div>
+    <div class="cm"><span class="pp mono">20%</span><span class="cd mono">19 Dec</span><span class="latetag">Late</span></div>
+  </div><div class="card" draggable="true" data-v="30000" data-p="20" data-close="2027-01-15">
+    <div class="cn">Student portal</div><div class="co">Redwood Education</div>
+    <div class="cv mono">USD 30,000</div>
+    <div class="cm"><span class="pp mono">20%</span><span class="cd mono">15 Jan</span><span class="latetag">Late</span></div>
+  </div><div class="card" draggable="true" data-v="25000" data-p="20" data-close="2027-02-05">
+    <div class="cn">Meter data hub</div><div class="co">Orbit Energy</div>
+    <div class="cv mono">USD 25,000</div>
+    <div class="cm"><span class="pp mono">20%</span><span class="cd mono">5 Feb</span><span class="latetag">Late</span></div>
+  </div><div class="card" draggable="true" data-v="20000" data-p="20" data-close="2027-01-28">
+    <div class="cn">Risk dashboard</div><div class="co">Kestrel Finance</div>
+    <div class="cv mono">USD 20,000</div>
+    <div class="cm"><span class="pp mono">20%</span><span class="cd mono">28 Jan</span><span class="latetag">Late</span></div>
+  </div></div>
+    
+    <button class="addd" data-stage="qualified"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Add deal</button>
+  </div><div class="pcol" data-stage="proposal" data-extra-n="0" data-extra-v="0">
+    <div class="pch"><div class="pct"><i style="background:#F78C6B"></i><b>Proposal</b><span class="pcn mono">0</span></div>
+      <div class="pcv mono"></div><div class="pce"><span>Expected</span><b class="mono"></b></div></div>
+    <div class="plist"><div class="card" draggable="true" data-v="48000" data-p="40" data-close="2026-11-06">
+    <div class="cn">Clinic scheduling suite</div><div class="co">Helix Health</div>
+    <div class="cv mono">USD 48,000</div>
+    <div class="cm"><span class="pp mono">40%</span><span class="cd mono">6 Nov</span><span class="latetag">Late</span></div>
+  </div><div class="card" draggable="true" data-v="52000" data-p="40" data-close="2026-12-08">
+    <div class="cn">Plant analytics</div><div class="co">Marlow Manufacturing</div>
+    <div class="cv mono">USD 52,000</div>
+    <div class="cm"><span class="pp mono">40%</span><span class="cd mono">8 Dec</span><span class="latetag">Late</span></div>
+  </div><div class="card" draggable="true" data-v="60000" data-p="40" data-close="2026-12-14">
+    <div class="cn">Course platform</div><div class="co">Cedar Learning</div>
+    <div class="cv mono">USD 60,000</div>
+    <div class="cm"><span class="pp mono">40%</span><span class="cd mono">14 Dec</span><span class="latetag">Late</span></div>
+  </div><div class="card" draggable="true" data-v="41000" data-p="40" data-close="2026-12-20">
+    <div class="cn">Audit workflow</div><div class="co">Kestrel Finance</div>
+    <div class="cv mono">USD 41,000</div>
+    <div class="cm"><span class="pp mono">40%</span><span class="cd mono">20 Dec</span><span class="latetag">Late</span></div>
+  </div><div class="card" draggable="true" data-v="30000" data-p="40" data-close="2027-01-09">
+    <div class="cn">Returns portal</div><div class="co">Harbor Retail</div>
+    <div class="cv mono">USD 30,000</div>
+    <div class="cm"><span class="pp mono">40%</span><span class="cd mono">9 Jan</span><span class="latetag">Late</span></div>
+  </div></div>
+    
+    <button class="addd" data-stage="proposal"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Add deal</button>
+  </div><div class="pcol" data-stage="negotiation" data-extra-n="0" data-extra-v="0">
+    <div class="pch"><div class="pct"><i style="background:#06D6A0"></i><b>Negotiation</b><span class="pcn mono">0</span></div>
+      <div class="pcv mono"></div><div class="pce"><span>Expected</span><b class="mono"></b></div></div>
+    <div class="plist"><div class="card" draggable="true" data-v="85000" data-p="70" data-close="2026-11-02">
+    <div class="cn">Grid monitoring rollout</div><div class="co">Orbit Energy</div>
+    <div class="cv mono">USD 85,000</div>
+    <div class="cm"><span class="pp mono">70%</span><span class="cd mono">2 Nov</span><span class="latetag">Late</span></div>
+  </div><div class="card" draggable="true" data-v="62000" data-p="70" data-close="2026-11-09">
+    <div class="cn">Compliance platform</div><div class="co">Kestrel Finance</div>
+    <div class="cv mono">USD 62,000</div>
+    <div class="cm"><span class="pp mono">70%</span><span class="cd mono">9 Nov</span><span class="latetag">Late</span></div>
+  </div><div class="card" draggable="true" data-v="25000" data-p="70" data-close="2026-12-04">
+    <div class="cn">POS rollout</div><div class="co">Harbor Retail</div>
+    <div class="cv mono">USD 25,000</div>
+    <div class="cm"><span class="pp mono">70%</span><span class="cd mono">4 Dec</span><span class="latetag">Late</span></div>
+  </div><div class="card" draggable="true" data-v="15000" data-p="70" data-close="2026-11-27">
+    <div class="cn">Dispatch tool</div><div class="co">Atlas Freight</div>
+    <div class="cv mono">USD 15,000</div>
+    <div class="cm"><span class="pp mono">70%</span><span class="cd mono">27 Nov</span><span class="latetag">Late</span></div>
+  </div></div>
+    
+    <button class="addd" data-stage="negotiation"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Add deal</button>
+  </div><div class="pcol" data-stage="won" data-extra-n="8" data-extra-v="279000">
+    <div class="pch"><div class="pct"><i style="background:#073B4C"></i><b>Won</b><span class="pcn mono">0</span></div>
+      <div class="pcv mono"></div><div class="pce"><span>Expected</span><b class="mono"></b></div></div>
+    <div class="plist"><div class="card" draggable="true" data-v="45000" data-p="100" data-close="2026-11-16">
+    <div class="cn">Dock scheduling</div><div class="co">Atlas Freight</div>
+    <div class="cv mono">USD 45,000</div>
+    <div class="cm"><span class="pp mono">100%</span><span class="cd mono">16 Nov</span><span class="latetag">Late</span></div>
+  </div><div class="card" draggable="true" data-v="74000" data-p="100" data-close="2026-10-21">
+    <div class="cn">Network upgrade</div><div class="co">Northwind Logistics</div>
+    <div class="cv mono">USD 74,000</div>
+    <div class="cm"><span class="pp mono">100%</span><span class="cd mono">21 Oct</span><span class="latetag">Late</span></div>
+  </div><div class="card" draggable="true" data-v="52000" data-p="100" data-close="2026-09-18">
+    <div class="cn">Care portal</div><div class="co">Helix Health</div>
+    <div class="cv mono">USD 52,000</div>
+    <div class="cm"><span class="pp mono">100%</span><span class="cd mono">18 Sep</span><span class="latetag">Late</span></div>
+  </div><div class="card" draggable="true" data-v="27500" data-p="100" data-close="2026-08-12">
+    <div class="cn">Parts catalogue</div><div class="co">Marlow Manufacturing</div>
+    <div class="cv mono">USD 27,500</div>
+    <div class="cm"><span class="pp mono">100%</span><span class="cd mono">12 Aug</span><span class="latetag">Late</span></div>
+  </div></div>
+    <div class="more">+ 8 earlier won deals</div>
+    <button class="addd" data-stage="won"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Add deal</button>
+  </div><div class="pcol" data-stage="lost" data-extra-n="2" data-extra-v="16000">
+    <div class="pch"><div class="pct"><i style="background:#CDD8DB"></i><b>Lost</b><span class="pcn mono">0</span></div>
+      <div class="pcv mono"></div><div class="pce"><span>Expected</span><b class="mono"></b></div></div>
+    <div class="plist"><div class="card" draggable="true" data-v="30000" data-p="0" data-close="2026-10-02">
+    <div class="cn">Kiosk pilot</div><div class="co">Harbor Retail</div>
+    <div class="cv mono">USD 30,000</div>
+    <div class="cm"><span class="pp mono">0%</span><span class="cd mono">2 Oct</span><span class="latetag">Late</span></div>
+  </div><div class="card" draggable="true" data-v="38000" data-p="0" data-close="2026-08-27">
+    <div class="cn">Data warehouse</div><div class="co">Kestrel Finance</div>
+    <div class="cv mono">USD 38,000</div>
+    <div class="cm"><span class="pp mono">0%</span><span class="cd mono">27 Aug</span><span class="latetag">Late</span></div>
+  </div><div class="card" draggable="true" data-v="12000" data-p="0" data-close="2026-07-14">
+    <div class="cn">Survey tool</div><div class="co">Cedar Learning</div>
+    <div class="cv mono">USD 12,000</div>
+    <div class="cm"><span class="pp mono">0%</span><span class="cd mono">14 Jul</span><span class="latetag">Late</span></div>
+  </div></div>
+    <div class="more">+ 2 earlier lost deals</div>
+    <button class="addd" data-stage="lost"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Add deal</button>
+  </div></div>
+</div></main></div><div id="tip"></div><div id="toast"><span id="toast-msg"></span><button id="toast-undo">Undo</button></div>
+<script>
+(function(){
+  var st={over:3,up:8}, undoRow=null, timer=null;
+  function $(i){return document.getElementById(i)}
+  function render(){
+    $('t-over').textContent=st.over;
+    $('t-over').style.color=st.over?'var(--alert-text)':'var(--primary-text)';
+    $('t-over-foot').textContent=st.up+' more due in the next 2 weeks';
+    $('fu-sub').textContent=(st.over+st.up)+' open, tick one to mark it done';
+    var h=$('fu-over-h'); h.textContent='Overdue · '+st.over; h.style.display=st.over?'':'none';
+  }
+  function toast(msg){
+    $('toast-msg').textContent=msg; $('toast').classList.add('show');
+    clearTimeout(timer); timer=setTimeout(function(){$('toast').classList.remove('show')},4000);
+  }
+  document.querySelectorAll('[data-fu] .cb').forEach(function(cb){
+    function go(){
+      var row=cb.closest('[data-fu]'); if(row.classList.contains('done'))return;
+      cb.classList.add('on'); cb.setAttribute('aria-checked','true'); row.classList.add('done');
+      st[row.dataset.over==='1'?'over':'up']--; render(); undoRow=row;
+      setTimeout(function(){ if(row.classList.contains('done')) row.style.display='none'; },700);
+      toast('Follow-up marked done');
+    }
+    cb.addEventListener('click',go);
+    cb.addEventListener('keydown',function(e){ if(e.key===' '||e.key==='Enter'){e.preventDefault();go();} });
+  });
+  $('toast-undo').addEventListener('click',function(){
+    if(!undoRow)return;
+    var cb=undoRow.querySelector('.cb');
+    undoRow.style.display=''; undoRow.classList.remove('done'); cb.classList.remove('on'); cb.setAttribute('aria-checked','false');
+    st[undoRow.dataset.over==='1'?'over':'up']++; render(); undoRow=null; $('toast').classList.remove('show');
+  });
+  var tip=$('tip');
+  document.addEventListener('mouseover',function(e){
+    var t=e.target.closest&&e.target.closest('[data-tip]');
+    if(t){tip.textContent=t.getAttribute('data-tip');tip.style.opacity=1}
+  });
+  document.addEventListener('mousemove',function(e){
+    tip.style.left=(e.clientX+14)+'px'; tip.style.top=(e.clientY-38)+'px';
+  });
+  document.addEventListener('mouseout',function(e){
+    if(e.target.closest&&e.target.closest('[data-tip]'))tip.style.opacity=0;
+  });
+
+  var USUAL={new:5,qualified:20,proposal:40,negotiation:70,won:100,lost:0}, NAMES={new:'New',qualified:'Qualified',proposal:'Proposal',negotiation:'Negotiation',won:'Won',lost:'Lost'};
+  var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], TODAY='2026-11-17';
+  function money(n){return 'USD '+n.toLocaleString('en-US')}
+  function recalc(){
+    var on=0,ov=0,oe=0;
+    document.querySelectorAll('.pcol').forEach(function(col){
+      var st=col.dataset.stage, isOpen=(st!=='won'&&st!=='lost');
+      var n=+col.dataset.extraN, v=+col.dataset.extraV, e=(st==='won')?+col.dataset.extraV:0;
+      col.querySelectorAll('.card').forEach(function(c){
+        var cv=+c.dataset.v, cp=+c.dataset.p, ex=(st==='won')?cv:(st==='lost'?0:Math.round(cv*cp/100));
+        n++; v+=cv; e+=ex;
+        c.querySelector('.pp').textContent=cp+'%';
+        var d=c.dataset.close.split('-'); c.querySelector('.cd').textContent=(+d[2])+' '+MON[+d[1]-1];
+        c.classList.toggle('late', isOpen && c.dataset.close<TODAY);
+      });
+      col.querySelector('.pcn').textContent=n;
+      col.querySelector('.pcv').textContent=money(v);
+      col.querySelector('.pce b').textContent=money(e);
+      if(isOpen){on+=n;ov+=v;oe+=e}
+    });
+    $('ps-n').textContent=on; $('ps-v').textContent=money(ov); $('ps-e').textContent=money(oe);
+  }
+  var dragging=null, fromStage=null;
+  document.querySelectorAll('.card').forEach(function(c){
+    c.addEventListener('dragstart',function(e){dragging=c;fromStage=c.closest('.pcol').dataset.stage;c.classList.add('dragging');e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain','deal')});
+    c.addEventListener('dragend',function(){
+      c.classList.remove('dragging');
+      document.querySelectorAll('.pcol').forEach(function(x){x.classList.remove('over')});
+      var to=c.closest('.pcol').dataset.stage;
+      if(to!==fromStage){
+        c.dataset.p=USUAL[to];
+        if(to==='won'||to==='lost')c.dataset.close=TODAY;
+        toast('Moved from '+NAMES[fromStage]+' to '+NAMES[to]);
+        undoRow=null;
+      }
+      recalc(); dragging=null;
+    });
+  });
+  document.querySelectorAll('.pcol').forEach(function(col){
+    var list=col.querySelector('.plist');
+    col.addEventListener('dragover',function(e){
+      if(!dragging)return; e.preventDefault();
+      document.querySelectorAll('.pcol').forEach(function(x){x.classList.toggle('over',x===col)});
+      var after=null, cards=[].slice.call(list.querySelectorAll('.card:not(.dragging)'));
+      for(var i=0;i<cards.length;i++){var r=cards[i].getBoundingClientRect(); if(e.clientY<r.top+r.height/2){after=cards[i];break}}
+      if(after)list.insertBefore(dragging,after); else list.appendChild(dragging);
+    });
+    col.addEventListener('drop',function(e){e.preventDefault()});
+  });
+  document.querySelectorAll('.addd').forEach(function(b){
+    b.addEventListener('click',function(){toast('The new-deal form opens here, at '+NAMES[b.dataset.stage])});
+  });
+  recalc();
+  function show(page){
+    document.querySelectorAll('.view').forEach(function(v){v.classList.toggle('on',v.id==='v-'+page)});
+    document.querySelectorAll('.nav a').forEach(function(a){a.classList.toggle('on',a.dataset.page===page)});
+    window.scrollTo(0,0);
+  }
+  document.querySelectorAll('[data-page]').forEach(function(a){
+    a.addEventListener('click',function(e){e.preventDefault();show(a.dataset.page)});
+  });
+})();
+</script><script>document.documentElement.dataset.h=document.documentElement.scrollHeight</script></body></html>

@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=1440">
+<title>Dashboard mockup B: Today first</title>
+<style>
+@font-face{font-family:"Instrument Sans";font-weight:400;src:url(fonts/instrument-sans-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:"Instrument Sans";font-weight:500;src:url(fonts/instrument-sans-latin-500-normal.woff2) format("woff2")}
+@font-face{font-family:"Instrument Sans";font-weight:600;src:url(fonts/instrument-sans-latin-600-normal.woff2) format("woff2")}
+@font-face{font-family:"Instrument Sans";font-weight:700;src:url(fonts/instrument-sans-latin-700-normal.woff2) format("woff2")}
+@font-face{font-family:"Instrument Serif";font-weight:400;src:url(fonts/instrument-serif-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:"JetBrains Mono";font-weight:400;src:url(fonts/jetbrains-mono-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:"JetBrains Mono";font-weight:500;src:url(fonts/jetbrains-mono-latin-500-normal.woff2) format("woff2")}
+@font-face{font-family:"JetBrains Mono";font-weight:600;src:url(fonts/jetbrains-mono-latin-600-normal.woff2) format("woff2")}
+:root{
+  --page:#F0F4F5;--panel:#fff;--ink:#073B4C;--muted:#4C7280;--soft:#E6EDEF;
+  --primary:#06D6A0;--secondary:#FFC145;--tertiary:#F78C6B;--info:#118AB2;--alert:#EF476F;--mist:#CDD8DB;
+  --primary-text:#05795B;--info-text:#0E7394;--alert-text:#C2284F;--alert-tint:#FDE6EC;--primary-tint:#DDF8F0;--info-tint:#DCEFF5;--marigold-tint:#FFF1D6;--coral-tint:#FDE7DF;
+  --shadow:0 1px 2px rgba(7,59,76,.06),0 4px 16px rgba(7,59,76,.05);
+}
+*{box-sizing:border-box;margin:0}
+body{font-family:"Instrument Sans",system-ui,sans-serif;font-size:14px;line-height:1.4;color:var(--ink);background:var(--page);-webkit-font-smoothing:antialiased;width:1440px}
+.mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+.app{display:flex;min-height:100vh}
+.side{width:232px;flex:none;background:var(--ink);color:var(--mist);padding:24px 16px;display:flex;flex-direction:column;gap:28px}
+.brand{display:flex;align-items:center;gap:10px;padding:0 8px;color:#fff;font-weight:700;font-size:19px;letter-spacing:-.01em}
+.mark{width:30px;height:30px;border-radius:9px;background:var(--primary);color:var(--ink);display:grid;place-items:center;font-weight:700;font-size:17px}
+.nav{display:flex;flex-direction:column;gap:4px}
+.nav a{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;color:var(--mist);font-weight:500;text-decoration:none}
+.nav a.on{background:var(--primary);color:var(--ink);font-weight:600}
+.side .foot{margin-top:auto;padding:0 8px;font-size:12px;color:#8FA9B2}
+.main{flex:1;padding:32px;min-width:0}
+.top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:24px}
+.date{color:var(--muted);font-size:13px;margin-bottom:2px}
+h1.hello{font-family:"Instrument Serif",serif;font-weight:400;font-size:40px;line-height:1.05;letter-spacing:-.01em}
+.actions{display:flex;gap:10px}
+.btn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:10px;font:600 14px "Instrument Sans",system-ui,sans-serif;border:0;background:var(--panel);color:var(--ink);box-shadow:var(--shadow)}
+.btn.primary{background:var(--primary);color:var(--ink);box-shadow:none}
+.panel{background:var(--panel);border-radius:12px;box-shadow:var(--shadow);padding:22px 24px}
+.ph{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;gap:12px}
+.ph h2{font-size:16px;font-weight:600;letter-spacing:-.005em}
+.ph .sub{font-size:13px;color:var(--muted);margin-top:2px}
+.ph .side-fig{text-align:right}
+.ph .side-fig b{font-family:"JetBrains Mono";font-weight:600;font-size:15px;display:block}
+.ph .side-fig span{font-size:12px;color:var(--muted)}
+.tile{display:flex;flex-direction:column;gap:10px}
+.tile .lab{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:13px;font-weight:500}
+.chip{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;flex:none}
+.chip.green{background:var(--primary-tint);color:var(--primary-text)}
+.chip.blue{background:var(--info-tint);color:var(--info-text)}
+.chip.gold{background:var(--marigold-tint);color:#8A5A00}
+.chip.red{background:var(--alert-tint);color:var(--alert-text)}
+.chip.ink{background:var(--soft);color:var(--ink)}
+.num{font-family:"JetBrains Mono";font-weight:600;font-size:28px;letter-spacing:-.02em;line-height:1}
+.num small{font-size:13px;font-weight:500;color:var(--muted);margin-right:6px;letter-spacing:0}
+.tile .foot{font-size:13px;color:var(--muted)}
+.chart text{font-family:"Instrument Sans"}
+.chart .tick{font-family:"JetBrains Mono";font-size:11px;fill:#4C7280}
+.chart .xl{font-size:12px;fill:#4C7280}
+.tag{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:2px 9px;border-radius:999px}
+.tag i{width:8px;height:8px;border-radius:50%;display:inline-block}
+.fu{display:flex;flex-direction:column}
+.fu h3,.gh{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:10px 0 6px}
+.fu h3.red{color:var(--alert-text)}
+.fi{display:grid;grid-template-columns:20px 1fr auto;gap:12px;align-items:start;padding:10px 0}
+.fi + .fi{margin-top:0}
+.cb{width:18px;height:18px;border-radius:5px;border:2px solid #9DB5BE;margin-top:2px}
+.fi .t{font-weight:600;font-size:14px}
+.fi .m{font-size:12.5px;color:var(--muted);margin-top:1px}
+.fi .m b{color:var(--info-text);font-weight:600}
+.due{font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;white-space:nowrap;background:var(--soft);color:var(--ink)}
+.due.over{background:var(--alert-tint);color:var(--alert-text)}
+.ai{display:grid;grid-template-columns:34px 1fr auto;gap:12px;align-items:center;padding:10px 0}
+.ai .ico{width:34px;height:34px;border-radius:50%;display:grid;place-items:center}
+.ai .d{font-weight:500}
+.ai .m{font-size:12.5px;color:var(--muted);margin-top:1px}
+.ai .m b{color:var(--info-text);font-weight:600}
+.ai .w{font-size:12px;color:var(--muted);white-space:nowrap}
+.k-call{background:var(--info-tint);color:var(--info-text)}
+.k-email{background:var(--marigold-tint);color:#8A5A00}
+.k-note{background:var(--soft);color:var(--ink)}
+.k-stage{background:var(--primary-tint);color:var(--primary-text)}
+
+
+.funnelbars{display:flex;flex-direction:column;gap:14px}
+.fnh{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.fnn{display:flex;align-items:center;gap:8px;font-weight:600}
+.fnn i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.fnv{font-size:12.5px;font-weight:500}
+.fntrack{display:flex;justify-content:center}
+.fnbar{height:20px;border-radius:7px}
+.lostnote{margin-top:16px;padding-top:0;font-size:13px;color:var(--muted);display:flex;justify-content:space-between;background:#F6F9FA;border-radius:10px;padding:10px 12px}
+.lostnote b{font-family:"JetBrains Mono";font-weight:600;color:var(--ink)}
+
+.cols{display:grid;grid-template-columns:764px 360px;gap:20px;align-items:start}
+.stack{display:flex;flex-direction:column;gap:20px}
+.t3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.t2{display:grid;grid-template-columns:372px 372px;gap:20px}
+.hero{background:var(--primary);box-shadow:none}
+.hero .lab{color:#073B4C}
+.hero .chip{background:rgba(255,255,255,.55);color:var(--ink)}
+.hero .num small{color:#073B4C}
+.hero .foot{color:#073B4C}
+.attn{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.attn div{border-radius:10px;padding:14px}
+.attn .a1{background:var(--alert-tint)}
+.attn .a2{background:var(--marigold-tint)}
+.attn b{display:block;font-family:"JetBrains Mono";font-size:30px;font-weight:600;line-height:1}
+.attn .a1 b{color:var(--alert-text)}
+.attn .a2 b{color:#8A5A00}
+.attn span{font-size:12.5px;color:var(--ink)}
+.late{display:flex;flex-direction:column;gap:10px}
+.lc{background:#F6F9FA;border-radius:10px;padding:12px 14px}
+.lc .r1{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.lc .n{font-weight:600}
+.lc .v{font-family:"JetBrains Mono";font-weight:600;font-size:13px}
+.lc .r2{display:flex;justify-content:space-between;align-items:center;margin-top:6px;font-size:12.5px;color:var(--muted)}
+.lc .r2 b{color:var(--info-text);font-weight:600}
+</style></head>
+<body><div class="app">
+<aside class="side">
+  <div class="brand"><span class="mark">A</span>Accountable</div>
+  <nav class="nav">
+    <a class="on" data-page="dashboard"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>Dashboard</a>
+    <a data-page="organizations"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg>Organizations</a>
+    <a data-page="contacts"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Contacts</a>
+    <a data-page="deals"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 18V6"/></svg>Deals</a>
+    <a data-page="pipeline"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 5v11"/><path d="M12 5v6"/><path d="M18 5v14"/></svg>Pipeline</a>
+  </nav>
+  <div class="foot">Data is saved on this computer</div>
+</aside><main class="main">
+
+<div class="top">
+  <div><div class="date">Tuesday 17 November 2026</div><h1 class="hello">Good morning</h1></div>
+  <div class="actions"><button class="btn"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Log activity</button><button class="btn primary"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Add deal</button></div>
+</div>
+<div class="cols">
+  <div class="stack">
+    <div class="t3">
+      
+<div class="panel tile hero" style="">
+  <div class="lab"><span class="chip green"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span>Expected revenue</div>
+  <div class="num" style=""><small>USD</small>260,500</div>
+  <div class="foot">Open pipeline, value times probability</div>
+</div>
+      
+<div class="panel tile " style="">
+  <div class="lab"><span class="chip blue"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 5v11"/><path d="M12 5v6"/><path d="M18 5v14"/></svg></span>Open pipeline</div>
+  <div class="num" style=""><small>USD</small>688,000</div>
+  <div class="foot">20 open deals</div>
+</div>
+      
+<div class="panel tile " style="">
+  <div class="lab"><span class="chip gold"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg></span>Won this month</div>
+  <div class="num" style=""><small>USD</small>45,000</div>
+  <div class="foot">1 deal won in November</div>
+</div>
+    </div>
+    <section class="panel">
+      <div class="ph"><div><h2>Revenue won</h2><div class="sub">Each month, last 12 months</div></div>
+        <div class="side-fig"><b>USD 477,500</b><span>12 deals won</span></div></div>
+      <svg class="chart" width="716" height="290" viewBox="0 0 716 290" role="img" aria-label="Revenue won each month for the last 12 months"><line x1="66" x2="694" y1="256" y2="256" stroke="#E6EDEF"/><text class="tick" x="54" y="260" text-anchor="end">USD 0</text><line x1="66" x2="694" y1="196.5" y2="196.5" stroke="#E6EDEF"/><text class="tick" x="54" y="200.5" text-anchor="end">USD 25k</text><line x1="66" x2="694" y1="137" y2="137" stroke="#E6EDEF"/><text class="tick" x="54" y="141" text-anchor="end">USD 50k</text><line x1="66" x2="694" y1="77.5" y2="77.5" stroke="#E6EDEF"/><text class="tick" x="54" y="81.5" text-anchor="end">USD 75k</text><line x1="66" x2="694" y1="18" y2="18" stroke="#E6EDEF"/><text class="tick" x="54" y="22" text-anchor="end">USD 100k</text><path d="M 66 198.88 C 94.54545454545455 198.88 94.54545454545455 256 123.0909090909091 256 C 151.63636363636363 256 151.63636363636363 211.97 180.1818181818182 211.97 C 208.72727272727275 211.97 208.72727272727275 158.42000000000002 237.27272727272728 158.42000000000002 C 265.8181818181818 158.42000000000002 265.8181818181818 95.35 294.3636363636364 95.35 C 322.9090909090909 95.35 322.9090909090909 179.83999999999997 351.45454545454544 179.83999999999997 C 380 179.83999999999997 380 256 408.54545454545456 256 C 437.0909090909091 256 437.0909090909091 27.52000000000001 465.6363636363636 27.52000000000001 C 494.1818181818182 27.52000000000001 494.1818181818182 190.54999999999998 522.7272727272727 190.54999999999998 C 551.2727272727273 190.54999999999998 551.2727272727273 132.24 579.8181818181819 132.24 C 608.3636363636364 132.24 608.3636363636364 79.88 636.9090909090909 79.88 C 665.4545454545455 79.88 665.4545454545455 148.9 694 148.9 L 694 256 L 66 256 Z" fill="#06D6A0" opacity=".13"/><path d="M 66 198.88 C 94.54545454545455 198.88 94.54545454545455 256 123.0909090909091 256 C 151.63636363636363 256 151.63636363636363 211.97 180.1818181818182 211.97 C 208.72727272727275 211.97 208.72727272727275 158.42000000000002 237.27272727272728 158.42000000000002 C 265.8181818181818 158.42000000000002 265.8181818181818 95.35 294.3636363636364 95.35 C 322.9090909090909 95.35 322.9090909090909 179.83999999999997 351.45454545454544 179.83999999999997 C 380 179.83999999999997 380 256 408.54545454545456 256 C 437.0909090909091 256 437.0909090909091 27.52000000000001 465.6363636363636 27.52000000000001 C 494.1818181818182 27.52000000000001 494.1818181818182 190.54999999999998 522.7272727272727 190.54999999999998 C 551.2727272727273 190.54999999999998 551.2727272727273 132.24 579.8181818181819 132.24 C 608.3636363636364 132.24 608.3636363636364 79.88 636.9090909090909 79.88 C 665.4545454545455 79.88 665.4545454545455 148.9 694 148.9" fill="none" stroke="#06D6A0" stroke-width="3" stroke-linecap="round"/><circle cx="66" cy="198.88" r="4" fill="#fff" stroke="#06D6A0" stroke-width="2.5"/><circle cx="123.0909090909091" cy="256" r="4" fill="#fff" stroke="#06D6A0" stroke-width="2.5"/><circle cx="180.1818181818182" cy="211.97" r="4" fill="#fff" stroke="#06D6A0" stroke-width="2.5"/><circle cx="237.27272727272728" cy="158.42000000000002" r="4" fill="#fff" stroke="#06D6A0" stroke-width="2.5"/><circle cx="294.3636363636364" cy="95.35" r="4" fill="#fff" stroke="#06D6A0" stroke-width="2.5"/><circle cx="351.45454545454544" cy="179.83999999999997" r="4" fill="#fff" stroke="#06D6A0" stroke-width="2.5"/><circle cx="408.54545454545456" cy="256" r="4" fill="#fff" stroke="#06D6A0" stroke-width="2.5"/><circle cx="465.6363636363636" cy="27.52000000000001" r="4" fill="#fff" stroke="#06D6A0" stroke-width="2.5"/><circle cx="522.7272727272727" cy="190.54999999999998" r="4" fill="#fff" stroke="#06D6A0" stroke-width="2.5"/><circle cx="579.8181818181819" cy="132.24" r="4" fill="#fff" stroke="#06D6A0" stroke-width="2.5"/><circle cx="636.9090909090909" cy="79.88" r="4" fill="#fff" stroke="#06D6A0" stroke-width="2.5"/><circle cx="694" cy="148.9" r="6" fill="#06D6A0" stroke="#fff" stroke-width="3"/><circle data-tip="Dec · USD 24,000" cx="66" cy="198.88" r="14" fill="transparent"/><circle data-tip="Jan · USD 0" cx="123.0909090909091" cy="256" r="14" fill="transparent"/><circle data-tip="Feb · USD 18,500" cx="180.1818181818182" cy="211.97" r="14" fill="transparent"/><circle data-tip="Mar · USD 41,000" cx="237.27272727272728" cy="158.42000000000002" r="14" fill="transparent"/><circle data-tip="Apr · USD 67,500" cx="294.3636363636364" cy="95.35" r="14" fill="transparent"/><circle data-tip="May · USD 32,000" cx="351.45454545454544" cy="179.83999999999997" r="14" fill="transparent"/><circle data-tip="Jun · USD 0" cx="408.54545454545456" cy="256" r="14" fill="transparent"/><circle data-tip="Jul · USD 96,000" cx="465.6363636363636" cy="27.52000000000001" r="14" fill="transparent"/><circle data-tip="Aug · USD 27,500" cx="522.7272727272727" cy="190.54999999999998" r="14" fill="transparent"/><circle data-tip="Sep · USD 52,000" cx="579.8181818181819" cy="132.24" r="14" fill="transparent"/><circle data-tip="Oct · USD 74,000" cx="636.9090909090909" cy="79.88" r="14" fill="transparent"/><circle data-tip="Nov · USD 45,000" cx="694" cy="148.9" r="14" fill="transparent"/><rect x="582" y="164.9" width="124" height="30" rx="8" fill="#073B4C"/><text x="644" y="184.9" text-anchor="middle" font-family="JetBrains Mono" font-weight="600" font-size="12" fill="#fff">USD 45,000</text><text class="xl" x="66" y="280" text-anchor="middle">Dec</text><text class="xl" x="123.0909090909091" y="280" text-anchor="middle">Jan</text><text class="xl" x="180.1818181818182" y="280" text-anchor="middle">Feb</text><text class="xl" x="237.27272727272728" y="280" text-anchor="middle">Mar</text><text class="xl" x="294.3636363636364" y="280" text-anchor="middle">Apr</text><text class="xl" x="351.45454545454544" y="280" text-anchor="middle">May</text><text class="xl" x="408.54545454545456" y="280" text-anchor="middle">Jun</text><text class="xl" x="465.6363636363636" y="280" text-anchor="middle">Jul</text><text class="xl" x="522.7272727272727" y="280" text-anchor="middle">Aug</text><text class="xl" x="579.8181818181819" y="280" text-anchor="middle">Sep</text><text class="xl" x="636.9090909090909" y="280" text-anchor="middle">Oct</text><text class="xl" x="694" y="280" text-anchor="middle">Nov</text></svg>
+    </section>
+    <div class="t2">
+      <section class="panel">
+        <div class="ph"><div><h2>Deals won</h2><div class="sub">Number of deals each month</div></div></div>
+        <svg class="chart" width="324" height="330" viewBox="0 0 324 330" role="img" aria-label="Deals won each month for the last 12 months"><line x1="34" x2="302" y1="296" y2="296" stroke="#E6EDEF"/><text class="tick" x="22" y="300" text-anchor="end">0</text><line x1="34" x2="302" y1="158" y2="158" stroke="#E6EDEF"/><text class="tick" x="22" y="162" text-anchor="end">1</text><line x1="34" x2="302" y1="20" y2="20" stroke="#E6EDEF"/><text class="tick" x="22" y="24" text-anchor="end">2</text><path d="M 37.666666666666664 296 V 165 Q 37.666666666666664 158 44.666666666666664 158 H 45.666666666666664 Q 52.666666666666664 158 52.666666666666664 165 V 296 Z" fill="#118AB2"/><text class="tick" x="45.166666666666664" y="151" text-anchor="middle" style="fill:#073B4C;font-weight:600">1</text><rect x="60" y="293" width="15" height="3" rx="1.5" fill="#CDD8DB"/><path d="M 82.33333333333333 296 V 165 Q 82.33333333333333 158 89.33333333333333 158 H 90.33333333333333 Q 97.33333333333333 158 97.33333333333333 165 V 296 Z" fill="#118AB2"/><text class="tick" x="89.83333333333333" y="151" text-anchor="middle" style="fill:#073B4C;font-weight:600">1</text><path d="M 104.66666666666667 296 V 165 Q 104.66666666666667 158 111.66666666666667 158 H 112.66666666666667 Q 119.66666666666667 158 119.66666666666667 165 V 296 Z" fill="#118AB2"/><text class="tick" x="112.16666666666667" y="151" text-anchor="middle" style="fill:#073B4C;font-weight:600">1</text><path d="M 127 296 V 27 Q 127 20 134 20 H 135 Q 142 20 142 27 V 296 Z" fill="#118AB2"/><text class="tick" x="134.5" y="13" text-anchor="middle" style="fill:#073B4C;font-weight:600">2</text><path d="M 149.33333333333331 296 V 165 Q 149.33333333333331 158 156.33333333333331 158 H 157.33333333333331 Q 164.33333333333331 158 164.33333333333331 165 V 296 Z" fill="#118AB2"/><text class="tick" x="156.83333333333331" y="151" text-anchor="middle" style="fill:#073B4C;font-weight:600">1</text><rect x="171.66666666666666" y="293" width="15" height="3" rx="1.5" fill="#CDD8DB"/><path d="M 193.99999999999997 296 V 27 Q 193.99999999999997 20 200.99999999999997 20 H 201.99999999999997 Q 208.99999999999997 20 208.99999999999997 27 V 296 Z" fill="#118AB2"/><text class="tick" x="201.49999999999997" y="13" text-anchor="middle" style="fill:#073B4C;font-weight:600">2</text><path d="M 216.33333333333331 296 V 165 Q 216.33333333333331 158 223.33333333333331 158 H 224.33333333333331 Q 231.33333333333331 158 231.33333333333331 165 V 296 Z" fill="#118AB2"/><text class="tick" x="223.83333333333331" y="151" text-anchor="middle" style="fill:#073B4C;font-weight:600">1</text><path d="M 238.66666666666666 296 V 165 Q 238.66666666666666 158 245.66666666666666 158 H 246.66666666666666 Q 253.66666666666666 158 253.66666666666666 165 V 296 Z" fill="#118AB2"/><text class="tick" x="246.16666666666666" y="151" text-anchor="middle" style="fill:#073B4C;font-weight:600">1</text><path d="M 261 296 V 165 Q 261 158 268 158 H 269 Q 276 158 276 165 V 296 Z" fill="#118AB2"/><text class="tick" x="268.5" y="151" text-anchor="middle" style="fill:#073B4C;font-weight:600">1</text><path d="M 283.3333333333333 296 V 165 Q 283.3333333333333 158 290.3333333333333 158 H 291.3333333333333 Q 298.3333333333333 158 298.3333333333333 165 V 296 Z" fill="#118AB2"/><text class="tick" x="290.8333333333333" y="151" text-anchor="middle" style="fill:#073B4C;font-weight:600">1</text><rect data-tip="Dec · 1 deal won" x="34" y="20" width="22.333333333333332" height="276" fill="transparent"/><rect data-tip="Jan · 0 deals won" x="56.333333333333336" y="20" width="22.333333333333332" height="276" fill="transparent"/><rect data-tip="Feb · 1 deal won" x="78.66666666666666" y="20" width="22.333333333333332" height="276" fill="transparent"/><rect data-tip="Mar · 1 deal won" x="101" y="20" width="22.333333333333332" height="276" fill="transparent"/><rect data-tip="Apr · 2 deals won" x="123.33333333333333" y="20" width="22.333333333333332" height="276" fill="transparent"/><rect data-tip="May · 1 deal won" x="145.66666666666666" y="20" width="22.333333333333332" height="276" fill="transparent"/><rect data-tip="Jun · 0 deals won" x="168" y="20" width="22.333333333333332" height="276" fill="transparent"/><rect data-tip="Jul · 2 deals won" x="190.33333333333331" y="20" width="22.333333333333332" height="276" fill="transparent"/><rect data-tip="Aug · 1 deal won" x="212.66666666666666" y="20" width="22.333333333333332" height="276" fill="transparent"/><rect data-tip="Sep · 1 deal won" x="235" y="20" width="22.333333333333332" height="276" fill="transparent"/><rect data-tip="Oct · 1 deal won" x="257.3333333333333" y="20" width="22.333333333333332" height="276" fill="transparent"/><rect data-tip="Nov · 1 deal won" x="279.66666666666663" y="20" width="22.333333333333332" height="276" fill="transparent"/><text class="xl" x="45.166666666666664" y="320" text-anchor="middle">Dec</text><text class="xl" x="89.83333333333333" y="320" text-anchor="middle">Feb</text><text class="xl" x="134.5" y="320" text-anchor="middle">Apr</text><text class="xl" x="179.16666666666666" y="320" text-anchor="middle">Jun</text><text class="xl" x="223.83333333333331" y="320" text-anchor="middle">Aug</text><text class="xl" x="268.5" y="320" text-anchor="middle">Oct</text></svg>
+      </section>
+      <section class="panel">
+        <div class="ph"><div><h2>Sales funnel</h2><div class="sub">Value that reaches each stage</div></div></div>
+        <div class="funnelbars">
+  <div class="fn">
+    <div class="fnh"><span class="fnn"><i style="background:#118AB2"></i>New</span><span class="mono fnv">USD 1,165,500</span></div>
+    <div class="fntrack"><div class="fnbar" style="width:100.0%;background:#118AB2"></div></div>
+  </div>
+  <div class="fn">
+    <div class="fnh"><span class="fnn"><i style="background:#FFC145"></i>Qualified</span><span class="mono fnv">USD 1,053,500</span></div>
+    <div class="fntrack"><div class="fnbar" style="width:90.4%;background:#FFC145"></div></div>
+  </div>
+  <div class="fn">
+    <div class="fnh"><span class="fnn"><i style="background:#F78C6B"></i>Proposal</span><span class="mono fnv">USD 895,500</span></div>
+    <div class="fntrack"><div class="fnbar" style="width:76.8%;background:#F78C6B"></div></div>
+  </div>
+  <div class="fn">
+    <div class="fnh"><span class="fnn"><i style="background:#06D6A0"></i>Negotiation</span><span class="mono fnv">USD 664,500</span></div>
+    <div class="fntrack"><div class="fnbar" style="width:57.0%;background:#06D6A0"></div></div>
+  </div>
+  <div class="fn">
+    <div class="fnh"><span class="fnn"><i style="background:#073B4C"></i>Won</span><span class="mono fnv">USD 477,500</span></div>
+    <div class="fntrack"><div class="fnbar" style="width:41.0%;background:#073B4C"></div></div>
+  </div></div>
+        <div class="lostnote"><span>Lost, not counted</span><b>USD 96,000</b></div>
+      </section>
+    </div>
+    <section class="panel">
+      <div class="ph"><div><h2>Recent activity</h2><div class="sub">Notes, calls, emails and stage changes</div></div></div>
+      <div>
+  <div class="ai">
+    <span class="ico k-stage"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/></svg></span>
+    <div><div class="d">Moved from Proposal to Negotiation</div><div class="m"><b>Harbor Retail</b> · POS rollout</div></div>
+    <span class="w mono">2 hours ago</span>
+  </div>
+  <div class="ai">
+    <span class="ico k-call"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
+    <div><div class="d">Call with Priya Nair: she wants a fixed fee for the revised scope</div><div class="m"><b>Helix Health</b> · Clinic scheduling suite</div></div>
+    <span class="w mono">Today, 09:15</span>
+  </div>
+  <div class="ai">
+    <span class="ico k-stage"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/></svg></span>
+    <div><div class="d">Moved from Negotiation to Won</div><div class="m"><b>Atlas Freight</b> · Dock scheduling</div></div>
+    <span class="w mono">Yesterday, 14:05</span>
+  </div>
+  <div class="ai">
+    <span class="ico k-email"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span>
+    <div><div class="d">Sent answers to the security questionnaire</div><div class="m"><b>Orbit Energy</b> · Grid monitoring rollout</div></div>
+    <span class="w mono">Yesterday, 16:40</span>
+  </div>
+  <div class="ai">
+    <span class="ico k-note"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg></span>
+    <div><div class="d">Budget confirmed for Q1, needs board sign-off</div><div class="m"><b>Kestrel Finance</b> · Compliance platform</div></div>
+    <span class="w mono">Yesterday, 11:20</span>
+  </div>
+  <div class="ai">
+    <span class="ico k-stage"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/></svg></span>
+    <div><div class="d">Moved from Qualified to Proposal</div><div class="m"><b>Marlow Manufacturing</b> · Plant analytics</div></div>
+    <span class="w mono">Yesterday, 09:30</span>
+  </div>
+  <div class="ai">
+    <span class="ico k-call"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
+    <div><div class="d">Intro call, interested in the route optimizer</div><div class="m"><b>Northwind Logistics</b> · Route optimizer</div></div>
+    <span class="w mono">Fri 13 Nov</span>
+  </div>
+  <div class="ai">
+    <span class="ico k-email"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span>
+    <div><div class="d">Sent proposal version 2</div><div class="m"><b>Cedar Learning</b> · Course platform</div></div>
+    <span class="w mono">Fri 13 Nov</span>
+  </div></div>
+    </section>
+  </div>
+  <div class="stack">
+    <section class="panel">
+      <div class="ph"><div><h2>Needs attention</h2><div class="sub">Things that are past their date</div></div></div>
+      <div class="attn">
+        <div class="a1"><b>3</b><span>Overdue follow-ups</span></div>
+        <div class="a2"><b>3</b><span>Deals running late</span></div>
+      </div>
+    </section>
+    <section class="panel">
+      <div class="ph"><div><h2>Follow-ups</h2><div class="sub">11 open, tick one to mark it done</div></div></div>
+      <div class="fu"><h3 class="red" id="fu-over-h">Overdue · 3</h3>
+  <div class="fi" data-fu data-over="1">
+    <span class="cb" role="checkbox" aria-checked="false" tabindex="0"></span>
+    <div><div class="t">Send revised proposal</div><div class="m"><b>Helix Health</b> · Clinic scheduling suite</div></div>
+    <span class="due over">5 days overdue</span>
+  </div>
+  <div class="fi" data-fu data-over="1">
+    <span class="cb" role="checkbox" aria-checked="false" tabindex="0"></span>
+    <div><div class="t">Call back about security review</div><div class="m"><b>Orbit Energy</b> · Grid monitoring rollout</div></div>
+    <span class="due over">4 days overdue</span>
+  </div>
+  <div class="fi" data-fu data-over="1">
+    <span class="cb" role="checkbox" aria-checked="false" tabindex="0"></span>
+    <div><div class="t">Confirm contract terms</div><div class="m"><b>Kestrel Finance</b> · Compliance platform</div></div>
+    <span class="due over">1 day overdue</span>
+  </div><h3>Upcoming</h3>
+  <div class="fi" data-fu data-over="0">
+    <span class="cb" role="checkbox" aria-checked="false" tabindex="0"></span>
+    <div><div class="t">Demo for the finance team</div><div class="m"><b>Brightline Software</b> · Billing integration</div></div>
+    <span class="due">Tomorrow</span>
+  </div>
+  <div class="fi" data-fu data-over="0">
+    <span class="cb" role="checkbox" aria-checked="false" tabindex="0"></span>
+    <div><div class="t">Share the plant case study</div><div class="m"><b>Marlow Manufacturing</b> · Plant analytics</div></div>
+    <span class="due">Thu 19 Nov</span>
+  </div>
+  <div class="fi" data-fu data-over="0">
+    <span class="cb" role="checkbox" aria-checked="false" tabindex="0"></span>
+    <div><div class="t">Check in after pilot week</div><div class="m"><b>Northwind Logistics</b> · Route optimizer</div></div>
+    <span class="due">Fri 20 Nov</span>
+  </div>
+  <div class="fi" data-fu data-over="0">
+    <span class="cb" role="checkbox" aria-checked="false" tabindex="0"></span>
+    <div><div class="t">Send pricing options</div><div class="m"><b>Cedar Learning</b> · Course platform</div></div>
+    <span class="due">Tue 24 Nov</span>
+  </div>
+  <div class="fi" data-fu data-over="0">
+    <span class="cb" role="checkbox" aria-checked="false" tabindex="0"></span>
+    <div><div class="t">Book the kickoff call</div><div class="m"><b>Harbor Retail</b> · POS rollout</div></div>
+    <span class="due">Thu 26 Nov</span>
+  </div></div>
+    </section>
+    <section class="panel">
+      <div class="ph"><div><h2>Late deals</h2><div class="sub">Still open after their close date</div></div></div>
+      <div class="late"><div class="lc"><div class="r1"><span class="n">Grid monitoring rollout</span><span class="v">USD 85,000</span></div>
+        <div class="r2"><span><b>Orbit Energy</b> · due 2 Nov</span><span class="due over">15 days late</span></div></div><div class="lc"><div class="r1"><span class="n">Compliance platform</span><span class="v">USD 62,000</span></div>
+        <div class="r2"><span><b>Kestrel Finance</b> · due 9 Nov</span><span class="due over">8 days late</span></div></div><div class="lc"><div class="r1"><span class="n">Clinic scheduling suite</span><span class="v">USD 48,000</span></div>
+        <div class="r2"><span><b>Helix Health</b> · due 6 Nov</span><span class="due over">11 days late</span></div></div></div>
+    </section>
+  </div>
+</div></main></div><script>document.documentElement.dataset.h=document.documentElement.scrollHeight</script></body></html>
