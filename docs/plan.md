@@ -55,7 +55,7 @@ Everything is new except `.gitignore` and `docs/STATUS.md`. `README.md` is the c
 
 ## Order of work
 
-Eight phases. Each is small enough to finish and check on its own. Don't start a phase until the one before it passes.
+Nine phases, numbered 0 to 8. Each is small enough to finish and check on its own. Don't start a phase until the one before it passes.
 
 ### Phase 0: Foundation
 
