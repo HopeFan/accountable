@@ -148,6 +148,7 @@ Each is testable. "R" numbers are for the build plan and tests.
 - R12. **Sales funnel**: for each stage from New to Won, the value of non-lost deals at that stage or later (concern 5), with a plain note giving the value of Lost deals.
 - R13. **Recent activity**: the latest 10 activities of all types, including stage changes, each linking to its deal or contact.
 - R14. **Follow-ups**: open follow-ups, overdue ones first and marked in Raspberry, then upcoming by date. Each has a checkbox that marks it done and removes it from the list at once, and a link to its deal or contact.
+- R9a. **Open pipeline by stage**: a strip under the tiles with one block per open stage (New to Negotiation), as wide as its share of the open value. Each block shows the stage, its deal count and its value. A slim bar below shows the stage's probability of close, with the expected revenue it stands for.
 - R15. Every figure comes from `GET /dashboard`, and it refreshes after any change anywhere in the app.
 
 ### Organizations
@@ -219,7 +220,7 @@ Defined once as CSS variables, which Tailwind reads, so a dark theme can be adde
 | `--page` | `#F0F4F5` | page background |
 | `--panel` | `#FFFFFF` | panels, cards, dialogs |
 | `--ink` | Midnight `#073B4C` | text |
-| `--ink-muted` | Midnight at about 65% | secondary text, checked for 4.5:1 on white |
+| `--ink-muted` | `#4C7280` (Midnight at about 72%) | secondary text, 5.2:1 on white |
 | `--primary` | Sea Green `#06D6A0` | primary buttons (Midnight text), selected nav, Won |
 | `--secondary` | Marigold `#FFC145` | highlights (Midnight text) |
 | `--tertiary` | Coral `#F78C6B` | highlights (Midnight text) |
@@ -259,13 +260,13 @@ Revenue line: Sea Green. Deals bars: Cerulean. Funnel bars: the stage colors. Al
 
 ### Screens
 
-**Dashboard.** Top: a greeting line in Instrument Serif and today's date. Then the four figure tiles in a row. Under them, a two-thirds and one-third row: the revenue line chart next to the funnel. Then the deals-won bar chart next to the follow-ups list. The recent activity list sits at the bottom, full width.
+**Dashboard.** The chosen design is mockup A, `docs/mockups/dashboard-a-overview.html` (screenshot beside it). Top: a greeting line in Instrument Serif and today's date. Then the four figure tiles in a row, and under them the open pipeline by stage strip. Then a two-thirds and one-third row: the revenue line chart next to the funnel. Then the deals-won bar chart next to the follow-ups list. The recent activity list sits at the bottom, full width.
 
 **Table pages.** Heading and Add button, a toolbar with the search box (and the status filter on Contacts), then a white panel with the table. Rows are 48px, the header text is small and muted, numbers are right-aligned in mono. The row menu is a three-dot button.
 
 **Record pages.** A header with the name, its tags (status or stage) and Edit and Delete. Below, two columns: details and linked records on the left, the timeline and Log activity on the right. Timeline items have a type icon in a colored circle.
 
-**Pipeline.** A summary strip across the top, then six columns of equal width that fit a laptop without sideways scrolling, each with a stage-colored dot in its header. Cards are white with rounded corners and a soft shadow, lifting and tilting slightly while dragged. The column a card would drop into is tinted, and a thin Midnight marker shows the exact drop place.
+**Pipeline.** The chosen design is in `docs/mockups/dashboard-a-overview.html` (click Pipeline), with a screenshot in `docs/mockups/dashboard-a-pipeline.png`. A summary strip across the top (open deals, total value, expected revenue), then six columns of equal width that fit a laptop without sideways scrolling, each with a stage-colored dot in its header. Each column sits on a pale Sea Mist lane and its header shows the stage name, deal count, total value and expected revenue. Cards show the deal name, organization, value, probability and close date, and a late deal has its date in Raspberry with a "Late" tag. Cards are white with rounded corners and a soft shadow, lifting and tilting slightly while dragged. The column a card would drop into is tinted in Sea Green. After a stage change a short message says "Moved from X to Y". Won and Lost show their most recent cards and a count of the earlier ones. Each column ends with an Add deal button.
 
 **Dialogs and forms.** Centered, 480 to 560px, one column of fields, Cancel on the left of the actions and the primary action on the right. Primary buttons are Sea Green with Midnight text; destructive ones are Raspberry with white text.
 
