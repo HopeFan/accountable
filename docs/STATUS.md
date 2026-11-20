@@ -12,6 +12,7 @@ The MVP is built, phases 0 to 8 of `docs/changes/mvp/plan.md`. All tests and `np
 - **Tests**: 67 backend (pytest, 97% coverage), 152 frontend (Vitest, 85% branch coverage), 32 end-to-end (Playwright with Chrome).
 - **Checks**: `npm run check` runs Prettier, ESLint (TypeScript, React Hooks, accessibility, complexity 15), ruff (including complexity 15), tsc, ty, gitleaks and all tests with at least 80% unit coverage. `npm run check:quick` skips the end-to-end tests and `npm run format` fixes formatting. The existing code was brought up to these rules without weakening any of them.
 - **Hooks**: a lefthook pre-commit hook (`lefthook.yml`) first fails the commit if it changes anything outside `docs/` without also updating `docs/STATUS.md`, then formats the staged files and runs lint, types and gitleaks, without the tests. It refuses to run if gitleaks isn't installed and says how to install it. Two Claude Code hooks in `.claude/settings.json` run scripts from `scripts/`: `agent-check-on-stop.mjs` runs `npm run check:quick` when a turn ends and sends a failure back once, then lets the agent stop, and `agent-guard-env.mjs` blocks reading or editing the secrets file, including shell commands that name it. `npm install` sets up the git hook.
+- **CI** (`.github/workflows/ci.yml`): one job, `check`, on every push to any branch. It installs a pinned gitleaks (checksum verified) and scans the repo first, then installs Node 26 and the latest uv, and runs `npm run check` with the runner's Google Chrome. If it fails, the Playwright report is uploaded. It uses no secrets.
 - **Pipeline fix**: if loading deals fails, the Pipeline page now shows the error with a retry button instead of a skeleton forever. Its drag logic moved into pure functions in `boardMath.ts` so it can be unit tested.
 
 ## How to run
@@ -41,7 +42,7 @@ npm run dev      # API on :8000, app on http://localhost:5173
 
 - TypeScript is pinned to 6.0.3 because typescript-eslint doesn't support 7 yet (it needs below 6.1). Move back to 7 once it does.
 - ESLint shows one warning, `react-hooks/incompatible-library` for TanStack Table's `useReactTable` in `DataTable.tsx`. It comes from the library and doesn't fail the check. Revisit if the library or plugin changes.
-- CI (a GitHub Actions workflow) is the next step of the harness and isn't added yet.
+- CI has been written but not yet run on GitHub. Push the branch to the fork and watch the Actions tab until it passes.
 - The pipeline's keyboard move is tested only end to end, because jsdom can't measure the layout it needs.
 
 - The by-eye pass in a real browser (success criterion 8) by a person, with the console open. Screenshots of every screen are written to `test-results/screens/` by the end-to-end run.
