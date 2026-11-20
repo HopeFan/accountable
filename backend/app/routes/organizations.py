@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Response
-from sqlalchemy import func, insert, select, update
+from sqlalchemy import func, select, update
 
 from .. import clock, rules
 from ..common import (
@@ -7,6 +7,7 @@ from ..common import (
     execute_delete,
     field_error,
     get_or_404,
+    insert_row,
     plan_delete,
     preview,
     serialize_contact,
@@ -29,12 +30,16 @@ def _check_unique(conn, name: str, exclude_id: int | None = None) -> None:
 def _with_counts(conn, rows) -> list[dict]:
     contacts = dict(
         conn.execute(
-            select(contact.c.organization_id, func.count()).group_by(contact.c.organization_id)
+            select(contact.c.organization_id, func.count()).group_by(
+                contact.c.organization_id
+            )
         ).all()
     )
     open_deals: dict[int, list[int]] = {}
     for r in conn.execute(
-        select(deal.c.organization_id, deal.c.value).where(deal.c.stage.in_(rules.OPEN_STAGES))
+        select(deal.c.organization_id, deal.c.value).where(
+            deal.c.stage.in_(rules.OPEN_STAGES)
+        )
     ):
         open_deals.setdefault(r[0], []).append(r[1])
     out = []
@@ -50,7 +55,11 @@ def _with_counts(conn, rows) -> list[dict]:
 @router.get("")
 def list_organizations():
     with get_engine().connect() as conn:
-        rows = conn.execute(select(organization).order_by(func.lower(organization.c.name))).mappings().all()
+        rows = (
+            conn.execute(select(organization).order_by(func.lower(organization.c.name)))
+            .mappings()
+            .all()
+        )
         return _with_counts(conn, rows)
 
 
@@ -58,7 +67,7 @@ def list_organizations():
 def create_organization(body: OrganizationIn):
     with get_engine().begin() as conn:
         _check_unique(conn, body.name)
-        new_id = conn.execute(insert(organization).values(**body.model_dump())).inserted_primary_key[0]
+        new_id = insert_row(conn, organization, body.model_dump())
         row = get_or_404(conn, organization, new_id, "Organization")
         return _with_counts(conn, [row])[0]
 
@@ -69,7 +78,9 @@ def get_organization(org_id: int):
         row = get_or_404(conn, organization, org_id, "Organization")
         out = _with_counts(conn, [row])[0]
         contacts = conn.execute(
-            select(contact).where(contact.c.organization_id == org_id).order_by(contact.c.last_name, contact.c.first_name)
+            select(contact)
+            .where(contact.c.organization_id == org_id)
+            .order_by(contact.c.last_name, contact.c.first_name)
         ).mappings()
         out["contacts"] = [serialize_contact(c, row["name"]) for c in contacts]
         out["deals"] = all_deals(conn, deal.c.organization_id == org_id)
@@ -87,7 +98,11 @@ def update_organization(org_id: int, body: OrganizationPatch):
         if "name" in changes:
             _check_unique(conn, changes["name"], org_id)
         if changes:
-            conn.execute(update(organization).where(organization.c.id == org_id).values(**changes))
+            conn.execute(
+                update(organization)
+                .where(organization.c.id == org_id)
+                .values(**changes)
+            )
         row = get_or_404(conn, organization, org_id, "Organization")
         return _with_counts(conn, [row])[0]
 
@@ -100,8 +115,7 @@ def delete_preview(org_id: int):
 
 @router.delete("/{org_id}", status_code=204)
 def delete_organization(org_id: int):
-    with write_lock:
-        with get_engine().begin() as conn:
-            plan = plan_delete(conn, "organization", org_id)
-            execute_delete(conn, "organization", org_id, plan)
+    with write_lock, get_engine().begin() as conn:
+        plan = plan_delete(conn, "organization", org_id)
+        execute_delete(conn, "organization", org_id, plan)
     return Response(status_code=204)

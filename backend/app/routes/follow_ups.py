@@ -9,7 +9,7 @@ router = APIRouter(prefix="/follow-ups", tags=["follow-ups"])
 def open_follow_ups(conn) -> list[dict]:
     rows = activities(
         conn,
-        activity.c.follow_up_date.is_not(None) & (activity.c.follow_up_done == False),  # noqa: E712
+        activity.c.follow_up_date.is_not(None) & (activity.c.follow_up_done == False),
     )
     return sorted(rows, key=lambda r: (r["follow_up_date"], r["id"]))
 

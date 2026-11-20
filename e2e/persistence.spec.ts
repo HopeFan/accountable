@@ -7,15 +7,31 @@ const ROOT = path.resolve(__dirname, "..");
 const PORT = 8101;
 const DB = path.join(ROOT, "data", "e2e-persist.db");
 const BASE = `http://127.0.0.1:${PORT}`;
-const env = { ...process.env, ACCOUNTABLE_DB: DB, ACCOUNTABLE_TODAY: TEST_TODAY };
+const env = {
+  ...process.env,
+  ACCOUNTABLE_DB: DB,
+  ACCOUNTABLE_TODAY: TEST_TODAY,
+};
 
 async function start(): Promise<ChildProcess> {
-  const child = spawn("uv", ["run", "uvicorn", "app.main:app", "--app-dir", "backend", "--port", String(PORT)], {
-    cwd: ROOT,
-    env,
-    stdio: "ignore",
-    detached: true,
-  });
+  const child = spawn(
+    "uv",
+    [
+      "run",
+      "uvicorn",
+      "app.main:app",
+      "--app-dir",
+      "backend",
+      "--port",
+      String(PORT),
+    ],
+    {
+      cwd: ROOT,
+      env,
+      stdio: "ignore",
+      detached: true,
+    },
+  );
   for (let i = 0; i < 100; i++) {
     try {
       if ((await fetch(`${BASE}/api/health`)).ok) return child;
@@ -32,14 +48,21 @@ async function stop(child: ChildProcess) {
   await new Promise((r) => setTimeout(r, 800));
 }
 
-test("changes survive a restart, and the reset command brings the sample data back", async ({ page }) => {
+test("changes survive a restart, and the reset command brings the sample data back", async ({
+  page,
+}) => {
   resetData(DB);
   let server = await start();
   try {
     await page.goto(`${BASE}/organizations`);
-    await page.getByRole("button", { name: "Add organization" }).first().click();
+    await page
+      .getByRole("button", { name: "Add organization" })
+      .first()
+      .click();
     await dialog(page).getByLabel("Name").fill("Persistent Partners");
-    await dialog(page).getByRole("button", { name: "Add organization" }).click();
+    await dialog(page)
+      .getByRole("button", { name: "Add organization" })
+      .click();
     await expect(page.getByText("Organization added")).toBeVisible();
 
     await page.goto(`${BASE}/deals`);
@@ -51,17 +74,24 @@ test("changes survive a restart, and the reset command brings the sample data ba
     server = await start();
 
     await page.goto(`${BASE}/organizations`);
-    await expect(page.getByRole("link", { name: "Persistent Partners" })).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: "Persistent Partners" }),
+    ).toBeVisible();
     await expect(page.locator("tbody tr")).toHaveCount(13);
     await page.goto(`${BASE}/deals`);
     await page.getByRole("searchbox").fill("Dispatch");
     await expect(page.locator("tbody tr")).toContainText("Negotiation");
 
     // the reset command brings the sample data back
-    execFileSync("uv", ["run", "python", "backend/seed_cli.py"], { cwd: ROOT, env });
+    execFileSync("uv", ["run", "python", "backend/seed_cli.py"], {
+      cwd: ROOT,
+      env,
+    });
     await page.goto(`${BASE}/organizations`);
     await expect(page.locator("tbody tr")).toHaveCount(12);
-    await expect(page.getByRole("link", { name: "Persistent Partners" })).toHaveCount(0);
+    await expect(
+      page.getByRole("link", { name: "Persistent Partners" }),
+    ).toHaveCount(0);
     await page.goto(`${BASE}/deals`);
     await page.getByRole("searchbox").fill("Dispatch");
     await expect(page.locator("tbody tr")).toContainText("Proposal");

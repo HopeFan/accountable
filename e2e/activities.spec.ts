@@ -1,6 +1,11 @@
 import { dialog, expect, test, type Page } from "./fixtures";
 
-async function logActivity(page: Page, type: "note" | "call" | "email", description: string, followUp?: string) {
+async function logActivity(
+  page: Page,
+  type: "note" | "call" | "email",
+  description: string,
+  followUp?: string,
+) {
   await page.getByRole("button", { name: "Log activity" }).click();
   await dialog(page).getByLabel("Type").selectOption(type);
   await dialog(page).getByLabel("What happened").fill(description);
@@ -9,9 +14,12 @@ async function logActivity(page: Page, type: "note" | "call" | "email", descript
   await expect(dialog(page)).toBeHidden();
 }
 
-const entries = (page: Page) => page.getByRole("list", { name: "Timeline" }).getByRole("listitem");
+const entries = (page: Page) =>
+  page.getByRole("list", { name: "Timeline" }).getByRole("listitem");
 
-test("logging a note, a call and an email on a deal shows them newest first", async ({ page }) => {
+test("logging a note, a call and an email on a deal shows them newest first", async ({
+  page,
+}) => {
   await page.goto("/deals");
   await page.getByRole("link", { name: "Dispatch optimisation" }).click();
   await expect(entries(page).first()).toBeVisible();
@@ -32,7 +40,8 @@ test("logging a note, a call and an email on a deal shows them newest first", as
     await dialog(page).getByLabel("Type").selectOption(type);
     await dialog(page).getByLabel("What happened").fill(text);
     await dialog(page).getByLabel("When").fill(when);
-    if (type === "email") await dialog(page).getByLabel("Follow-up date").fill("2026-11-25");
+    if (type === "email")
+      await dialog(page).getByLabel("Follow-up date").fill("2026-11-25");
     await dialog(page).getByRole("button", { name: "Log activity" }).click();
     await expect(dialog(page)).toBeHidden();
   }
@@ -57,7 +66,10 @@ test("logging a note, a call and an email on a deal shows them newest first", as
   await expect(entries(page).nth(0)).toContainText("Follow-up: 25 Nov 2026");
 
   // delete
-  await entries(page).nth(2).getByRole("button", { name: "Delete note" }).click();
+  await entries(page)
+    .nth(2)
+    .getByRole("button", { name: "Delete note" })
+    .click();
   await expect(dialog(page)).toContainText("Delete this activity?");
   await dialog(page).getByRole("button", { name: "Delete" }).click();
   await expect(entries(page)).toHaveCount(before + 2);
@@ -66,32 +78,52 @@ test("logging a note, a call and an email on a deal shows them newest first", as
   await expect(page.getByText("E2E note about pricing")).toHaveCount(0);
 });
 
-test("a stage change adds a 'Moved from X to Y' entry to the timeline and to recent activity", async ({ page }) => {
+test("a stage change adds a 'Moved from X to Y' entry to the timeline and to recent activity", async ({
+  page,
+}) => {
   await page.goto("/deals");
   await page.getByRole("link", { name: "Dispatch optimisation" }).click();
   await page.getByLabel("Stage", { exact: true }).selectOption("negotiation");
-  await expect(entries(page).first()).toContainText("Moved from Proposal to Negotiation");
-  await expect(entries(page).first().getByRole("button", { name: /^Edit/ })).toHaveCount(0);
+  await expect(entries(page).first()).toContainText(
+    "Moved from Proposal to Negotiation",
+  );
+  await expect(
+    entries(page).first().getByRole("button", { name: /^Edit/ }),
+  ).toHaveCount(0);
 
   await page.getByRole("link", { name: "Dashboard" }).click();
-  await expect(page.getByTestId("recent-activity").locator("li").first()).toContainText("Moved from Proposal to Negotiation");
-  await expect(page.getByTestId("recent-activity").locator("li").first()).toContainText("Dispatch optimisation");
+  await expect(
+    page.getByTestId("recent-activity").locator("li").first(),
+  ).toContainText("Moved from Proposal to Negotiation");
+  await expect(
+    page.getByTestId("recent-activity").locator("li").first(),
+  ).toContainText("Dispatch optimisation");
 });
 
-test("activities on a contact appear in their timeline, along with their deals' activities", async ({ page }) => {
+test("activities on a contact appear in their timeline, along with their deals' activities", async ({
+  page,
+}) => {
   await page.goto("/contacts");
   await page.getByRole("link", { name: "Hannah Brooks" }).click();
   await logActivity(page, "call", "E2E intro call with Hannah", "2026-11-19");
-  await expect(entries(page).first()).toContainText("E2E intro call with Hannah");
+  await expect(entries(page).first()).toContainText(
+    "E2E intro call with Hannah",
+  );
   await expect(entries(page).first()).toContainText("Follow-up: 19 Nov 2026");
   await page.reload();
-  await expect(entries(page).first()).toContainText("E2E intro call with Hannah");
+  await expect(entries(page).first()).toContainText(
+    "E2E intro call with Hannah",
+  );
 });
 
-test("moving a deal on the pipeline board logs the stage change on the deal", async ({ page }) => {
+test("moving a deal on the pipeline board logs the stage change on the deal", async ({
+  page,
+}) => {
   await page.goto("/deals");
   await page.getByRole("link", { name: "Appointment reminders" }).click();
   await page.getByLabel("Stage", { exact: true }).selectOption("lost");
-  await expect(entries(page).first()).toContainText("Moved from Qualified to Lost");
+  await expect(entries(page).first()).toContainText(
+    "Moved from Qualified to Lost",
+  );
   await expect(page.getByLabel("Stage", { exact: true })).toHaveValue("lost");
 });

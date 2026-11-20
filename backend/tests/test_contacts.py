@@ -1,11 +1,19 @@
 def test_crud(client, make):
     org = make.org()
     c = make.contact(org["id"], email="ada@example.com", job_title="CTO")
-    assert c["status"] == "lead" and c["organization_name"] == "Acme" and c["name"] == "Ada Lovelace"
+    assert (
+        c["status"] == "lead"
+        and c["organization_name"] == "Acme"
+        and c["name"] == "Ada Lovelace"
+    )
     r = client.patch(f"/api/contacts/{c['id']}", json={"status": "customer"})
     assert r.json()["status"] == "customer"
     detail = client.get(f"/api/contacts/{c['id']}").json()
-    assert detail["organization"]["name"] == "Acme" and detail["deals"] == [] and detail["timeline"] == []
+    assert (
+        detail["organization"]["name"] == "Acme"
+        and detail["deals"] == []
+        and detail["timeline"] == []
+    )
     assert client.delete(f"/api/contacts/{c['id']}").status_code == 204
     assert client.get("/api/contacts").json() == []
 
@@ -13,7 +21,9 @@ def test_crud(client, make):
 def test_required_fields_and_email(client):
     r = client.post("/api/contacts", json={"first_name": "A"})
     assert r.status_code == 422 and r.json()["detail"][0]["field"] == "last_name"
-    r = client.post("/api/contacts", json={"first_name": "A", "last_name": "B", "email": "nope"})
+    r = client.post(
+        "/api/contacts", json={"first_name": "A", "last_name": "B", "email": "nope"}
+    )
     assert r.json()["detail"][0]["field"] == "email"
 
 
@@ -25,14 +35,22 @@ def test_contact_without_organization(client, make):
 
 def test_status_values(client):
     for status in ("lead", "qualified", "customer"):
-        r = client.post("/api/contacts", json={"first_name": "A", "last_name": "B", "status": status})
+        r = client.post(
+            "/api/contacts",
+            json={"first_name": "A", "last_name": "B", "status": status},
+        )
         assert r.status_code == 201
-    r = client.post("/api/contacts", json={"first_name": "A", "last_name": "B", "status": "vip"})
+    r = client.post(
+        "/api/contacts", json={"first_name": "A", "last_name": "B", "status": "vip"}
+    )
     assert r.status_code == 422 and r.json()["detail"][0]["field"] == "status"
 
 
 def test_unknown_organization(client):
-    r = client.post("/api/contacts", json={"first_name": "A", "last_name": "B", "organization_id": 99})
+    r = client.post(
+        "/api/contacts",
+        json={"first_name": "A", "last_name": "B", "organization_id": 99},
+    )
     assert r.status_code == 422
 
 

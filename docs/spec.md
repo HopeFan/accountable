@@ -261,6 +261,7 @@ Revenue line: Sea Green. Deals bars: Cerulean. Funnel bars: the stage colors. Al
 
 - Every list and chart has an empty state with a one-line message.
 - Loading shows quiet skeleton shapes, not spinners over blank pages.
+- If a list, page or the pipeline can't load, it shows an error with a retry button, never a skeleton that doesn't go away.
 - Saving a change shows a short confirmation at the bottom, such as "Deal moved to Proposal".
 - Hover, focus and active states exist on everything clickable, with a visible focus ring (Cerulean).
 - Pipeline and checkbox updates are optimistic, so the app feels instant.
@@ -271,17 +272,21 @@ Revenue line: Sea Green. Deals bars: Cerulean. Funnel bars: the stage colors. Al
 frontend/         React app (Vite)
 backend/          FastAPI app, SQLAlchemy Core tables, seed code
 e2e/              Playwright tests
+eslint.config.mjs ESLint rules for the frontend and e2e
+.gitleaks.toml    secret scan settings (allows the git-ignored .env)
 data/             SQLite file (git-ignored)
 package.json      workspace and scripts at the repo root
 pyproject.toml    uv project at the repo root
 uv.lock
 ```
 
-Scripts as in the stack doc: `npm run dev`, `npm test`, `npm run seed`. `docs/STATUS.md` gets the run instructions, including that Node and uv must be installed and that the first run needs internet to fetch packages.
+Scripts as in the stack doc: `npm run dev`, `npm test`, `npm run seed`, and `npm run check` (every check and test), `npm run check:quick` (the same without the end-to-end tests) and `npm run format`. `docs/STATUS.md` gets the run instructions, including that Node and uv must be installed and that the first run needs internet to fetch packages.
 
 ## 10. Testing
 
 - **Backend (pytest)**: the stage, probability, close-date and late rules; move and reorder (positions stay consecutive, probability and stage-change entry written); delete cascades and previews; timeline composition; follow-up states; dashboard figures against a small known data set; seed idempotence.
-- **Frontend (Vitest)**: money and date formatting, table sort and search logic, optimistic pipeline totals, form validation.
+- **Frontend (Vitest)**: money and date formatting, table sort and search logic, optimistic pipeline totals, the pipeline's drag and drop rules, form validation, and each page's loading, empty and error states.
 - **End to end (Playwright with Chrome)**: one test per area of behavior, on a test database with a fixed clock, covering add, search, sort, edit, delete with confirmation, status filter, drag to another column and within one with a refresh in between, logging an activity and a follow-up, marking it done, and the dashboard changing when a deal is won. Each test also fails if the browser console shows an error.
+- **Coverage**: unit test coverage must stay at 80% or more, for the backend (statements) and the frontend (statements, branches, functions and lines). `npm run check` fails below that.
+- **Checks**: `npm run check` also runs Prettier and ESLint (TypeScript, React Hooks and accessibility rules), ruff format and check, tsc, ty and gitleaks. No function may have a cyclomatic complexity above 15 (ESLint `complexity`, ruff `C901`). Rules are fixed in the code, not switched off.
 - **By eye**: before calling it done, someone uses it end to end in a real browser and checks every screen against this spec and the brand.

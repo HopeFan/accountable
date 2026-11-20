@@ -1,4 +1,5 @@
 """Business rules. No database access."""
+
 from datetime import date
 
 STAGES = ["new", "qualified", "proposal", "negotiation", "won", "lost"]
@@ -31,7 +32,9 @@ def expected_revenue(stage: str, value: int, probability: int) -> float:
     return value * probability / 100
 
 
-def close_date_after_stage_change(stage: str, current: date | None, today: date) -> date | None:
+def close_date_after_stage_change(
+    stage: str, current: date | None, today: date
+) -> date | None:
     return today if stage in ("won", "lost") else current
 
 
@@ -53,10 +56,16 @@ def funnel(deals: list[dict]) -> list[dict]:
     for stage in FUNNEL_STAGES:
         idx = FUNNEL_STAGES.index(stage)
         reached = [
-            d for d in deals if d["stage"] != "lost" and FUNNEL_STAGES.index(d["stage"]) >= idx
+            d
+            for d in deals
+            if d["stage"] != "lost" and FUNNEL_STAGES.index(d["stage"]) >= idx
         ]
         rows.append(
-            {"stage": stage, "count": len(reached), "value": sum(d["value"] for d in reached)}
+            {
+                "stage": stage,
+                "count": len(reached),
+                "value": sum(d["value"] for d in reached),
+            }
         )
     return rows
 

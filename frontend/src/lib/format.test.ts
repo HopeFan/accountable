@@ -1,5 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { formatDate, formatDateTime, formatLongDate, joinList, money, moneyCompact, plural } from "./format";
+import {
+  formatDate,
+  formatDateTime,
+  formatLongDate,
+  joinList,
+  money,
+  moneyCompact,
+  plural,
+} from "./format";
 
 describe("money", () => {
   it("always shows USD with thousands separators", () => {

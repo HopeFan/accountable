@@ -2,20 +2,36 @@
   "name": "accountable",
   "private": true,
   "version": "0.1.0",
-  "workspaces": ["frontend"],
+  "workspaces": [
+    "frontend"
+  ],
   "scripts": {
     "dev": "concurrently -k -n api,web -c cyan,magenta \"uv run uvicorn app.main:app --app-dir backend --reload --port 8000\" \"npm run dev -w frontend\"",
     "test": "npm run test:backend && npm run test:frontend && npm run test:e2e",
-    "test:backend": "uv run pytest -q",
-    "test:frontend": "npm run test -w frontend",
+    "test:backend": "uv run pytest -q --cov --cov-fail-under=80",
+    "test:frontend": "npm run test:coverage -w frontend",
     "test:e2e": "playwright test --config e2e/playwright.config.ts",
     "build": "npm run build -w frontend",
     "start": "npm run build && uv run uvicorn app.main:app --app-dir backend --port 8000",
-    "seed": "uv run python backend/seed_cli.py"
+    "seed": "uv run python backend/seed_cli.py",
+    "format": "prettier --write frontend e2e *.json *.mjs && uv run ruff format backend",
+    "lint:frontend": "prettier --check frontend e2e *.json *.mjs && eslint frontend e2e eslint.config.mjs",
+    "lint:backend": "uv run ruff format --check backend && uv run ruff check backend",
+    "typecheck": "npm run typecheck -w frontend && uv run ty check backend",
+    "secrets": "gitleaks dir . --config .gitleaks.toml --no-banner",
+    "check:quick": "npm run lint:frontend && npm run lint:backend && npm run typecheck && npm run secrets && npm run test:backend && npm run test:frontend",
+    "check": "npm run check:quick && npm run test:e2e"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.5",
     "@playwright/test": "^1.50.0",
     "@types/node": "^22.0.0",
-    "concurrently": "^9.0.0"
+    "concurrently": "^9.0.0",
+    "eslint": "^9.39.5",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.14.0",
+    "prettier": "^3.10.1",
+    "typescript-eslint": "^8.73.0"
   }
 }

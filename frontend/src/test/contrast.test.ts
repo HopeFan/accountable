@@ -2,7 +2,10 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
-const css = readFileSync(resolve(process.cwd(), "src/theme/tokens.css"), "utf8");
+const css = readFileSync(
+  resolve(process.cwd(), "src/theme/tokens.css"),
+  "utf8",
+);
 const token = (name: string): string => {
   const m = css.match(new RegExp(`--${name}:\\s*(#[0-9a-fA-F]{6})`));
   if (!m) throw new Error(`token --${name} not found`);
@@ -10,7 +13,9 @@ const token = (name: string): string => {
 };
 
 function luminance(hex: string): number {
-  const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255).map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
+  const [r, g, b] = [1, 3, 5]
+    .map((i) => parseInt(hex.slice(i, i + 2), 16) / 255)
+    .map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
   return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 }
 function ratio(a: string, b: string): number {
@@ -21,7 +26,12 @@ function ratio(a: string, b: string): number {
 function lane(): string {
   const f = token("mist");
   const p = token("page");
-  const mix = [1, 3, 5].map((i) => Math.round(parseInt(f.slice(i, i + 2), 16) * 0.4 + parseInt(p.slice(i, i + 2), 16) * 0.6));
+  const mix = [1, 3, 5].map((i) =>
+    Math.round(
+      parseInt(f.slice(i, i + 2), 16) * 0.4 +
+        parseInt(p.slice(i, i + 2), 16) * 0.6,
+    ),
+  );
   return "#" + mix.map((v) => v.toString(16).padStart(2, "0")).join("");
 }
 

@@ -9,7 +9,11 @@ const BLOCK: Record<string, { bg: string; fg: string }> = {
   negotiation: { bg: "var(--primary)", fg: "var(--ink)" },
 };
 
-export function PipelineStrip({ pipeline }: { pipeline: Dashboard["pipeline"] }) {
+export function PipelineStrip({
+  pipeline,
+}: {
+  pipeline: Dashboard["pipeline"];
+}) {
   const total = pipeline.reduce((s, p) => s + p.value, 0);
   return (
     <Panel>
@@ -17,7 +21,8 @@ export function PipelineStrip({ pipeline }: { pipeline: Dashboard["pipeline"] })
         <div>
           <h2 className="text-base font-semibold">Open pipeline by stage</h2>
           <p className="mt-0.5 text-[13px] text-muted">
-            Bar width is deal value. The lower bar shows the share we expect to close, and what that is worth.
+            Bar width is deal value. The lower bar shows the share we expect to
+            close, and what that is worth.
           </p>
         </div>
         <div className="text-right">
@@ -45,16 +50,33 @@ export function PipelineStrip({ pipeline }: { pipeline: Dashboard["pipeline"] })
                   style={{ background: c.bg, color: c.fg }}
                 >
                   <b className="font-semibold">
-                    {STAGE_LABEL[p.stage]} <span className="font-normal opacity-90">· {plural(p.count, "deal")}</span>
+                    {STAGE_LABEL[p.stage]}{" "}
+                    <span className="font-normal opacity-90">
+                      · {plural(p.count, "deal")}
+                    </span>
                   </b>
-                  <span className="font-mono text-[13px] font-medium">{money(p.value)}</span>
+                  <span className="font-mono text-[13px] font-medium">
+                    {money(p.value)}
+                  </span>
                 </div>
-                <div className="mt-2.5 h-2 rounded" style={{ background: `color-mix(in srgb, ${c.bg} 22%, white)` }} role="img" aria-label={p.probability + "% chance of closing"}>
-                  <div className="h-2 rounded" style={{ width: p.probability + "%", background: c.bg }} />
+                <div
+                  className="mt-2.5 h-2 rounded"
+                  style={{
+                    background: `color-mix(in srgb, ${c.bg} 22%, white)`,
+                  }}
+                  role="img"
+                  aria-label={p.probability + "% chance of closing"}
+                >
+                  <div
+                    className="h-2 rounded"
+                    style={{ width: p.probability + "%", background: c.bg }}
+                  />
                 </div>
                 <p className="mt-1.5 flex justify-between text-[12.5px] text-muted">
                   <span>{p.probability}% likely</span>
-                  <b className="font-mono font-semibold text-ink">{money(p.expected_revenue)}</b>
+                  <b className="font-mono font-semibold text-ink">
+                    {money(p.expected_revenue)}
+                  </b>
                 </p>
               </div>
             );

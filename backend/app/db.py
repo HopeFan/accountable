@@ -1,4 +1,5 @@
 """SQLAlchemy Core engine and table definitions."""
+
 import os
 import threading
 from pathlib import Path
@@ -30,7 +31,13 @@ metadata = MetaData()
 def _stamps() -> list[Column]:
     return [
         Column("created_at", DateTime, nullable=False, server_default=func.now()),
-        Column("updated_at", DateTime, nullable=False, server_default=func.now(), onupdate=func.now()),
+        Column(
+            "updated_at",
+            DateTime,
+            nullable=False,
+            server_default=func.now(),
+            onupdate=func.now(),
+        ),
     ]
 
 

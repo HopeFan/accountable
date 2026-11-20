@@ -25,13 +25,20 @@ export function RecordDialog({
           className={`fixed top-1/2 left-1/2 z-50 max-h-[90vh] w-[calc(100vw-48px)] ${width} -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-xl bg-panel p-6 shadow-[var(--shadow-lift)]`}
         >
           <div className="mb-5 flex items-start justify-between gap-4">
-            <Dialog.Title className="text-lg font-semibold">{title}</Dialog.Title>
-            <Dialog.Close className="rounded-lg p-1 text-muted hover:bg-soft hover:text-ink" aria-label="Close">
+            <Dialog.Title className="text-lg font-semibold">
+              {title}
+            </Dialog.Title>
+            <Dialog.Close
+              className="rounded-lg p-1 text-muted hover:bg-soft hover:text-ink"
+              aria-label="Close"
+            >
               <X className="size-5" aria-hidden />
             </Dialog.Close>
           </div>
           {description ? (
-            <Dialog.Description className="mb-4 text-sm text-muted">{description}</Dialog.Description>
+            <Dialog.Description className="mb-4 text-sm text-muted">
+              {description}
+            </Dialog.Description>
           ) : (
             <Dialog.Description className="sr-only">{title}</Dialog.Description>
           )}

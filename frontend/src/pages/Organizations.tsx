@@ -17,30 +17,56 @@ export function Organizations() {
   const q = useOrganizations();
   const toast = useToast();
   const remove = useRemove("organizations");
-  const { editing, setEditing, deleting, setDeleting } = useRecordState<Organization>();
+  const { editing, setEditing, deleting, setDeleting } =
+    useRecordState<Organization>();
 
-  const columns = useMemo<ColumnDef<Organization, any>[]>( // eslint-disable-line @typescript-eslint/no-explicit-any
+  const columns = useMemo<ColumnDef<Organization, unknown>[]>(
     () => [
       {
         id: "name",
         header: "Name",
         accessorFn: (r) => r.name,
         cell: ({ row }) => (
-          <Link to={`/organizations/${row.original.id}`} className="font-semibold hover:underline">
+          <Link
+            to={`/organizations/${row.original.id}`}
+            className="font-semibold hover:underline"
+          >
             {row.original.name}
           </Link>
         ),
       },
-      { id: "industry", header: "Industry", accessorFn: (r) => r.industry ?? undefined },
-      { id: "website", header: "Website", accessorFn: (r) => r.website ?? undefined },
-      { id: "contacts", header: "Contacts", accessorFn: (r) => r.contacts_count, meta: { align: "right", mono: true } },
-      { id: "open_deals", header: "Open deals", accessorFn: (r) => r.open_deals_count, meta: { align: "right", mono: true } },
+      {
+        id: "industry",
+        header: "Industry",
+        accessorFn: (r) => r.industry ?? undefined,
+      },
+      {
+        id: "website",
+        header: "Website",
+        accessorFn: (r) => r.website ?? undefined,
+      },
+      {
+        id: "contacts",
+        header: "Contacts",
+        accessorFn: (r) => r.contacts_count,
+        meta: { align: "right", mono: true },
+      },
+      {
+        id: "open_deals",
+        header: "Open deals",
+        accessorFn: (r) => r.open_deals_count,
+        meta: { align: "right", mono: true },
+      },
       {
         id: "open_value",
         header: "Open deal value",
         accessorFn: (r) => r.open_deals_value,
         cell: ({ row }) => money(row.original.open_deals_value),
-        meta: { align: "right", mono: true, text: (r) => money(r.open_deals_value) },
+        meta: {
+          align: "right",
+          mono: true,
+          text: (r) => money(r.open_deals_value),
+        },
       },
     ],
     [],

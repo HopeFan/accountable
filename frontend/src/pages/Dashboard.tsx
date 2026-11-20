@@ -41,15 +41,24 @@ export function Dashboard() {
     <>
       <div className="mb-6 flex items-end justify-between">
         <div>
-          <p className="mb-0.5 text-[13px] text-muted">{q.data ? formatLongDate(q.data.today) : "\u00a0"}</p>
-          <h1 className="font-serif text-[40px] leading-[1.05] font-normal tracking-tight">{greeting()}</h1>
+          <p className="mb-0.5 text-[13px] text-muted">
+            {q.data ? formatLongDate(q.data.today) : "\u00a0"}
+          </p>
+          <h1 className="font-serif text-[40px] leading-[1.05] font-normal tracking-tight">
+            {greeting()}
+          </h1>
         </div>
         <Button onClick={() => setAdding(true)}>
           <Plus className="size-4" aria-hidden /> Add deal
         </Button>
       </div>
       <RecordDialog open={adding} onOpenChange={setAdding} title="Add deal">
-        {adding && <DealForm onDone={() => setAdding(false)} onCancel={() => setAdding(false)} />}
+        {adding && (
+          <DealForm
+            onDone={() => setAdding(false)}
+            onCancel={() => setAdding(false)}
+          />
+        )}
       </RecordDialog>
       {q.isPending ? (
         <DashboardSkeleton />
@@ -70,7 +79,10 @@ export function Dashboard() {
               <p className="mt-0.5 mb-2 text-[13px] text-muted">
                 {q.data.follow_ups.length} open, tick one to mark it done
               </p>
-              <div data-testid="follow-ups" className="max-h-[400px] overflow-y-auto pr-1">
+              <div
+                data-testid="follow-ups"
+                className="max-h-[400px] overflow-y-auto pr-1"
+              >
                 <FollowUpList items={q.data.follow_ups} />
               </div>
             </Panel>

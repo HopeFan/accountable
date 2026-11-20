@@ -6,11 +6,19 @@ import {
   useReactTable,
   type ColumnDef,
   type FilterFn,
-  type SortingFn,
+  type Row,
   type SortingState,
 } from "@tanstack/react-table";
 import * as Menu from "@radix-ui/react-dropdown-menu";
-import { ArrowDown, ArrowUp, ArrowUpDown, MoreHorizontal, Pencil, Search, Trash2 } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowUp,
+  ArrowUpDown,
+  MoreHorizontal,
+  Pencil,
+  Search,
+  Trash2,
+} from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { Button, EmptyState, Panel, cx, inputClass } from "./ui";
 
@@ -25,11 +33,14 @@ declare module "@tanstack/react-table" {
 }
 
 /** Numbers and ISO dates compare by value; text compares ignoring case, with numbers inside text in order. */
-const compareValues: SortingFn<any> = (a, b, id) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+const compareValues = <T,>(a: Row<T>, b: Row<T>, id: string): number => {
   const x = a.getValue(id);
   const y = b.getValue(id);
   if (typeof x === "number" && typeof y === "number") return x - y;
-  return String(x).localeCompare(String(y), "en", { numeric: true, sensitivity: "base" });
+  return String(x).localeCompare(String(y), "en", {
+    numeric: true,
+    sensitivity: "base",
+  });
 };
 
 export interface RowActions<T> {
@@ -49,7 +60,7 @@ export function DataTable<T extends { id: number }>({
   isEmpty,
 }: {
   data: T[];
-  columns: ColumnDef<T, any>[]; // eslint-disable-line @typescript-eslint/no-explicit-any
+  columns: ColumnDef<T, unknown>[];
   searchLabel: string;
   actions?: RowActions<T>;
   toolbar?: ReactNode;
@@ -67,7 +78,9 @@ export function DataTable<T extends { id: number }>({
     if (!q) return true;
     return row.getAllCells().some((cell) => {
       const meta = cell.column.columnDef.meta;
-      const text = meta?.text ? meta.text(row.original) : String(cell.getValue() ?? "");
+      const text = meta?.text
+        ? meta.text(row.original)
+        : String(cell.getValue() ?? "");
       return text.toLowerCase().includes(q);
     });
   };
@@ -95,7 +108,10 @@ export function DataTable<T extends { id: number }>({
       <div className="mb-4 flex flex-wrap items-center gap-3">
         <label className="relative block w-[320px] max-w-full">
           <span className="sr-only">{searchLabel}</span>
-          <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted" aria-hidden />
+          <Search
+            className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted"
+            aria-hidden
+          />
           <input
             type="search"
             value={filter}
@@ -124,8 +140,17 @@ export function DataTable<T extends { id: number }>({
                       <th
                         key={h.id}
                         scope="col"
-                        aria-sort={dir === "asc" ? "ascending" : dir === "desc" ? "descending" : "none"}
-                        className={cx("h-11 px-4 text-xs font-semibold text-muted", right ? "text-right" : "text-left")}
+                        aria-sort={
+                          dir === "asc"
+                            ? "ascending"
+                            : dir === "desc"
+                              ? "descending"
+                              : "none"
+                        }
+                        className={cx(
+                          "h-11 px-4 text-xs font-semibold text-muted",
+                          right ? "text-right" : "text-left",
+                        )}
                       >
                         <button
                           type="button"
@@ -135,13 +160,25 @@ export function DataTable<T extends { id: number }>({
                             right && "flex-row-reverse",
                           )}
                         >
-                          {flexRender(h.column.columnDef.header, h.getContext())}
+                          {flexRender(
+                            h.column.columnDef.header,
+                            h.getContext(),
+                          )}
                           {dir === "asc" ? (
-                            <ArrowUp className="size-3.5 text-ink" aria-hidden />
+                            <ArrowUp
+                              className="size-3.5 text-ink"
+                              aria-hidden
+                            />
                           ) : dir === "desc" ? (
-                            <ArrowDown className="size-3.5 text-ink" aria-hidden />
+                            <ArrowDown
+                              className="size-3.5 text-ink"
+                              aria-hidden
+                            />
                           ) : (
-                            <ArrowUpDown className="size-3.5 opacity-40" aria-hidden />
+                            <ArrowUpDown
+                              className="size-3.5 opacity-40"
+                              aria-hidden
+                            />
                           )}
                         </button>
                       </th>
@@ -153,7 +190,10 @@ export function DataTable<T extends { id: number }>({
             </thead>
             <tbody>
               {rows.map((row) => (
-                <tr key={row.id} className="h-12 border-t border-soft/80 hover:bg-page/70">
+                <tr
+                  key={row.id}
+                  className="h-12 border-t border-soft/80 hover:bg-page/70"
+                >
                   {row.getVisibleCells().map((cell) => {
                     const meta = cell.column.columnDef.meta;
                     return (
@@ -165,13 +205,20 @@ export function DataTable<T extends { id: number }>({
                           meta?.mono && "font-mono text-[13px]",
                         )}
                       >
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        )}
                       </td>
                     );
                   })}
                   {actions && (
                     <td className="pr-3 text-right">
-                      <RowMenu label={rowLabel(row.original)} onEdit={() => actions.onEdit(row.original)} onDelete={() => actions.onDelete(row.original)} />
+                      <RowMenu
+                        label={rowLabel(row.original)}
+                        onEdit={() => actions.onEdit(row.original)}
+                        onDelete={() => actions.onDelete(row.original)}
+                      />
                     </td>
                   )}
                 </tr>
@@ -179,13 +226,23 @@ export function DataTable<T extends { id: number }>({
             </tbody>
           </table>
         )}
-        {!empty && rows.length === 0 && <EmptyState message={`No ${noun}s match your search.`} />}
+        {!empty && rows.length === 0 && (
+          <EmptyState message={`No ${noun}s match your search.`} />
+        )}
       </Panel>
     </div>
   );
 }
 
-export function RowMenu({ label, onEdit, onDelete }: { label: string; onEdit: () => void; onDelete: () => void }) {
+export function RowMenu({
+  label,
+  onEdit,
+  onDelete,
+}: {
+  label: string;
+  onEdit: () => void;
+  onDelete: () => void;
+}) {
   return (
     <Menu.Root>
       <Menu.Trigger

@@ -23,18 +23,28 @@ function Tile({
   return (
     <Panel className="flex flex-col gap-2.5">
       <div className="flex items-center gap-2.5 text-[13px] font-medium text-muted">
-        <span className={cx("grid size-[30px] place-items-center rounded-full", chip)}>
+        <span
+          className={cx(
+            "grid size-[30px] place-items-center rounded-full",
+            chip,
+          )}
+        >
           <Icon className="size-4" aria-hidden />
         </span>
         {label}
       </div>
       <div
-        className={cx("font-mono text-[26px] leading-none font-semibold tracking-tight", alert && "text-alert-text")}
+        className={cx(
+          "font-mono text-[26px] leading-none font-semibold tracking-tight",
+          alert && "text-alert-text",
+        )}
         data-testid={testid}
       >
         {value.startsWith("USD ") ? (
           <>
-            <small className="mr-1.5 text-[13px] font-medium tracking-normal text-muted">USD</small>{" "}
+            <small className="mr-1.5 text-[13px] font-medium tracking-normal text-muted">
+              USD
+            </small>{" "}
             {value.slice(4)}
           </>
         ) : (
@@ -76,7 +86,9 @@ export function FigureTiles({ tiles }: { tiles: Dashboard["tiles"] }) {
       <Tile
         label="Overdue follow-ups"
         value={String(tiles.overdue_follow_ups)}
-        note={tiles.overdue_follow_ups === 0 ? "Nothing overdue" : "Waiting for you"}
+        note={
+          tiles.overdue_follow_ups === 0 ? "Nothing overdue" : "Waiting for you"
+        }
         chip="bg-alert-tint text-alert-text"
         icon={AlarmClock}
         testid="tile-overdue"

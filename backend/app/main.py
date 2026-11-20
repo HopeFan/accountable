@@ -1,4 +1,5 @@
 """FastAPI app: the JSON API under /api, and the built frontend when it exists."""
+
 from contextlib import asynccontextmanager
 from pathlib import Path
 
@@ -7,7 +8,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
-from . import clock, db, seed
+from . import clock, seed
 from .routes import activities, contacts, dashboard, deals, follow_ups, organizations
 
 DIST = Path(__file__).resolve().parents[2] / "frontend" / "dist"
@@ -26,7 +27,11 @@ api = APIRouter(prefix="/api")
 
 @api.get("/health")
 def health():
-    return {"status": "ok", "today": clock.today().isoformat(), "now": clock.now().isoformat()}
+    return {
+        "status": "ok",
+        "today": clock.today().isoformat(),
+        "now": clock.now().isoformat(),
+    }
 
 
 for module in (organizations, contacts, deals, activities, follow_ups, dashboard):
@@ -40,15 +45,17 @@ async def validation_error(_request: Request, exc: RequestValidationError):
     for err in exc.errors():
         loc = [str(p) for p in err["loc"] if p not in ("body", "query", "path")]
         msg = err["msg"].removeprefix("Value error, ")
-        if err["type"] == "string_too_short":
-            msg = "This field is required"
-        elif err["type"] == "missing":
+        if err["type"] == "string_too_short" or err["type"] == "missing":
             msg = "This field is required"
         elif err["type"] in ("greater_than_equal", "less_than_equal"):
             msg = "Enter a number in the allowed range"
         elif err["type"] in ("int_parsing", "int_type"):
             msg = "Enter a whole number"
-        elif err["type"] in ("date_parsing", "date_from_datetime_parsing", "datetime_parsing"):
+        elif err["type"] in (
+            "date_parsing",
+            "date_from_datetime_parsing",
+            "datetime_parsing",
+        ):
             msg = "Enter a valid date"
         detail.append({"field": ".".join(loc) or "body", "message": msg})
     return JSONResponse(status_code=422, content={"detail": detail})

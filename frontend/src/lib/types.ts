@@ -1,6 +1,18 @@
-export const STAGES = ["new", "qualified", "proposal", "negotiation", "won", "lost"] as const;
+export const STAGES = [
+  "new",
+  "qualified",
+  "proposal",
+  "negotiation",
+  "won",
+  "lost",
+] as const;
 export type Stage = (typeof STAGES)[number];
-export const OPEN_STAGES: Stage[] = ["new", "qualified", "proposal", "negotiation"];
+export const OPEN_STAGES: Stage[] = [
+  "new",
+  "qualified",
+  "proposal",
+  "negotiation",
+];
 export const STAGE_LABEL: Record<Stage, string> = {
   new: "New",
   qualified: "Qualified",
@@ -106,7 +118,13 @@ export interface Dashboard {
     won_this_month_count: number;
     overdue_follow_ups: number;
   };
-  pipeline: { stage: Stage; count: number; value: number; probability: number; expected_revenue: number }[];
+  pipeline: {
+    stage: Stage;
+    count: number;
+    value: number;
+    probability: number;
+    expected_revenue: number;
+  }[];
   monthly: { month: string; revenue: number; deals_won: number }[];
   funnel: { stage: Stage; count: number; value: number }[];
   lost: { count: number; value: number };

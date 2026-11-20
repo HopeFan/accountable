@@ -7,19 +7,37 @@ import { DataTable } from "../components/DataTable";
 import { ContactForm } from "../components/forms";
 import { RecordDialog } from "../components/RecordDialog";
 import { useToast } from "../components/Toast";
-import { Button, ErrorState, PageHeader, PageSkeleton, StatusTag, cx, inputClass } from "../components/ui";
+import {
+  Button,
+  ErrorState,
+  PageHeader,
+  PageSkeleton,
+  StatusTag,
+  cx,
+  inputClass,
+} from "../components/ui";
 import { useContacts, useRemove } from "../lib/queries";
-import { CONTACT_STATUSES, STATUS_LABEL, type Contact, type ContactStatus } from "../lib/types";
+import {
+  CONTACT_STATUSES,
+  STATUS_LABEL,
+  type Contact,
+  type ContactStatus,
+} from "../lib/types";
 import { useRecordState } from "../lib/useRecordState";
 
-export function contactColumns(opts: { withOrganization: boolean }): ColumnDef<Contact, any>[] { // eslint-disable-line @typescript-eslint/no-explicit-any
-  const cols: ColumnDef<Contact, any>[] = [ // eslint-disable-line @typescript-eslint/no-explicit-any
+export function contactColumns(opts: {
+  withOrganization: boolean;
+}): ColumnDef<Contact, unknown>[] {
+  const cols: ColumnDef<Contact, unknown>[] = [
     {
       id: "name",
       header: "Name",
       accessorFn: (r) => `${r.last_name} ${r.first_name}`,
       cell: ({ row }) => (
-        <Link to={`/contacts/${row.original.id}`} className="font-semibold hover:underline">
+        <Link
+          to={`/contacts/${row.original.id}`}
+          className="font-semibold hover:underline"
+        >
           {row.original.name}
         </Link>
       ),
@@ -33,7 +51,10 @@ export function contactColumns(opts: { withOrganization: boolean }): ColumnDef<C
       accessorFn: (r) => r.organization_name ?? undefined,
       cell: ({ row }) =>
         row.original.organization_id ? (
-          <Link to={`/organizations/${row.original.organization_id}`} className="text-info-text hover:underline">
+          <Link
+            to={`/organizations/${row.original.organization_id}`}
+            className="text-info-text hover:underline"
+          >
             {row.original.organization_name}
           </Link>
         ) : (
@@ -42,9 +63,18 @@ export function contactColumns(opts: { withOrganization: boolean }): ColumnDef<C
     });
   }
   cols.push(
-    { id: "job_title", header: "Job title", accessorFn: (r) => r.job_title ?? undefined },
+    {
+      id: "job_title",
+      header: "Job title",
+      accessorFn: (r) => r.job_title ?? undefined,
+    },
     { id: "email", header: "Email", accessorFn: (r) => r.email ?? undefined },
-    { id: "phone", header: "Phone", accessorFn: (r) => r.phone ?? undefined, meta: { mono: true } },
+    {
+      id: "phone",
+      header: "Phone",
+      accessorFn: (r) => r.phone ?? undefined,
+      meta: { mono: true },
+    },
     {
       id: "status",
       header: "Status",
@@ -59,7 +89,8 @@ export function Contacts() {
   const q = useContacts();
   const toast = useToast();
   const remove = useRemove("contacts");
-  const { editing, setEditing, deleting, setDeleting } = useRecordState<Contact>();
+  const { editing, setEditing, deleting, setDeleting } =
+    useRecordState<Contact>();
   const [status, setStatus] = useState<ContactStatus | "all">("all");
   const columns = useMemo(() => contactColumns({ withOrganization: true }), []);
   const rows = useMemo(
@@ -97,7 +128,9 @@ export function Contacts() {
               <select
                 id="status-filter"
                 value={status}
-                onChange={(e) => setStatus(e.target.value as ContactStatus | "all")}
+                onChange={(e) =>
+                  setStatus(e.target.value as ContactStatus | "all")
+                }
                 className={cx(inputClass, "w-40 bg-panel shadow-panel ring-0")}
               >
                 <option value="all">All</option>

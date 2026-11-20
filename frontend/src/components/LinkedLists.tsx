@@ -7,7 +7,13 @@ import { StageTag, StatusTag } from "./ui";
 const th = "h-9 px-6 text-left text-xs font-semibold text-muted";
 const td = "h-11 px-6 border-t border-soft/80";
 
-export function LinkedContacts({ contacts, showOrganization }: { contacts: Contact[]; showOrganization?: boolean }) {
+export function LinkedContacts({
+  contacts,
+  showOrganization,
+}: {
+  contacts: Contact[];
+  showOrganization?: boolean;
+}) {
   return (
     <table className="w-full text-sm">
       <thead>
@@ -23,7 +29,10 @@ export function LinkedContacts({ contacts, showOrganization }: { contacts: Conta
         {contacts.map((c) => (
           <tr key={c.id}>
             <td className={td}>
-              <Link to={`/contacts/${c.id}`} className="font-semibold hover:underline">
+              <Link
+                to={`/contacts/${c.id}`}
+                className="font-semibold hover:underline"
+              >
                 {c.name}
               </Link>
             </td>
@@ -40,7 +49,13 @@ export function LinkedContacts({ contacts, showOrganization }: { contacts: Conta
   );
 }
 
-export function LinkedDeals({ deals, showOrganization }: { deals: Deal[]; showOrganization?: boolean }) {
+export function LinkedDeals({
+  deals,
+  showOrganization,
+}: {
+  deals: Deal[];
+  showOrganization?: boolean;
+}) {
   return (
     <table className="w-full text-sm">
       <thead>
@@ -56,7 +71,10 @@ export function LinkedDeals({ deals, showOrganization }: { deals: Deal[]; showOr
         {deals.map((d) => (
           <tr key={d.id}>
             <td className={td}>
-              <Link to={`/deals/${d.id}`} className="font-semibold hover:underline">
+              <Link
+                to={`/deals/${d.id}`}
+                className="font-semibold hover:underline"
+              >
                 {d.name}
               </Link>
             </td>
@@ -64,7 +82,9 @@ export function LinkedDeals({ deals, showOrganization }: { deals: Deal[]; showOr
             <td className={td}>
               <StageTag stage={d.stage} />
             </td>
-            <td className={`${td} text-right font-mono text-[13px]`}>{money(d.value)}</td>
+            <td className={`${td} text-right font-mono text-[13px]`}>
+              {money(d.value)}
+            </td>
             <td className={`${td} font-mono text-[13px]`}>
               <CloseDate deal={d} />
             </td>

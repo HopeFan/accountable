@@ -6,7 +6,14 @@ import { DealForm } from "../components/forms";
 import { RecordDialog } from "../components/RecordDialog";
 import { Details, RecordHeader } from "../components/RecordPage";
 import { useToast } from "../components/Toast";
-import { ErrorState, LateTag, PageSkeleton, Panel, StageTag, inputClass } from "../components/ui";
+import {
+  ErrorState,
+  LateTag,
+  PageSkeleton,
+  Panel,
+  StageTag,
+  inputClass,
+} from "../components/ui";
 import { ApiError } from "../lib/api";
 import { money } from "../lib/format";
 import { useDeal, useRemove, useUpdate } from "../lib/queries";
@@ -24,7 +31,8 @@ export function DealPage() {
   const [dialog, setDialog] = useState<"edit" | "delete" | null>(null);
 
   if (q.isPending) return <PageSkeleton />;
-  if (q.error instanceof ApiError && q.error.status === 404) return <NotFound what="deal" />;
+  if (q.error instanceof ApiError && q.error.status === 404)
+    return <NotFound what="deal" />;
   if (q.isError) return <ErrorState onRetry={() => q.refetch()} />;
   const d = q.data;
   const close = () => setDialog(null);
@@ -48,7 +56,11 @@ export function DealPage() {
             {d.is_late && <LateTag />}
           </>
         }
-        subtitle={<Link to="/deals" className="hover:underline">Deals</Link>}
+        subtitle={
+          <Link to="/deals" className="hover:underline">
+            Deals
+          </Link>
+        }
         onEdit={() => setDialog("edit")}
         onDelete={() => setDialog("delete")}
       />
@@ -58,14 +70,22 @@ export function DealPage() {
             rows={[
               [
                 "Organization",
-                <Link key="o" to={`/organizations/${d.organization_id}`} className="font-semibold text-info-text hover:underline">
+                <Link
+                  key="o"
+                  to={`/organizations/${d.organization_id}`}
+                  className="font-semibold text-info-text hover:underline"
+                >
                   {d.organization_name}
                 </Link>,
               ],
               [
                 "Main contact",
                 d.contact_id && (
-                  <Link key="c" to={`/contacts/${d.contact_id}`} className="font-semibold text-info-text hover:underline">
+                  <Link
+                    key="c"
+                    to={`/contacts/${d.contact_id}`}
+                    className="font-semibold text-info-text hover:underline"
+                  >
                     {d.contact_name}
                   </Link>
                 ),
@@ -86,18 +106,44 @@ export function DealPage() {
                   ))}
                 </select>,
               ],
-              ["Value", <span key="v" className="font-mono text-[13px]">{money(d.value)}</span>],
-              ["Probability", <span key="p" className="font-mono text-[13px]">{d.probability}%</span>],
-              ["Expected revenue", <span key="e" className="font-mono text-[13px]">{money(d.expected_revenue)}</span>],
-              ["Close date", <span key="cd" className="font-mono text-[13px]"><CloseDate deal={d} /></span>],
+              [
+                "Value",
+                <span key="v" className="font-mono text-[13px]">
+                  {money(d.value)}
+                </span>,
+              ],
+              [
+                "Probability",
+                <span key="p" className="font-mono text-[13px]">
+                  {d.probability}%
+                </span>,
+              ],
+              [
+                "Expected revenue",
+                <span key="e" className="font-mono text-[13px]">
+                  {money(d.expected_revenue)}
+                </span>,
+              ],
+              [
+                "Close date",
+                <span key="cd" className="font-mono text-[13px]">
+                  <CloseDate deal={d} />
+                </span>,
+              ],
             ]}
           />
         </Panel>
         <ActivityPanel items={d.timeline} dealId={d.id} />
       </div>
 
-      <RecordDialog open={dialog === "edit"} onOpenChange={(o) => !o && close()} title="Edit deal">
-        {dialog === "edit" && <DealForm initial={d} onDone={close} onCancel={close} />}
+      <RecordDialog
+        open={dialog === "edit"}
+        onOpenChange={(o) => !o && close()}
+        title="Edit deal"
+      >
+        {dialog === "edit" && (
+          <DealForm initial={d} onDone={close} onCancel={close} />
+        )}
       </RecordDialog>
       <DeleteDialog
         kind="deals"
