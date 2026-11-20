@@ -88,6 +88,14 @@ describe.each<Mode>(["light", "dark"])("colour contrast in %s mode", (mode) => {
   });
 });
 
+describe("stage dots in dark mode", () => {
+  it.each(["panel", "page"])("the Lost dot is 3:1 or more on the %s", (bg) => {
+    expect(
+      ratio(tokenIn("dark", "lost-dot"), tokenIn("dark", bg)),
+    ).toBeGreaterThanOrEqual(3);
+  });
+});
+
 describe("light mode keeps its colours", () => {
   it.each([
     ["page", "#f0f4f5"],
