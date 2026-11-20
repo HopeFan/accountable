@@ -79,6 +79,7 @@ test("the dashboard has a line chart, a bar chart and the pipeline visual", asyn
   ).toHaveCSS("background-color", "rgb(6, 214, 160)");
   // chart tooltips show the exact figure
   const chart = page.getByTestId("revenue-chart");
+  await chart.scrollIntoViewIfNeeded();
   const box = (await chart.boundingBox())!;
   await page.mouse.move(box.x + box.width * 0.55, box.y + box.height * 0.5);
   await expect(chart.locator(".recharts-tooltip-wrapper")).toContainText("USD");

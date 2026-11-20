@@ -47,15 +47,15 @@ export function Shell() {
             </NavLink>
           ))}
         </nav>
-        <div className="mt-auto flex flex-col gap-3">
-          <ThemeToggle />
-          <p className="px-2 text-xs text-sidebar-muted">
-            Data is saved on this computer
-          </p>
-        </div>
+        <p className="mt-auto px-2 text-xs text-sidebar-muted">
+          Data is saved on this computer
+        </p>
       </aside>
       <main className="min-w-0 flex-1 p-8">
         <div className="mx-auto max-w-[1440px]">
+          <div className="mb-2 flex justify-end">
+            <ThemeToggle />
+          </div>
           <Outlet />
         </div>
       </main>

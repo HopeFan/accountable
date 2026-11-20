@@ -20,8 +20,8 @@ Each phase ends with something that runs, with its tests passing, a commit and a
 | `index.html` | An inline script that sets `data-theme` from local storage before the page paints. |
 | `src/theme/tokens.css` | New tokens (`--on-accent`, `--sidebar`, `--on-sidebar`, `--float`, `--on-float`, `--won`, `--on-won`, `--lost`, `--on-lost`, `--alert-solid`, `--info-solid`, `--overlay`, `--field-ring`, `--checkbox-edge`, `--grid`, `--axis`) with light values equal to today's colors. Then the dark block with the spec's values, and `color-scheme: light` or `dark` so native selects, date pickers and scrollbars follow the mode. |
 | `src/lib/theme.ts` | New. Read, store and apply the theme, with local storage failures handled. |
-| `src/components/ThemeToggle.tsx` | New. The button at the bottom of the sidebar. |
-| `src/components/Shell.tsx` | Sidebar uses `--sidebar` and `--on-sidebar`, the footer text a token, and the toggle is added. |
+| `src/components/ThemeToggle.tsx` | New. The button at the top right of the content area. |
+| `src/components/Shell.tsx` | Sidebar uses `--sidebar` and `--on-sidebar`, the footer text a token, and the toggle is added above the page content, at the top right. |
 | `src/components/ui.tsx` | Buttons, tags and the stage styles use the new tokens: `--on-accent` on green fills, `--alert-solid` on the destructive button, `--won` and `--lost` for those tags and dots. |
 | `src/components/Toast.tsx` | Uses `--float` and `--on-float` instead of `bg-ink text-white`. |
 | `src/components/RecordDialog.tsx` | The overlay uses `--overlay`, and the Save button `--on-accent`. |
@@ -63,7 +63,7 @@ Ends with: the app looks exactly as before, and the guard test is in.
 
 1. Write `theme.ts`: `readTheme()` returns `"dark"` only when the stored value is `"dark"`, otherwise `"light"`. `applyTheme()` sets or removes the attribute. `storeTheme()` saves the choice. Any local storage error falls back to light.
 2. Add the inline script to `index.html`.
-3. Add `ThemeToggle` with an icon and the label of the mode it will switch to, and put it at the bottom of the sidebar.
+3. Add `ThemeToggle` with an icon and the label of the mode it will switch to, and put it at the top right of the content area, above the page heading.
 4. Unit tests for `theme.ts` and the toggle.
 
 Ends with: the toggle switches the attribute and is remembered. Dark colors aren't defined yet, so nothing looks different.

@@ -6,7 +6,7 @@ Accountable only has a light mode, and some people prefer a dark screen.
 
 ## Proposed outcome
 
-A dark mode with a toggle on every page, across every section. The toggle sits at the bottom of the sidebar.
+A dark mode with a toggle on every page, across every section. The toggle sits at the top right of the page, above the heading.
 
 ## Constraints
 

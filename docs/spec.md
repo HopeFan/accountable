@@ -182,7 +182,7 @@ Each is testable. "R" numbers are referenced by tests and plans.
 
 ### Appearance
 
-- R38. A toggle at the bottom of the sidebar switches between light and dark mode. It is on every page, so every section has it.
+- R38. A toggle at the top right of the page, above the heading, switches between light and dark mode. It is on every page, so every section has it.
 - R39. Light mode is the default. The choice is remembered in the browser only (local storage), not in the database, and is applied before the page paints, so a reload in dark mode never flashes light.
 - R40. Every screen follows the mode: tables, record pages, the dashboard and its charts, the pipeline, dialogs, forms, menus and the confirmation messages. Nothing stays light in dark mode.
 - R41. Light mode looks exactly as it did before dark mode, apart from the toggle.
@@ -272,8 +272,8 @@ Revenue line: Sea Green. Deals bars: Cerulean. Funnel bars: the stage colors. Al
 
 ### Layout
 
-- A fixed left sidebar, 232px wide, Midnight background in both modes, with the product name in Instrument Sans, five nav items with icons and the active one marked by a Sea Green pill, text in Sea Mist. The light and dark mode toggle sits at the bottom of the sidebar, shows the mode it will switch to ("Dark mode" or "Light mode") with an icon, and has a visible focus ring like every other control.
-- A content area on the page color, max width about 1440px, with a page heading and its main action on the right.
+- A fixed left sidebar, 232px wide, Midnight background in both modes, with the product name in Instrument Sans, five nav items with icons and the active one marked by a Sea Green pill, text in Sea Mist.
+- A content area on the page color, max width about 1440px. At its top right, above the page heading, sits the light and dark mode toggle. It shows the mode it will switch to ("Dark mode" or "Light mode") with an icon, and has a visible focus ring like every other control. Below it is the page heading with its main action on the right.
 - Minimum supported width 1280px.
 
 ### Screens

@@ -17,7 +17,7 @@ export function ThemeToggle() {
     <button
       type="button"
       onClick={toggle}
-      className="flex items-center gap-3 rounded-[10px] px-3 py-2.5 font-medium transition-colors hover:bg-white/10 hover:text-white"
+      className="flex items-center gap-2 rounded-[10px] px-3 py-2 text-sm font-medium text-ink transition-colors hover:bg-soft"
     >
       <Icon className="size-[18px]" aria-hidden />
       {next === "dark" ? "Dark mode" : "Light mode"}
