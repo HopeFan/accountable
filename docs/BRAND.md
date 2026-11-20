@@ -2,7 +2,7 @@
 
 ## Fonts
 
-From Google Fonts:
+Installed from npm (`@fontsource`) and served by the app:
 
 - **Headings and body**: Instrument Sans
 - **Accent (a tagline or a quote)**: Instrument Serif
@@ -27,7 +27,7 @@ Use Sea Green, Marigold and Coral when three things sit side by side, such as pi
 - **Light mode**: page background `#F0F4F5`, white panels and cards
 - **Dark mode**: page background `#04232E`, black panels and cards
 
-Panels are rounded with no outline. Sea Green and Marigold are too bright for small text, so darken them for headings and body copy on light backgrounds and lighten them on dark ones.
+Panels are rounded. In light mode they have no outline; in dark mode a faint 1px ring replaces the shadow. Sea Green and Marigold are too bright for small text, so darken them for headings and body copy on light backgrounds and lighten them on dark ones.
 
 ## Avoid
 
