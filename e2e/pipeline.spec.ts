@@ -31,6 +31,8 @@ async function centre(page: Page, name: string) {
 }
 
 async function names(page: Page, stage: string) {
+  // allTextContents doesn't wait, so on a slow machine it can read before the board has loaded.
+  await page.getByTestId("deal-card").first().waitFor();
   const texts = await col(page, stage)
     .getByTestId("deal-card")
     .locator("p:first-child")

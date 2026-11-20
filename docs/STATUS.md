@@ -42,7 +42,7 @@ npm run dev      # API on :8000, app on http://localhost:5173
 
 - TypeScript is pinned to 6.0.3 because typescript-eslint doesn't support 7 yet (it needs below 6.1). Move back to 7 once it does.
 - ESLint shows one warning, `react-hooks/incompatible-library` for TanStack Table's `useReactTable` in `DataTable.tsx`. It comes from the library and doesn't fail the check. Revisit if the library or plugin changes.
-- CI has been written but not yet run on GitHub. Push the branch to the fork and watch the Actions tab until it passes.
+- CI's first run on GitHub failed on one end-to-end test, a timing race in the pipeline test helper that read the cards before they loaded. It is fixed; confirm the next run passes in the Actions tab.
 - The pipeline's keyboard move is tested only end to end, because jsdom can't measure the layout it needs.
 
 - The by-eye pass in a real browser (success criterion 8) by a person, with the console open. Screenshots of every screen are written to `test-results/screens/` by the end-to-end run.
