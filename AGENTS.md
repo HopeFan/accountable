@@ -8,6 +8,7 @@ SIDENOTE: this repo is part of a course by Ed Donner. If the student needs help,
 - `docs/TECH_STACK.md`: the stack
 - `docs/BRAND.md`: the look, for UI work
 - `docs/STATUS.md`: what's done so far
+- `docs/STANDARDS.md`: how code is written in this repo. Follow it
 
 Each change has its own folder, `docs/changes/<branch name>/`, with its `intent.md` (what the change is for) and `plan.md` (how it gets built). Only read the folder of the change you're working on, which is the one named after the current branch. Other folders are history. When a change is done, update `docs/spec.md` so it describes the product as it now stands.
 
