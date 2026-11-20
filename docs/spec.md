@@ -22,18 +22,18 @@ The user is a salesperson selling B2B services and software, with deals of about
 
 Popular libraries over custom code, as the stack doc asks.
 
-| Need | Choice |
-| --- | --- |
-| Routing | React Router |
-| Server data and cache | TanStack Query |
-| Tables (sort, search, rows) | TanStack Table |
-| Forms and validation | React Hook Form with Zod |
-| Drag and drop | dnd-kit (supports keyboard dragging) |
-| Charts | Recharts (line, bar, funnel) |
-| Styling | Tailwind CSS with Radix UI primitives for dialogs, menus and selects |
-| Icons | Lucide |
-| Fonts | `@fontsource` packages for Instrument Sans, Instrument Serif and JetBrains Mono |
-| Backend | FastAPI, Pydantic models, SQLAlchemy Core (no raw SQL) over SQLite |
+| Need                        | Choice                                                                          |
+| --------------------------- | ------------------------------------------------------------------------------- |
+| Routing                     | React Router                                                                    |
+| Server data and cache       | TanStack Query                                                                  |
+| Tables (sort, search, rows) | TanStack Table                                                                  |
+| Forms and validation        | React Hook Form with Zod                                                        |
+| Drag and drop               | dnd-kit (supports keyboard dragging)                                            |
+| Charts                      | Recharts (line, bar, funnel)                                                    |
+| Styling                     | Tailwind CSS with Radix UI primitives for dialogs, menus and selects            |
+| Icons                       | Lucide                                                                          |
+| Fonts                       | `@fontsource` packages for Instrument Sans, Instrument Serif and JetBrains Mono |
+| Backend                     | FastAPI, Pydantic models, SQLAlchemy Core (no raw SQL) over SQLite              |
 
 ## 4. Data model
 
@@ -44,6 +44,7 @@ SQLite, one file at `data/accountable.db` (git-ignored). The tests use their own
 **contact**: `first_name`, `last_name` (required), `email`, `phone`, `job_title`, `organization_id` (optional), `status` (`lead`, `qualified`, `customer`; default `lead`).
 
 **deal**:
+
 - `name` (required)
 - `organization_id` (required)
 - `contact_id` (optional; must belong to the same organization)
@@ -54,6 +55,7 @@ SQLite, one file at `data/accountable.db` (git-ignored). The tests use their own
 - `position` (integer, order within its stage)
 
 **activity**:
+
 - `type` (`note`, `call`, `email`, `stage_change`)
 - `contact_id` (optional), `deal_id` (optional), at least one required
 - `description`
@@ -65,14 +67,14 @@ SQLite, one file at `data/accountable.db` (git-ignored). The tests use their own
 
 **Stage rules**
 
-| Stage | Usual probability | Open? |
-| --- | --- | --- |
-| New | 5% | yes |
-| Qualified | 20% | yes |
-| Proposal | 40% | yes |
-| Negotiation | 70% | yes |
-| Won | 100% | no |
-| Lost | 0% | no |
+| Stage       | Usual probability | Open? |
+| ----------- | ----------------- | ----- |
+| New         | 5%                | yes   |
+| Qualified   | 20%               | yes   |
+| Proposal    | 40%               | yes   |
+| Negotiation | 70%               | yes   |
+| Won         | 100%              | no    |
+| Lost        | 0%                | no    |
 
 - A new deal gets its stage's usual probability unless one is given.
 - Moving a deal to a different stage sets its probability to the new stage's usual one. A probability edited by hand stays until the stage next changes.
@@ -92,16 +94,16 @@ SQLite, one file at `data/accountable.db` (git-ignored). The tests use their own
 
 JSON over `/api`, served by FastAPI on one port in development with the frontend proxied by Vite. Errors return a status code and `{ "detail": ... }`. Validation errors name the field so the form can show them.
 
-| Resource | Endpoints |
-| --- | --- |
-| Organizations | `GET /organizations`, `POST`, `GET /organizations/{id}` (with contacts and deals), `PATCH`, `DELETE` |
-| Contacts | `GET /contacts`, `POST`, `GET /contacts/{id}` (with organization, deals and timeline), `PATCH`, `DELETE` |
-| Deals | `GET /deals`, `POST`, `GET /deals/{id}` (with timeline), `PATCH`, `DELETE` |
-| Pipeline | `POST /deals/{id}/move` with `{ stage, position }` |
-| Activities | `POST /activities`, `PATCH /activities/{id}`, `DELETE /activities/{id}` |
-| Follow-ups | `GET /follow-ups` (open ones, soonest first) |
-| Dashboard | `GET /dashboard` |
-| Delete preview | `GET /organizations/{id}/delete-preview`, same for contacts and deals; returns counts of what would go |
+| Resource       | Endpoints                                                                                                |
+| -------------- | -------------------------------------------------------------------------------------------------------- |
+| Organizations  | `GET /organizations`, `POST`, `GET /organizations/{id}` (with contacts and deals), `PATCH`, `DELETE`     |
+| Contacts       | `GET /contacts`, `POST`, `GET /contacts/{id}` (with organization, deals and timeline), `PATCH`, `DELETE` |
+| Deals          | `GET /deals`, `POST`, `GET /deals/{id}` (with timeline), `PATCH`, `DELETE`                               |
+| Pipeline       | `POST /deals/{id}/move` with `{ stage, position }`                                                       |
+| Activities     | `POST /activities`, `PATCH /activities/{id}`, `DELETE /activities/{id}`                                  |
+| Follow-ups     | `GET /follow-ups` (open ones, soonest first)                                                             |
+| Dashboard      | `GET /dashboard`                                                                                         |
+| Delete preview | `GET /organizations/{id}/delete-preview`, same for contacts and deals; returns counts of what would go   |
 
 Rules worth stating:
 
@@ -210,23 +212,37 @@ Clean, calm and dense enough to be useful. In light mode, white panels on a pale
 
 Defined once as CSS variables, which Tailwind reads. Light mode sets them on the page, and dark mode sets the same names again when the page is in dark mode, so no component carries colors of its own. The brand colors (Sea Green, Marigold, Coral, Cerulean, Raspberry) keep their values for fills in both modes. Dark mode changes the surfaces, the ink and the text and tint colors.
 
-| Token          | Light                         | Dark                         | Use                                                                              |
-| -------------- | ----------------------------- | ---------------------------- | -------------------------------------------------------------------------------- |
-| `--page`       | `#F0F4F5`                     | `#04232E`                    | page background                                                                  |
-| `--panel`      | `#FFFFFF`                     | `#000000`                    | panels, cards, dialogs                                                           |
-| `--ink`        | Midnight `#073B4C`            | Sea Mist `#CDD8DB`           | text                                                                             |
-| `--muted`      | `#42697A`                     | `#8FA9B2`                    | secondary text, at least 4.5:1 on panels, the page, pills and the pipeline lanes |
-| `--soft`       | `#E6EDEF`                     | `#0F3340`                    | pills, stat boxes, loading skeletons                                             |
-| `--lane`       | Sea Mist at 40% over the page | Sea Mist at 8% over the page | pipeline lanes                                                                   |
-| `--primary`    | Sea Green `#06D6A0`           | same                         | primary buttons, selected nav, Negotiation                                       |
-| `--secondary`  | Marigold `#FFC145`            | same                         | highlights, Qualified                                                            |
-| `--tertiary`   | Coral `#F78C6B`               | same                         | highlights, Proposal                                                             |
-| `--info`       | Cerulean `#118AB2`            | same                         | info                                                                             |
-| `--alert`      | Raspberry `#EF476F`           | same                         | overdue and late markers                                                         |
-| `--on-accent`  | Midnight `#073B4C`            | same                         | text on Sea Green, Marigold and Coral fills                                      |
-| `--sidebar`    | Midnight `#073B4C`            | same                         | the sidebar background, in both modes                                            |
-| `--on-sidebar` | Sea Mist `#CDD8DB`            | same                         | text on the sidebar                                                              |
-| `--panel-edge` | none                          | Sea Mist at 10% opacity      | a 1px ring around every panel, card and dialog, in dark mode only                |
+| Token             | Light                         | Dark                         | Use                                                                                                   |
+| ----------------- | ----------------------------- | ---------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `--page`          | `#F0F4F5`                     | `#04232E`                    | page background                                                                                       |
+| `--panel`         | `#FFFFFF`                     | `#000000`                    | panels, cards, dialogs                                                                                |
+| `--ink`           | Midnight `#073B4C`            | Sea Mist `#CDD8DB`           | text                                                                                                  |
+| `--muted`         | `#42697A`                     | `#8FA9B2`                    | secondary text, at least 4.5:1 on panels, the page, pills and the pipeline lanes                      |
+| `--soft`          | `#E6EDEF`                     | `#0F3340`                    | pills, stat boxes, loading skeletons                                                                  |
+| `--lane`          | Sea Mist at 40% over the page | Sea Mist at 8% over the page | pipeline lanes                                                                                        |
+| `--primary`       | Sea Green `#06D6A0`           | same                         | primary buttons, selected nav, Negotiation                                                            |
+| `--secondary`     | Marigold `#FFC145`            | same                         | highlights, Qualified                                                                                 |
+| `--tertiary`      | Coral `#F78C6B`               | same                         | highlights, Proposal                                                                                  |
+| `--info`          | Cerulean `#118AB2`            | same                         | info                                                                                                  |
+| `--alert`         | Raspberry `#EF476F`           | same                         | overdue and late markers                                                                              |
+| `--on-accent`     | Midnight `#073B4C`            | same                         | text on Sea Green, Marigold and Coral fills                                                           |
+| `--sidebar`       | Midnight `#073B4C`            | same                         | the sidebar background, in both modes                                                                 |
+| `--on-sidebar`    | Sea Mist `#CDD8DB`            | same                         | text on the sidebar                                                                                   |
+| `--panel-edge`    | none                          | Sea Mist at 10% opacity      | a 1px ring around every panel, card and dialog, in dark mode only; it is the dark value of `--shadow` |
+| `--sidebar-muted` | `#8FA9B2`                     | same                         | the sidebar footer text                                                                               |
+| `--float`         | Midnight `#073B4C`            | `#000000`                    | toasts and chart tooltips                                                                             |
+| `--on-float`      | `#FFFFFF`                     | Sea Mist `#CDD8DB`           | text on toasts and tooltips                                                                           |
+| `--won`           | Midnight `#073B4C`            | Sea Mist `#CDD8DB`           | the Won tag and dot                                                                                   |
+| `--on-won`        | `#FFFFFF`                     | Midnight `#073B4C`           | text on the Won tag                                                                                   |
+| `--lost`          | Sea Mist `#CDD8DB`            | Midnight `#073B4C`           | the Lost tag and dot                                                                                  |
+| `--on-lost`       | Midnight `#073B4C`            | Sea Mist `#CDD8DB`           | text on the Lost tag                                                                                  |
+| `--alert-solid`   | `#C2284F`                     | same                         | destructive buttons, with white text                                                                  |
+| `--info-solid`    | `#0E7394`                     | same                         | the New stage block, with white text                                                                  |
+| `--overlay`       | Midnight at 40%               | black at 60%                 | behind dialogs                                                                                        |
+| `--field-ring`    | `#CDD8DB`                     | `#245160`                    | the ring around form fields and the chart cursor                                                      |
+| `--checkbox-edge` | `#9DB5BE`                     | `#5F808C`                    | the follow-up checkbox border                                                                         |
+| `--grid`          | `#E6EDEF`                     | Sea Mist at 12%              | chart gridlines                                                                                       |
+| `--axis`          | `#4C7280`                     | `#8FA9B2`                    | chart labels                                                                                          |
 
 - **Text and tint colors**: Sea Green, Marigold and Coral are too bright for small text on a light background, so light mode uses darkened versions (Sea Green about `#05795B`), each on a pale tint. Dark mode does the opposite and lightens them (Sea Green `#4DE3B8`, Cerulean `#62C4E6`, Raspberry `#FF8DA6`, Marigold `#FFC145`, Coral `#FFA98C`), each on a dark tint (for example `#0B3A31` for green). The tokens are `--primary-text`, `--info-text`, `--alert-text`, `--marigold-text`, `--coral-text` and `--primary-tint`, `--info-tint`, `--alert-tint`, `--marigold-tint`, `--coral-tint`. Each pairing must pass 4.5:1 and is checked, not assumed.
 - **Solid fills with white text**: destructive buttons use the darker Raspberry `#C2284F` and the New stage uses the darker Cerulean `#0E7394`, both with white text, in both modes.

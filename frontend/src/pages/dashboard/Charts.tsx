@@ -28,7 +28,7 @@ export function chartData(monthly: Month[]) {
   return monthly.map((m) => ({ ...m, label: monthLabel(m.month) }));
 }
 
-const axis = { fontSize: 11, fill: "#4C7280" };
+const axis = { fontSize: 11, fill: "var(--axis)" };
 const mono = { ...axis, fontFamily: "JetBrains Mono, monospace" };
 
 function Tip({
@@ -43,7 +43,7 @@ function Tip({
   if (!active || !payload?.length) return null;
   const m = payload[0].payload;
   return (
-    <div className="rounded-lg bg-ink px-3 py-2 text-xs text-white shadow-[var(--shadow-lift)]">
+    <div className="rounded-lg bg-float px-3 py-2 text-xs text-on-float shadow-[var(--shadow-lift)]">
       <div className="mb-0.5 opacity-80">{monthLabelLong(m.month)}</div>
       <div className="font-mono font-semibold">
         {kind === "revenue"
@@ -101,7 +101,7 @@ export function RevenueChart({ monthly }: { monthly: Month[] }) {
             data={data}
             margin={{ top: 8, right: 12, bottom: 4, left: 4 }}
           >
-            <CartesianGrid vertical={false} stroke="#E6EDEF" />
+            <CartesianGrid vertical={false} stroke="var(--grid)" />
             <XAxis
               dataKey="label"
               tick={axis}
@@ -124,13 +124,13 @@ export function RevenueChart({ monthly }: { monthly: Month[] }) {
             />
             <Tooltip
               content={<Tip kind="revenue" />}
-              cursor={{ stroke: "#CDD8DB" }}
+              cursor={{ stroke: "var(--field-ring)" }}
             />
             <Area
               type="monotone"
               dataKey="revenue"
               stroke="none"
-              fill="#06D6A0"
+              fill="var(--primary)"
               fillOpacity={0.12}
               isAnimationActive={false}
               activeDot={false}
@@ -138,9 +138,14 @@ export function RevenueChart({ monthly }: { monthly: Month[] }) {
             <Line
               type="monotone"
               dataKey="revenue"
-              stroke="#06D6A0"
+              stroke="var(--primary)"
               strokeWidth={3}
-              dot={{ r: 3.5, fill: "#fff", stroke: "#06D6A0", strokeWidth: 2 }}
+              dot={{
+                r: 3.5,
+                fill: "var(--panel)",
+                stroke: "var(--primary)",
+                strokeWidth: 2,
+              }}
               activeDot={{ r: 5 }}
               isAnimationActive={false}
             />
@@ -177,7 +182,7 @@ export function DealsWonChart({ monthly }: { monthly: Month[] }) {
             data={data}
             margin={{ top: 8, right: 12, bottom: 4, left: 4 }}
           >
-            <CartesianGrid vertical={false} stroke="#E6EDEF" />
+            <CartesianGrid vertical={false} stroke="var(--grid)" />
             <XAxis
               dataKey="label"
               tick={axis}
@@ -200,11 +205,11 @@ export function DealsWonChart({ monthly }: { monthly: Month[] }) {
             />
             <Tooltip
               content={<Tip kind="deals" />}
-              cursor={{ fill: "#E6EDEF", opacity: 0.6 }}
+              cursor={{ fill: "var(--grid)", opacity: 0.6 }}
             />
             <Bar
               dataKey="deals_won"
-              fill="#118AB2"
+              fill="var(--info)"
               radius={[5, 5, 0, 0]}
               maxBarSize={28}
               isAnimationActive={false}
@@ -212,7 +217,7 @@ export function DealsWonChart({ monthly }: { monthly: Month[] }) {
               <LabelList
                 dataKey="deals_won"
                 position="top"
-                style={{ ...mono, fontSize: 11, fill: "#073B4C" }}
+                style={{ ...mono, fontSize: 11, fill: "var(--ink)" }}
                 formatter={(v: unknown) => (Number(v) > 0 ? String(v) : "")}
               />
             </Bar>

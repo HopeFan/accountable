@@ -37,7 +37,7 @@ export function FollowUpList({ items }: { items: Activity[] }) {
               { onSuccess: () => toast.success("Follow-up marked done") },
             )
           }
-          className="mt-0.5 grid size-[18px] place-items-center rounded-[5px] border-2 border-[#9DB5BE] bg-panel hover:border-ink data-[state=checked]:border-primary data-[state=checked]:bg-primary"
+          className="mt-0.5 grid size-[18px] place-items-center rounded-[5px] border-2 border-checkbox-edge bg-panel hover:border-ink data-[state=checked]:border-primary data-[state=checked]:bg-primary"
         >
           <Checkbox.Indicator>
             <Check className="size-3" aria-hidden />

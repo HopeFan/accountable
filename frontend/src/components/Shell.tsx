@@ -6,6 +6,7 @@ import {
   Users,
 } from "lucide-react";
 import { NavLink, Outlet } from "react-router-dom";
+import { ThemeToggle } from "./ThemeToggle";
 import { cx } from "./ui";
 
 const NAV = [
@@ -19,9 +20,9 @@ const NAV = [
 export function Shell() {
   return (
     <div className="flex min-h-screen">
-      <aside className="sticky top-0 flex h-screen w-[232px] shrink-0 flex-col gap-7 bg-ink px-4 py-6 text-mist">
+      <aside className="sticky top-0 flex h-screen w-[232px] shrink-0 flex-col gap-7 bg-sidebar px-4 py-6 text-on-sidebar">
         <div className="flex items-center gap-2.5 px-2 text-[19px] font-bold tracking-tight text-white">
-          <span className="grid size-[30px] place-items-center rounded-[9px] bg-primary text-[17px] text-ink">
+          <span className="grid size-[30px] place-items-center rounded-[9px] bg-primary text-[17px] text-on-accent">
             A
           </span>
           Accountable
@@ -36,7 +37,7 @@ export function Shell() {
                 cx(
                   "flex items-center gap-3 rounded-[10px] px-3 py-2.5 font-medium transition-colors",
                   isActive
-                    ? "bg-primary font-semibold text-ink"
+                    ? "bg-primary font-semibold text-on-accent"
                     : "hover:bg-white/10 hover:text-white",
                 )
               }
@@ -46,9 +47,12 @@ export function Shell() {
             </NavLink>
           ))}
         </nav>
-        <p className="mt-auto px-2 text-xs text-[#8fa9b2]">
-          Data is saved on this computer
-        </p>
+        <div className="mt-auto flex flex-col gap-3">
+          <ThemeToggle />
+          <p className="px-2 text-xs text-sidebar-muted">
+            Data is saved on this computer
+          </p>
+        </div>
       </aside>
       <main className="min-w-0 flex-1 p-8">
         <div className="mx-auto max-w-[1440px]">

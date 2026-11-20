@@ -17,6 +17,8 @@ The MVP is built, phases 0 to 8 of `docs/changes/mvp/plan.md`. All tests and `np
 - **Improve step** (`docs/IMPROVE.md`): at Deploy, after the review fixes and before the merge, look at what went wrong, add corrections for repeated mistakes, remove what is out of date and improve the file itself. `AGENTS.md` points to it.
 - **Pipeline fix**: if loading deals fails, the Pipeline page now shows the error with a retry button instead of a skeleton forever. Its drag logic moved into pure functions in `boardMath.ts` so it can be unit tested.
 
+- **Dark mode** (`docs/changes/dark-mode/`): a toggle at the bottom of the sidebar, remembered in local storage and applied before the first paint. All colors are tokens in `tokens.css` (a guard test fails on any hex color in a component), with a dark block under `:root[data-theme="dark"]`. The contrast test checks every pairing in both modes. New tests: `theme.test.ts`, `ThemeToggle.test.tsx`, `tokens.test.ts` and `e2e/theme.spec.ts`. Screenshots of the dashboard and pipeline in both modes are in `docs/changes/dark-mode/`. Still to do: a person's by-eye pass in both modes.
+
 ## How to run
 
 You need Node 24 or later and uv. The first run needs internet to fetch packages; after that the app works offline.
@@ -34,7 +36,7 @@ npm run dev      # API on :8000, app on http://localhost:5173
 
 - Only tested on a Mac. Linux and Windows are untested.
 - No pagination: tables load every record and search and sort run in the browser.
-- Light mode only, laptop screens from 1280px wide.
+- Laptop screens from 1280px wide. The device's own dark mode setting isn't followed.
 - Sample dates are relative to the day the database was created, so an old database shows stale late and overdue items. `npm run seed` refreshes it.
 - The pipeline shows the first five cards of Won and Lost, with a count of the earlier ones.
 - Selects are native `<select>` elements, not Radix selects.

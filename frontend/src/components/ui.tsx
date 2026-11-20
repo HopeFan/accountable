@@ -13,9 +13,9 @@ export const cx = (...c: (string | false | null | undefined)[]) =>
 const base =
   "inline-flex h-10 items-center justify-center gap-2 rounded-[10px] px-4 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-60";
 export const buttonClass = {
-  primary: `${base} bg-primary text-ink hover:brightness-95 active:brightness-90`,
+  primary: `${base} bg-primary text-on-accent hover:brightness-95 active:brightness-90`,
   secondary: `${base} bg-panel text-ink shadow-panel hover:bg-soft`,
-  danger: `${base} bg-alert-text text-white hover:brightness-95 active:brightness-90`,
+  danger: `${base} bg-alert-solid text-white hover:brightness-95 active:brightness-90`,
   ghost: `${base} text-ink hover:bg-soft`,
 };
 
@@ -107,8 +107,8 @@ export const STAGE_STYLE: Record<
     fg: "text-primary-text",
     dot: "var(--primary)",
   },
-  won: { bg: "bg-ink", fg: "text-white", dot: "var(--ink)" },
-  lost: { bg: "bg-mist", fg: "text-ink", dot: "var(--mist)" },
+  won: { bg: "bg-won", fg: "text-on-won", dot: "var(--won)" },
+  lost: { bg: "bg-lost", fg: "text-on-lost", dot: "var(--lost)" },
 };
 
 export function StageTag({ stage }: { stage: Stage }) {
@@ -211,7 +211,7 @@ export function ErrorState({
 }
 
 export const inputClass =
-  "h-10 w-full rounded-[10px] bg-page px-3 text-sm text-ink placeholder:text-muted ring-1 ring-mist focus-visible:outline-2 focus-visible:outline-info aria-[invalid=true]:ring-alert";
+  "h-10 w-full rounded-[10px] bg-page px-3 text-sm text-ink placeholder:text-muted ring-1 ring-field-ring focus-visible:outline-2 focus-visible:outline-info aria-[invalid=true]:ring-alert";
 
 export function Field({
   label,
