@@ -33,6 +33,7 @@
   --won: #073b4c;
   --on-won: #ffffff;
   --lost: #cdd8db;
+  --lost-dot: #cdd8db;
   --on-lost: #073b4c;
   --alert-solid: #c2284f;
   --info-solid: #0e7394;
@@ -69,6 +70,7 @@
   --won: #cdd8db;
   --on-won: #073b4c;
   --lost: #073b4c;
+  --lost-dot: #5f808c;
   --on-lost: #cdd8db;
   --overlay: rgba(0, 0, 0, 0.6);
   --field-ring: #245160;
@@ -113,6 +115,7 @@
   --color-won: var(--won);
   --color-on-won: var(--on-won);
   --color-lost: var(--lost);
+  --color-lost-dot: var(--lost-dot);
   --color-on-lost: var(--on-lost);
   --color-alert-solid: var(--alert-solid);
   --color-info-solid: var(--info-solid);

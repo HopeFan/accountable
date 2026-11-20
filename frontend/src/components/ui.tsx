@@ -108,7 +108,7 @@ export const STAGE_STYLE: Record<
     dot: "var(--primary)",
   },
   won: { bg: "bg-won", fg: "text-on-won", dot: "var(--won)" },
-  lost: { bg: "bg-lost", fg: "text-on-lost", dot: "var(--lost)" },
+  lost: { bg: "bg-lost", fg: "text-on-lost", dot: "var(--lost-dot)" },
 };
 
 export function StageTag({ stage }: { stage: Stage }) {

@@ -234,7 +234,8 @@ Defined once as CSS variables, which Tailwind reads. Light mode sets them on the
 | `--on-float`      | `#FFFFFF`                     | Sea Mist `#CDD8DB`           | text on toasts and tooltips                                                                           |
 | `--won`           | Midnight `#073B4C`            | Sea Mist `#CDD8DB`           | the Won tag and dot                                                                                   |
 | `--on-won`        | `#FFFFFF`                     | Midnight `#073B4C`           | text on the Won tag                                                                                   |
-| `--lost`          | Sea Mist `#CDD8DB`            | Midnight `#073B4C`           | the Lost tag and dot                                                                                  |
+| `--lost`          | Sea Mist `#CDD8DB`            | Midnight `#073B4C`           | the Lost tag                                                                                          |
+| `--lost-dot`      | Sea Mist `#CDD8DB`            | slate `#5F808C`              | the Lost dot, at least 3:1 on panels and the page                                                     |
 | `--on-lost`       | Midnight `#073B4C`            | Sea Mist `#CDD8DB`           | text on the Lost tag                                                                                  |
 | `--alert-solid`   | `#C2284F`                     | same                         | destructive buttons, with white text                                                                  |
 | `--info-solid`    | `#0E7394`                     | same                         | the New stage block, with white text                                                                  |
@@ -263,7 +264,7 @@ Used for pipeline column accents, stage tags and funnel bars.
 | Won         | Midnight, with white text     | Sea Mist, with Midnight text   |
 | Lost        | Sea Mist, with Midnight text  | Midnight, with Sea Mist text   |
 
-Raspberry is kept for overdue and late things, so a Lost deal doesn't look like an alert. Won and Lost use Midnight and Sea Mist, swapped in dark mode so Won still stands out and Lost still recedes, and that keeps Sea Green and Raspberry free for meaning "go" and "alert". Color is never the only signal: every tag also has the stage's name.
+Raspberry is kept for overdue and late things, so a Lost deal doesn't look like an alert. Won and Lost use Midnight and Sea Mist, swapped in dark mode so Won still stands out and Lost still recedes (the Lost dot is a lighter slate in dark mode so it stays visible on black), and that keeps Sea Green and Raspberry free for meaning "go" and "alert". Color is never the only signal: every tag also has the stage's name.
 
 ### Chart colors
 
