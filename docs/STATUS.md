@@ -2,7 +2,7 @@
 
 ## Where we are
 
-The MVP is built, phases 0 to 8 of `docs/plan.md`. All tests pass. Nothing is committed yet.
+The MVP is built, phases 0 to 8 of `docs/changes/mvp/plan.md`. All tests pass. Nothing is committed yet.
 
 ## Done
 
@@ -37,4 +37,3 @@ npm run dev      # API on :8000, app on http://localhost:5173
 ## Still to do
 
 - The by-eye pass in a real browser (success criterion 8) by a person, with the console open. Screenshots of every screen are written to `test-results/screens/` by the end-to-end run.
-- Confirm the open defaults at the top of `docs/spec.md`.

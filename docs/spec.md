@@ -1,39 +1,22 @@
-# Spec: the Accountable MVP
+# Spec: Accountable
 
-Source: `docs/intent.md`. Stack: `docs/TECH_STACK.md`. Look: `docs/BRAND.md`.
+What Accountable is and does today. This is the first document to read. Each change to the product has its own folder in `docs/changes/`, and when a change is done this spec is updated to match. Stack: `docs/TECH_STACK.md`. Look: `docs/BRAND.md`.
 
-## Concerns
+## 1. Problem and goal
 
-Read these first. Each has the decision I made in this spec, so you can overrule it before building.
+A small business keeps track of its customers and sales in spreadsheets, inboxes and people's heads. Nobody can see at a glance which companies it deals with, who its contacts are, what's in the sales pipeline, what happened last with a customer or what needs doing next.
 
-**Confirmed by you:** concern 3 (stage colors), 5 (funnel counts current stage or later), 8 (deleting a contact keeps their deals, with no main contact) and 9 (a contact's organization is optional). The rest are my defaults and stand unless you say otherwise.
+Accountable is a business management system: a sales CRM that will grow into a full Business OS, including ERP. Today it is a complete sales CRM for one person, running on their own computer. Think of it as a private Salesforce that does the everyday CRM essentials really well, and feels sharp, modern and professional.
 
-1. **There is no brand skill.** Only `docs/BRAND.md` exists, so the design follows that. If you meant a different skill, point me to it.
-2. **The brand's Google Fonts conflict with "no internet needed".** The app must work offline, so the fonts are installed from npm (`@fontsource/*`) and served by the app, never loaded from Google.
-3. **Six stages, five brand colors.** I map them as in "Stage colors" below. Raspberry is kept for overdue and late things, so a Lost deal doesn't look like an alert.
-4. **Stage changes are timeline entries, but the intent's activity types are only note, call and email.** I add a fourth, system-made type, `stage_change`. These entries can't be edited. They can be deleted by hand, like any entry, but moving a deal never deletes them.
-5. **"How much value reaches each stage" needs a definition.** Stage history for Lost deals is thin, so the funnel counts each non-lost deal at its current stage and every earlier one. Lost deals aren't counted and are shown beside the funnel as a separate figure.
-6. **Closing a deal changes its close date.** The intent says "expected or actual close date". Moving a deal to Won or Lost sets its close date to today. Revenue won per month depends on this.
-7. **A deal's contact must work at the deal's organization.** The intent doesn't say. I validate it, so the pipeline and the contact pages never disagree.
-8. **Deletion rules the intent leaves open.** Organization: deletes its contacts, deals and activities (decided). Contact: their own activities are deleted, their deals stay with no main contact. Deal: its activities are deleted. The confirmation says exactly what goes.
-9. **A contact without an organization is allowed** (a new lead often has no company yet). A deal always has one.
-10. **Sample dates are relative to the day the data is created.** That keeps overdue and late deals true on any day, but a database created months ago drifts. `npm run seed` refreshes it.
-11. **Money format.** "Always shown with its currency" is tight in tables, so amounts read `USD 48,000` everywhere and compact on chart axes, such as `USD 50k`.
-12. **Library and tooling choices the stack doc leaves open** are listed in "Libraries". Say so if you'd choose differently.
-13. **No pagination.** Sample data is about 100 records and one user's data stays small, so tables load everything and search and sort run in the browser. This needs a rethink before the team data arrives.
-14. **Not covered yet:** keyboard accessibility of drag and drop, and a minimum screen width. I design for laptops from 1280px wide and include keyboard dragging because the chosen library supports it.
+The user is a salesperson selling B2B services and software, with deals of about USD 5k to 100k, a few contacts per company and sales cycles of weeks to months. It has five sections: Dashboard, Organizations, Contacts, Deals and Pipeline. The code and data model are meant to be a clean foundation for growth, and every interaction should feel instant, with nothing ever lost.
 
----
+## 2. Constraints and out of scope
 
-## 1. Goal
-
-A complete sales CRM for one person, running on their own computer, that feels sharp and professional. The user is a salesperson selling B2B services and software, with deals of about USD 5k to 100k. It has five sections: Dashboard, Organizations, Contacts, Deals and Pipeline.
-
-Success is the eight criteria in `docs/intent.md` plus its ninth: daily use, demo-ready, a clean foundation for growth, fast and reliable.
-
-## 2. Out of scope
-
-Sign-in and users, dark mode, phone layouts, AI, email/calendar/phone integrations, other currencies, extra reports, tags and custom fields, editable stages, import and export. The tokens in section 8 are built so dark mode can be added later.
+- It runs locally with one documented command that works on Mac, Linux and Windows (only the Mac is tested), and needs no internet connection to use. Fonts are installed from npm (`@fontsource/*`) and served by the app, never loaded from another host.
+- Every change is kept: it survives a browser refresh and a restart.
+- One documented command resets the data to the sample data.
+- Light mode only, designed for laptops from 1280px wide. There is no pagination: tables load every record and search and sort run in the browser, which is fine for one user's data but needs a rethink before team data arrives.
+- Not part of the product: sign-in, user accounts or several users, dark mode, phone layouts, AI features, email/calendar/phone integrations, currencies other than US dollars, reports beyond the dashboard, tags and custom fields, editable stages, import and export. The tokens in section 8 are built so dark mode can be added later.
 
 ## 3. Libraries
 
@@ -78,7 +61,7 @@ SQLite, one file at `data/accountable.db` (git-ignored). The tests use their own
 - `follow_up_date` (optional date)
 - `follow_up_done` (boolean)
 
-For `stage_change` entries the description is generated, such as "Moved from Proposal to Negotiation", and the entry hangs on the deal only.
+`stage_change` is made by the system, never by hand. Its description is generated, such as "Moved from Proposal to Negotiation", the entry hangs on the deal only, and it can't be edited.
 
 **Stage rules**
 
@@ -96,6 +79,10 @@ For `stage_change` entries the description is generated, such as "Moved from Pro
 - Moving a deal to Won or Lost sets its close date to today.
 - Expected revenue of an open deal is `value × probability / 100`. For Won deals it equals the value, for Lost deals it is 0.
 - A deal is **late** when it is open and its close date is before today (local date).
+
+**Deletion.** Deleting an organization also deletes its contacts, deals and their activities. Deleting a contact deletes their own activities, and their deals stay with no main contact. Deleting a deal deletes its activities. Every delete confirmation says exactly what goes. A `stage_change` entry can be deleted by hand like any entry, but moving a deal never deletes them.
+
+**Other rules.** A contact's organization is optional, because a new lead often has no company yet; a deal always has one. A deal's contact must work at the deal's organization, so the pipeline and the contact pages never disagree. Money reads `USD 48,000` everywhere, and compact on chart axes, such as `USD 50k`.
 
 **Timelines.** A deal's timeline is all activities with its `deal_id`. A contact's timeline is activities with that `contact_id`, plus activities on deals where they are the main contact. Both are newest first by `occurred_at`.
 
@@ -122,12 +109,12 @@ Rules worth stating:
 - **Edit** of a deal through `PATCH` that changes `stage` behaves like a move and goes to the end of the new column.
 - **Create** of a deal takes an optional `position`; without one it is added at the end of its stage's column.
 - **Dashboard** returns all figures in one response so the figures always agree with each other.
-- Lists return everything (concern 13).
+- Lists return everything (no pagination).
 - List responses include the joined names the tables show, such as the organization's name on a deal.
 
 ## 6. Requirements by section
 
-Each is testable. "R" numbers are for the build plan and tests.
+Each is testable. "R" numbers are referenced by tests and plans.
 
 ### Every table (Organizations, Contacts, Deals)
 
@@ -145,7 +132,7 @@ Each is testable. "R" numbers are for the build plan and tests.
 - R9. **Figure tiles**: open pipeline value, expected revenue of the open pipeline, revenue won this month (with deals won this month), and overdue follow-ups.
 - R10. **Revenue won** line chart, the last 12 months including this one, from Won deals' close dates.
 - R11. **Deals won** bar chart for the same 12 months.
-- R12. **Sales funnel**: for each stage from New to Won, the value of non-lost deals at that stage or later (concern 5), with a plain note giving the value of Lost deals.
+- R12. **Sales funnel**: for each stage from New to Won, the value of non-lost deals at that stage or later (each deal counts at its current stage and every earlier one), with a plain note giving the value of Lost deals.
 - R13. **Recent activity**: the latest 10 activities of all types, including stage changes, each linking to its deal or contact.
 - R14. **Follow-ups**: open follow-ups, overdue ones first and marked in Raspberry, then upcoming by date. Each has a checkbox that marks it done and removes it from the list at once, and a link to its deal or contact.
 - R9a. **Open pipeline by stage**: a strip under the tiles with one block per open stage (New to Negotiation), as wide as its share of the open value. Each block shows the stage, its deal count and its value. A slim bar below shows the stage's probability of close, with the expected revenue it stands for.
@@ -193,7 +180,7 @@ Each is testable. "R" numbers are for the build plan and tests.
 
 ## 7. Sample data
 
-Created by the backend with dates relative to the day it runs (concern 10). It is fixed in code, not random, so tests can rely on it. The same file serves `npm run dev` and `npm run seed`.
+Created by the backend with dates relative to the day it runs so overdue and late deals are true on any day (a database created months ago drifts, and `npm run seed` refreshes it). It is fixed in code, not random, so tests can rely on it. The same file serves `npm run dev` and `npm run seed`.
 
 - **12 organizations** across software, logistics, healthcare, manufacturing, finance, retail, education and energy, with realistic names, websites and short notes.
 - **About 35 contacts**, 2 to 4 per organization, with a few leads and a few customers with no deals open. Statuses are roughly 40% lead, 25% qualified, 35% customer.
@@ -246,7 +233,7 @@ Used for pipeline column accents, stage tags and funnel bars.
 | Won | Midnight |
 | Lost | Sea Mist, with Midnight text |
 
-Won in Midnight and Lost in Sea Mist keep Sea Green and Raspberry free for meaning "go" and "alert". Color is never the only signal: every tag also has the stage's name.
+Raspberry is kept for overdue and late things, so a Lost deal doesn't look like an alert. Won in Midnight and Lost in Sea Mist keep Sea Green and Raspberry free for meaning "go" and "alert". Color is never the only signal: every tag also has the stage's name.
 
 ### Chart colors
 
@@ -260,13 +247,13 @@ Revenue line: Sea Green. Deals bars: Cerulean. Funnel bars: the stage colors. Al
 
 ### Screens
 
-**Dashboard.** The chosen design is mockup A, `docs/mockups/dashboard-a-overview.html` (screenshot beside it). Top: a greeting line in Instrument Serif and today's date. Then the four figure tiles in a row, and under them the open pipeline by stage strip. Then a two-thirds and one-third row: the revenue line chart next to the funnel. Then the deals-won bar chart next to the follow-ups list. The recent activity list sits at the bottom, full width.
+**Dashboard.** The design is mockup A, `docs/mockups/dashboard-a-overview.html` (screenshot beside it). Top: a greeting line in Instrument Serif and today's date. Then the four figure tiles in a row, and under them the open pipeline by stage strip. Then a two-thirds and one-third row: the revenue line chart next to the funnel. Then the deals-won bar chart next to the follow-ups list. The recent activity list sits at the bottom, full width.
 
 **Table pages.** Heading and Add button, a toolbar with the search box (and the status filter on Contacts), then a white panel with the table. Rows are 48px, the header text is small and muted, numbers are right-aligned in mono. The row menu is a three-dot button.
 
 **Record pages.** A header with the name, its tags (status or stage) and Edit and Delete. Below, two columns: details and linked records on the left, the timeline and Log activity on the right. Timeline items have a type icon in a colored circle.
 
-**Pipeline.** The chosen design is in `docs/mockups/dashboard-a-overview.html` (click Pipeline), with a screenshot in `docs/mockups/dashboard-a-pipeline.png`. A summary strip across the top (open deals, total value, expected revenue), then six columns of equal width that fit a laptop without sideways scrolling, each with a stage-colored dot in its header. Each column sits on a pale Sea Mist lane and its header shows the stage name, deal count, total value and expected revenue. Cards show the deal name, organization, value, probability and close date, and a late deal has its date in Raspberry with a "Late" tag. Cards are white with rounded corners and a soft shadow, lifting and tilting slightly while dragged. The column a card would drop into is tinted in Sea Green. After a stage change a short message says "Moved from X to Y". Won and Lost show their most recent cards and a count of the earlier ones. Each column ends with an Add deal button.
+**Pipeline.** The design is in `docs/mockups/dashboard-a-overview.html` (click Pipeline), with a screenshot in `docs/mockups/dashboard-a-pipeline.png`. A summary strip across the top (open deals, total value, expected revenue), then six columns of equal width that fit a laptop without sideways scrolling, each with a stage-colored dot in its header. Each column sits on a pale Sea Mist lane and its header shows the stage name, deal count, total value and expected revenue. Cards show the deal name, organization, value, probability and close date, and a late deal has its date in Raspberry with a "Late" tag. Cards are white with rounded corners and a soft shadow, lifting and tilting slightly while dragged. The column a card would drop into is tinted in Sea Green. After a stage change a short message says "Moved from X to Y". Won and Lost show their most recent cards and a count of the earlier ones. Each column ends with an Add deal button.
 
 **Dialogs and forms.** Centered, 480 to 560px, one column of fields, Cancel on the left of the actions and the primary action on the right. Primary buttons are Sea Green with Midnight text; destructive ones are Raspberry with white text.
 
@@ -296,19 +283,5 @@ Scripts as in the stack doc: `npm run dev`, `npm test`, `npm run seed`. `docs/ST
 
 - **Backend (pytest)**: the stage, probability, close-date and late rules; move and reorder (positions stay consecutive, probability and stage-change entry written); delete cascades and previews; timeline composition; follow-up states; dashboard figures against a small known data set; seed idempotence.
 - **Frontend (Vitest)**: money and date formatting, table sort and search logic, optimistic pipeline totals, form validation.
-- **End to end (Playwright with Chrome)**: one test per success criterion in the intent, on a test database with a fixed clock, covering add, search, sort, edit, delete with confirmation, status filter, drag to another column and within one with a refresh in between, logging an activity and a follow-up, marking it done, and the dashboard changing when a deal is won. Each test also fails if the browser console shows an error.
-- **By eye**: before calling it done, someone uses it end to end in a real browser and checks every screen against this spec and the brand (criterion 8).
-
-## 11. Suggested build order
-
-Each step ends with something that runs and is checked.
-
-1. **Foundation**: repo scripts, FastAPI and Vite wired together, SQLite tables, theme tokens and fonts, the sidebar shell with five empty pages.
-2. **Data and seed**: the full model, the seed data, `npm run seed`, reset test.
-3. **Organizations**: API, table, add/edit/delete with confirmation, record page. This builds the shared table and dialog components the next two reuse.
-4. **Contacts**, with the status filter and their pages.
-5. **Deals**, with the stage rules and late marking.
-6. **Activities and timelines**, including follow-ups and stage-change entries.
-7. **Pipeline**, with drag and drop, ordering and totals.
-8. **Dashboard**, with the charts.
-9. **Polish and verification**: empty and loading states, the full end-to-end run, the by-eye pass, `docs/STATUS.md`.
+- **End to end (Playwright with Chrome)**: one test per area of behavior, on a test database with a fixed clock, covering add, search, sort, edit, delete with confirmation, status filter, drag to another column and within one with a refresh in between, logging an activity and a follow-up, marking it done, and the dashboard changing when a deal is won. Each test also fails if the browser console shows an error.
+- **By eye**: before calling it done, someone uses it end to end in a real browser and checks every screen against this spec and the brand.
