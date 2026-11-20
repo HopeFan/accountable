@@ -168,3 +168,27 @@ test("Won and Lost show their latest cards and count the earlier ones", async ({
   await expect(col(page, "won").getByText("+ 7 earlier won deals")).toBeVisible();
   await expect(col(page, "lost").getByTestId("deal-card")).toHaveCount(5);
 });
+
+test("a move the server refuses goes back and says why", async ({ page, problems }) => {
+  problems.allow.push(/status of 409/);
+  await page.route("**/api/deals/*/move", (route) =>
+    route.fulfill({ status: 409, contentType: "application/json", body: JSON.stringify({ detail: "Someone else changed this deal" }) }),
+  );
+  await page.goto("/pipeline");
+  const target = col(page, "proposal");
+  const before = {
+    proposal: await target.getByTestId("column-value").textContent(),
+    open: await page.getByTestId("open-expected").textContent(),
+    newCards: await names(page, "new"),
+  };
+  const from = await centre(page, "Driver app refresh");
+  const tb = (await target.boundingBox())!;
+  await drag(page, from, { x: tb.x + tb.width / 2, y: tb.y + 180 });
+
+  await expect(page.getByText("Couldn't move Driver app refresh: Someone else changed this deal")).toBeVisible();
+  await expect(col(page, "new").getByText("Driver app refresh")).toBeVisible();
+  await expect(target.getByText("Driver app refresh")).toHaveCount(0);
+  await expect(target.getByTestId("column-value")).toHaveText(before.proposal!);
+  await expect(page.getByTestId("open-expected")).toHaveText(before.open!);
+  expect(await names(page, "new")).toEqual(before.newCards);
+});

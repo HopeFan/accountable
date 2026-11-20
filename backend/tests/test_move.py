@@ -93,3 +93,20 @@ def test_edit_that_changes_stage_goes_to_end_of_new_column(client, board):
 
 def test_move_missing_deal(client):
     assert client.post("/api/deals/99/move", json={"stage": "new", "position": 0}).status_code == 404
+
+
+def test_moves_at_the_same_time_keep_positions_consecutive(client, make):
+    """Two drags in quick succession must not collide or leave gaps."""
+    from concurrent.futures import ThreadPoolExecutor
+
+    org = make.org()
+    ids = [make.deal(org["id"], name=f"d{i}", stage="new")["id"] for i in range(10)]
+
+    def go(i):
+        return client.post(f"/api/deals/{ids[i]}/move", json={"stage": "qualified" if i % 2 else "new", "position": 0}).status_code
+
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        codes = list(pool.map(go, range(10)))
+    assert codes == [200] * 10
+    for stage, expected in (("new", 5), ("qualified", 5)):
+        assert len(order(client, stage)) == expected  # order() also checks positions are 0..n-1

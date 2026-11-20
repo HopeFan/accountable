@@ -86,6 +86,7 @@ export function Contacts() {
           data={rows}
           columns={columns}
           noun="contact"
+          isEmpty={q.data.length === 0}
           searchLabel="Search contacts"
           rowLabel={(r) => r.name}
           onAdd={q.data.length === 0 ? () => setEditing("new") : undefined}

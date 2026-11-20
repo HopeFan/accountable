@@ -1,5 +1,6 @@
 """SQLAlchemy Core engine and table definitions."""
 import os
+import threading
 from pathlib import Path
 
 from sqlalchemy import (
@@ -86,6 +87,10 @@ activity = Table(
     Column("follow_up_done", Boolean, nullable=False, server_default="0"),
     *_stamps(),
 )
+
+# One writer at a time. Moving a deal reads positions and rewrites them, so two requests at once
+# could overlap and one would fail with "database is locked". This is a single-process app.
+write_lock = threading.RLock()
 
 _engines: dict[str, Engine] = {}
 

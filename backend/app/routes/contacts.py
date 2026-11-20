@@ -12,7 +12,7 @@ from ..common import (
     preview,
     serialize_contact,
 )
-from ..db import activity, contact, deal, get_engine, organization
+from ..db import activity, contact, deal, get_engine, organization, write_lock
 from ..schemas import ContactIn, ContactPatch
 
 router = APIRouter(prefix="/contacts", tags=["contacts"])
@@ -100,7 +100,8 @@ def delete_preview(contact_id: int):
 
 @router.delete("/{contact_id}", status_code=204)
 def delete_contact(contact_id: int):
-    with get_engine().begin() as conn:
-        plan = plan_delete(conn, "contact", contact_id)
-        execute_delete(conn, "contact", contact_id, plan)
+    with write_lock:
+        with get_engine().begin() as conn:
+            plan = plan_delete(conn, "contact", contact_id)
+            execute_delete(conn, "contact", contact_id, plan)
     return Response(status_code=204)

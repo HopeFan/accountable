@@ -12,7 +12,7 @@ from ..common import (
     preview,
     renumber,
 )
-from ..db import activity, contact, deal, get_engine, organization
+from ..db import activity, contact, deal, get_engine, organization, write_lock
 from ..schemas import DealIn, DealPatch, MoveIn
 
 router = APIRouter(prefix="/deals", tags=["deals"])
@@ -93,20 +93,21 @@ def list_deals():
 
 @router.post("", status_code=201)
 def create_deal(body: DealIn):
-    with get_engine().begin() as conn:
-        _check_refs(conn, body.organization_id, body.contact_id)
-        values = body.model_dump()
-        position = values.pop("position")
-        values["probability"] = (
-            rules.usual_probability(body.stage) if body.probability is None else body.probability
-        )
-        if body.stage in ("won", "lost") and body.close_date is None:
-            values["close_date"] = clock.today()
-        values["position"] = _count(conn, body.stage)
-        new_id = conn.execute(insert(deal).values(**values)).inserted_primary_key[0]
-        if position is not None:
-            move_deal(conn, new_id, body.stage, position)
-        return _one(conn, new_id)
+    with write_lock:
+        with get_engine().begin() as conn:
+            _check_refs(conn, body.organization_id, body.contact_id)
+            values = body.model_dump()
+            position = values.pop("position")
+            values["probability"] = (
+                rules.usual_probability(body.stage) if body.probability is None else body.probability
+            )
+            if body.stage in ("won", "lost") and body.close_date is None:
+                values["close_date"] = clock.today()
+            values["position"] = _count(conn, body.stage)
+            new_id = conn.execute(insert(deal).values(**values)).inserted_primary_key[0]
+            if position is not None:
+                move_deal(conn, new_id, body.stage, position)
+            return _one(conn, new_id)
 
 
 @router.get("/{deal_id}")
@@ -125,32 +126,34 @@ def update_deal(deal_id: int, body: DealPatch):
     for f in ("name", "organization_id", "stage", "value", "probability"):
         if f in changes and changes[f] is None:
             raise field_error(f, "This field is required")
-    with get_engine().begin() as conn:
-        current = get_or_404(conn, deal, deal_id, "Deal")
-        org_id = changes.get("organization_id", current["organization_id"])
-        contact_id = changes.get("contact_id", current["contact_id"])
-        if "organization_id" in changes or "contact_id" in changes:
-            _check_refs(conn, org_id, contact_id)
-        new_stage = changes.pop("stage", None)
-        if new_stage and new_stage != current["stage"]:
-            # a stage change resets probability and close date, unless edited by hand in the same request
-            hand_prob = changes.get("probability") is not None and changes["probability"] != current["probability"]
-            hand_date = "close_date" in changes and changes["close_date"] != current["close_date"]
-            move_deal(conn, deal_id, new_stage, None)
-            if not hand_prob:
-                changes.pop("probability", None)
-            if not hand_date:
-                changes.pop("close_date", None)
-        if changes:
-            conn.execute(update(deal).where(deal.c.id == deal_id).values(**changes))
-        return _one(conn, deal_id)
+    with write_lock:
+        with get_engine().begin() as conn:
+            current = get_or_404(conn, deal, deal_id, "Deal")
+            org_id = changes.get("organization_id", current["organization_id"])
+            contact_id = changes.get("contact_id", current["contact_id"])
+            if "organization_id" in changes or "contact_id" in changes:
+                _check_refs(conn, org_id, contact_id)
+            new_stage = changes.pop("stage", None)
+            if new_stage and new_stage != current["stage"]:
+                # a stage change resets probability and close date, unless edited by hand in the same request
+                hand_prob = changes.get("probability") is not None and changes["probability"] != current["probability"]
+                hand_date = "close_date" in changes and changes["close_date"] != current["close_date"]
+                move_deal(conn, deal_id, new_stage, None)
+                if not hand_prob:
+                    changes.pop("probability", None)
+                if not hand_date:
+                    changes.pop("close_date", None)
+            if changes:
+                conn.execute(update(deal).where(deal.c.id == deal_id).values(**changes))
+            return _one(conn, deal_id)
 
 
 @router.post("/{deal_id}/move")
 def move(deal_id: int, body: MoveIn):
-    with get_engine().begin() as conn:
-        move_deal(conn, deal_id, body.stage, body.position)
-        return _one(conn, deal_id)
+    with write_lock:
+        with get_engine().begin() as conn:
+            move_deal(conn, deal_id, body.stage, body.position)
+            return _one(conn, deal_id)
 
 
 @router.get("/{deal_id}/delete-preview")
@@ -161,7 +164,8 @@ def delete_preview(deal_id: int):
 
 @router.delete("/{deal_id}", status_code=204)
 def delete_deal(deal_id: int):
-    with get_engine().begin() as conn:
-        plan = plan_delete(conn, "deal", deal_id)
-        execute_delete(conn, "deal", deal_id, plan)
-    return Response(status_code=204)
+    with write_lock:
+        with get_engine().begin() as conn:
+            plan = plan_delete(conn, "deal", deal_id)
+            execute_delete(conn, "deal", deal_id, plan)
+        return Response(status_code=204)

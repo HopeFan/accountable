@@ -46,6 +46,7 @@ export function DataTable<T extends { id: number }>({
   noun,
   onAdd,
   rowLabel,
+  isEmpty,
 }: {
   data: T[];
   columns: ColumnDef<T, any>[]; // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -55,6 +56,8 @@ export function DataTable<T extends { id: number }>({
   noun: string;
   onAdd?: () => void;
   rowLabel: (row: T) => string;
+  /** True when there are no records at all. Defaults to no rows given; pass it when `data` is already filtered. */
+  isEmpty?: boolean;
 }) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [filter, setFilter] = useState("");
@@ -85,7 +88,7 @@ export function DataTable<T extends { id: number }>({
   });
 
   const rows = table.getRowModel().rows;
-  const empty = data.length === 0;
+  const empty = isEmpty ?? data.length === 0;
 
   return (
     <div>

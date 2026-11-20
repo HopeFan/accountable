@@ -9,7 +9,7 @@ const base =
 export const buttonClass = {
   primary: `${base} bg-primary text-ink hover:brightness-95 active:brightness-90`,
   secondary: `${base} bg-panel text-ink shadow-panel hover:bg-soft`,
-  danger: `${base} bg-alert text-white hover:brightness-95 active:brightness-90`,
+  danger: `${base} bg-alert-text text-white hover:brightness-95 active:brightness-90`,
   ghost: `${base} text-ink hover:bg-soft`,
 };
 
@@ -124,7 +124,7 @@ export function ErrorState({ message, onRetry }: { message?: string; onRetry?: (
 }
 
 export const inputClass =
-  "h-10 w-full rounded-[10px] bg-page px-3 text-sm text-ink placeholder:text-muted/70 ring-1 ring-mist focus-visible:outline-2 focus-visible:outline-info aria-[invalid=true]:ring-alert";
+  "h-10 w-full rounded-[10px] bg-page px-3 text-sm text-ink placeholder:text-muted ring-1 ring-mist focus-visible:outline-2 focus-visible:outline-info aria-[invalid=true]:ring-alert";
 
 export function Field({
   label,

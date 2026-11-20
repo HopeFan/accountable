@@ -60,6 +60,12 @@ test("filters contacts by status, combined with search", async ({ page }) => {
   await expect(page.locator("tbody tr")).toHaveCount(2); // Isabel Costa and Noor Rahman
   await filter.selectOption("all");
   await expect(page.locator("tbody tr")).toHaveCount(3);
+
+  // a filter and search with no matches says so, rather than that there are no contacts
+  await filter.selectOption("lead");
+  await page.getByRole("searchbox").fill("Priya");
+  await expect(page.getByText("No contacts match your search.")).toBeVisible();
+  await expect(page.getByText("No contacts yet.")).toHaveCount(0);
 });
 
 test("a contact page shows the organization, their deals and a timeline", async ({ page }) => {

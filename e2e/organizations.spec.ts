@@ -91,3 +91,17 @@ test("an organization page shows its linked records, and deleting it removes the
   await expect(page.locator("tbody tr")).toHaveCount(36);
   await expect(page.getByRole("link", { name: "Dispatch optimisation" })).toHaveCount(0);
 });
+
+test("the server's error for a duplicate name shows under the field", async ({ page, problems }) => {
+  problems.allow.push(/status of 422/); // the browser logs the refused request itself
+  await page.goto("/organizations");
+  await page.getByRole("button", { name: "Add organization" }).first().click();
+  await dialog(page).getByLabel("Name").fill("northwind logistics");
+  await dialog(page).getByRole("button", { name: "Add organization" }).click();
+  await expect(dialog(page).getByText("An organization with this name already exists")).toBeVisible();
+  await expect(dialog(page).getByLabel("Name")).toHaveAttribute("aria-invalid", "true");
+  await dialog(page).getByLabel("Name").fill("Northwind Logistics Two");
+  await dialog(page).getByRole("button", { name: "Add organization" }).click();
+  await expect(dialog(page)).toBeHidden();
+  await expect(page.getByRole("link", { name: "Northwind Logistics Two" })).toBeVisible();
+});

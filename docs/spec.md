@@ -220,7 +220,7 @@ Defined once as CSS variables, which Tailwind reads, so a dark theme can be adde
 | `--page` | `#F0F4F5` | page background |
 | `--panel` | `#FFFFFF` | panels, cards, dialogs |
 | `--ink` | Midnight `#073B4C` | text |
-| `--ink-muted` | `#4C7280` (Midnight at about 72%) | secondary text, 5.2:1 on white |
+| `--ink-muted` | `#42697A` | secondary text, 5.9:1 on white and 4.8:1 on the pipeline lanes |
 | `--primary` | Sea Green `#06D6A0` | primary buttons (Midnight text), selected nav, Won |
 | `--secondary` | Marigold `#FFC145` | highlights (Midnight text) |
 | `--tertiary` | Coral `#F78C6B` | highlights (Midnight text) |

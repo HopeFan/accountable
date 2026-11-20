@@ -24,12 +24,12 @@ const isLocal = (url: string) => {
 /** Every test starts from fresh sample data and fails on a console error or a request that leaves the computer. */
 export const test = base.extend<{ problems: { errors: string[]; external: string[] } }>({
   problems: async ({}, use) => {
-    await use({ errors: [], external: [] });
+    await use({ errors: [], external: [], allow: [] });
   },
   page: async ({ page, problems }, use) => {
     resetData();
     page.on("console", (m) => {
-      if (m.type() === "error") problems.errors.push(m.text());
+      if (m.type() === "error" && !problems.allow.some((re) => re.test(m.text()))) problems.errors.push(m.text());
     });
     page.on("pageerror", (e) => problems.errors.push(String(e)));
     page.on("request", (r) => {

@@ -24,8 +24,8 @@ const columns: ColumnDef<Row, any>[] = [ // eslint-disable-line @typescript-esli
 function names() {
   return screen.getAllByRole("row").slice(1).map((r) => within(r).getAllByRole("cell")[0].textContent);
 }
-function renderTable(rows = data, onAdd?: () => void) {
-  return render(<DataTable data={rows} columns={columns} noun="thing" searchLabel="Search things" rowLabel={(r) => r.name} onAdd={onAdd} />);
+function renderTable(rows = data, onAdd?: () => void, isEmpty?: boolean) {
+  return render(<DataTable data={rows} columns={columns} noun="thing" searchLabel="Search things" rowLabel={(r) => r.name} onAdd={onAdd} isEmpty={isEmpty} />);
 }
 
 describe("DataTable", () => {
@@ -68,6 +68,12 @@ describe("DataTable", () => {
   it("shows a message when nothing matches", async () => {
     renderTable();
     await userEvent.type(screen.getByRole("searchbox"), "zzz");
+    expect(screen.getByText("No things match your search.")).toBeInTheDocument();
+  });
+
+  it("says nothing matches, not that the table is empty, when the rows given are already filtered", () => {
+    renderTable([], undefined, false);
+    expect(screen.queryByText("No things yet.")).not.toBeInTheDocument();
     expect(screen.getByText("No things match your search.")).toBeInTheDocument();
   });
 

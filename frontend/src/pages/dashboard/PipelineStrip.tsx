@@ -3,7 +3,7 @@ import { STAGE_LABEL, type Dashboard } from "../../lib/types";
 import { EmptyState, Panel } from "../../components/ui";
 
 const BLOCK: Record<string, { bg: string; fg: string }> = {
-  new: { bg: "var(--info)", fg: "#fff" },
+  new: { bg: "var(--info-text)", fg: "#fff" },
   qualified: { bg: "var(--secondary)", fg: "var(--ink)" },
   proposal: { bg: "var(--tertiary)", fg: "var(--ink)" },
   negotiation: { bg: "var(--primary)", fg: "var(--ink)" },
