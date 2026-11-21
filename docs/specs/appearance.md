@@ -4,10 +4,10 @@ Part of the Accountable spec. The index is in `docs/spec.md`. Look and brand: `d
 
 ## Requirements: light and dark mode
 
-- R38. A toggle at the top right of the page, above the heading, switches between light and dark mode. It is on every page, so every section has it.
-- R39. Light mode is the default. The choice is remembered in the browser only (local storage), not in the database, and is applied before the page paints, so a reload in dark mode never flashes light.
+- R38. The theme is chosen in the user menu (`docs/specs/accounts.md`, R48) with three options: **Light**, **Dark** and **System**. System follows the device's own setting and changes with it while the app is open. The menu is on every page once signed in, and the sign-in screen follows the saved choice too. There is no separate toggle.
+- R39. System is the default for someone who hasn't chosen. The choice is remembered in the browser only (local storage), so it belongs to that browser and not to the account or the database. It is applied before the page paints, so a reload in dark mode never flashes light, and the same goes for System on a dark device.
 - R40. Every screen follows the mode: tables, record pages, the dashboard and its charts, the pipeline, dialogs, forms, menus and the confirmation messages. Nothing stays light in dark mode.
-- R41. Light mode looks exactly as it did before dark mode, apart from the toggle.
+- R41. Light mode looks as it did before dark mode, apart from the top bar and the sign-in screen.
 - R42. Small text in dark mode passes the same 4.5:1 contrast as in light mode, checked for every pairing in the Design section below.
 
 ## Design
@@ -77,7 +77,8 @@ Raspberry is kept for overdue and late things, so a Lost deal doesn't look like 
 ### Layout
 
 - A fixed left sidebar, 232px wide, Midnight background in both modes, with the product name in Instrument Sans, five nav items with icons and the active one marked by a Sea Green pill, text in Sea Mist.
-- A content area on the page color, max width about 1440px. At its top right, above the page heading, sits the light and dark mode toggle. It shows the mode it will switch to ("Dark mode" or "Light mode") with an icon, and has a visible focus ring like every other control. Below it is the page heading with its main action on the right.
+- A content area on the page color, max width about 1440px. It starts with a top bar: the search box (`docs/specs/search.md`) on the left and the user menu button with the person's initials at the right. The bar has the page color, with no rule or border under it. Below it is the page heading with its main action on the right.
+- Signed out, there is no sidebar or top bar, only the sign-in panel (`docs/specs/accounts.md`).
 - Minimum supported width 1280px.
 
 ### States and feel

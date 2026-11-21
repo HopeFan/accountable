@@ -1,14 +1,14 @@
-# Platform: constraints, data rules, API basics, sample data, testing
+# Platform: constraints, data rules, API basics, deployment, sample data, testing
 
 Part of the Accountable spec. The index is in `docs/spec.md`. This file holds what applies to the whole product.
 
 ## Constraints and out of scope
 
-- It runs locally with one documented command that works on Mac, Linux and Windows (only the Mac is tested), and needs no internet connection to use. Fonts are installed from npm (`@fontsource/*`) and served by the app, never loaded from another host.
+- It runs on the web as one shared app for a small team (see Deployment), and locally with one documented command that works on Mac, Linux and Windows (only the Mac is tested). It needs an internet connection, because the data and sign-in are on Supabase. The tests run without one. Fonts are installed from npm (`@fontsource/*`) and served by the app, never loaded from another host.
 - Every change is kept: it survives a browser refresh and a restart.
 - One documented command resets the data to the sample data.
-- Light and dark modes, light by default, designed for laptops from 1280px wide. The device's own dark mode setting is not followed. There is no pagination: tables load every record and search and sort run in the browser, which is fine for one user's data but needs a rethink before team data arrives.
-- Not part of the product: sign-in, user accounts or several users, following the device's dark mode setting, phone layouts, AI features, email/calendar/phone integrations, currencies other than US dollars, reports beyond the dashboard, tags and custom fields, editable stages, import and export.
+- Light and dark modes, with a System choice that follows the device and is the default, designed for laptops from 1280px wide. There is no pagination: tables load every record, and the table filters and sort run in the browser, which is fine for a small team's data but needs a rethink as it grows.
+- Not part of the product: roles and permissions, sign-up, Google or magic-link sign-in, password reset, moving the old local data to Supabase, phone layouts, AI features, email/calendar/phone integrations, currencies other than US dollars, reports beyond the dashboard, tags and custom fields, editable stages, import and export.
 
 ## Libraries
 
@@ -25,11 +25,13 @@ Popular libraries over custom code, as the stack doc asks.
 | Styling                     | Tailwind CSS with Radix UI primitives for dialogs, menus and selects            |
 | Icons                       | Lucide                                                                          |
 | Fonts                       | `@fontsource` packages for Instrument Sans, Instrument Serif and JetBrains Mono |
-| Backend                     | FastAPI, Pydantic models, SQLAlchemy Core (no raw SQL) over SQLite              |
+| Backend                     | FastAPI, Pydantic models, SQLAlchemy Core (no raw SQL) over Postgres or SQLite  |
+| Sign-in                     | Supabase Auth, email and password                                               |
+| Hosting                     | Supabase (Postgres, Auth) and Render (one web service)                          |
 
 ## Data model
 
-SQLite, one file at `data/accountable.db` (git-ignored). The tests use their own file, set by an environment variable. Column types stay portable so the move to Supabase/Postgres later is simple. Every table has an integer `id`, `created_at` and `updated_at`.
+Postgres on Supabase, reached through `DATABASE_URL`. The tests use their own SQLite files, so column types stay portable and no test touches Supabase. Every table has an integer `id`, `created_at` and `updated_at`. Organizations, contacts, deals and activities also have `created_by` and `updated_by` (see `docs/specs/accounts.md`). The data in the old local SQLite file is not moved: Supabase starts with the sample data.
 
 ### Deletion
 
@@ -48,20 +50,27 @@ JSON over `/api`, served by FastAPI on one port in development with the frontend
 | Resource       | Endpoints                                                                                              |
 | -------------- | ------------------------------------------------------------------------------------------------------ |
 | Delete preview | `GET /organizations/{id}/delete-preview`, same for contacts and deals; returns counts of what would go |
+| Session        | `GET /me` (see `docs/specs/accounts.md`)                                                               |
+| Search         | `GET /search` (see `docs/specs/search.md`)                                                             |
 
 ### Rules worth stating
 
+- Every route needs a signed-in person (R45). The person comes from the token, never from the request.
 - Lists return everything (no pagination).
 - List responses include the joined names the tables show, such as the organization's name on a deal.
 
 ## Reset and persistence
 
-- R36. Every change is saved at once in SQLite, so it survives refresh and restart.
-- R37. The database is created and seeded when its file doesn't exist. `npm run seed` deletes the data and recreates the sample data.
+- R36. Every change is saved at once in the database, so it survives refresh and restart.
+- R37. When the app starts, migrations bring the database up to date, and the sample data is added once, when the tables are first created. It is not added again, even if everything is later deleted. `npm run seed` deletes the data and recreates the sample data. Because that would wipe the team's data, it asks for confirmation first when `DATABASE_URL` isn't a local SQLite file.
+
+## Deployment
+
+The app runs on Render's free plan as one web service. FastAPI serves the built frontend and the API from the same address, migrations run when it starts, and it answers at its onrender.com address. `render.yaml` describes the service. `DATABASE_URL`, `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` are entered in Render and never written in the file or committed. Locally the same three settings live in `.env` (git-ignored). The built app can be run on a computer the way Render runs it, signed in against Supabase. A free service can be slow to answer after it has been idle.
 
 ## Sample data
 
-Created by the backend with dates relative to the day it runs so overdue and late deals are true on any day (a database created months ago drifts, and `npm run seed` refreshes it). It is fixed in code, not random, so tests can rely on it. The same file serves `npm run dev` and `npm run seed`.
+Created by the backend with dates relative to the day it runs so overdue and late deals are true on any day (a database created months ago drifts, and `npm run seed` refreshes it). It is fixed in code, not random, so tests can rely on it. The same code serves the first start and `npm run seed`. Sample records have no author, so they show "Sample data" (R46).
 
 - **12 organizations** across software, logistics, healthcare, manufacturing, finance, retail, education and energy, with realistic names, websites and short notes.
 - **About 35 contacts**, 2 to 4 per organization, with a few leads and a few customers with no deals open. Statuses are roughly 40% lead, 25% qualified, 35% customer.
@@ -81,7 +90,8 @@ backend/          FastAPI app, SQLAlchemy Core tables, seed code
 e2e/              Playwright tests
 eslint.config.mjs ESLint rules for the frontend and e2e
 .gitleaks.toml    secret scan settings (allows the git-ignored .env)
-data/             SQLite file (git-ignored)
+data/             local SQLite files, for tests and offline use (git-ignored)
+render.yaml       the Render web service
 package.json      workspace and scripts at the repo root
 pyproject.toml    uv project at the repo root
 uv.lock
@@ -91,9 +101,10 @@ Scripts as in the stack doc: `npm run dev`, `npm test`, `npm run seed`, and `npm
 
 ## Testing
 
-- **Backend (pytest)**: the stage, probability, close-date and late rules; move and reorder (positions stay consecutive, probability and stage-change entry written); delete cascades and previews; timeline composition; follow-up states; dashboard figures against a small known data set; seed idempotence.
+- **Backend (pytest)**: a missing, invalid or expired token refused on every route and the person taken from the token; `created_by` and `updated_by` on create, edit, follow-up changes and moves; search on SQLite (case, part of a name, contacts by full name, `%` and `_`); the stage, probability, close-date and late rules; move and reorder (positions stay consecutive, probability and stage-change entry written); delete cascades and previews; timeline composition; follow-up states; dashboard figures against a small known data set; seed idempotence.
 - **Frontend (Vitest)**: money and date formatting, table sort and search logic, optimistic pipeline totals, the pipeline's drag and drop rules, form validation, and each page's loading, empty and error states.
-- **End to end (Playwright with Chrome)**: one test per area of behavior, on a test database with a fixed clock, covering add, search, sort, edit, delete with confirmation, status filter, drag to another column and within one with a refresh in between, logging an activity and a follow-up, marking it done, the dashboard changing when a deal is won, and the dark mode toggle working and being remembered after a reload. Each test also fails if the browser console shows an error.
+- **End to end (Playwright with Chrome)**: one test per area of behavior, on a test SQLite database with a fixed clock and a test sign-in that never contacts Supabase, covering signing in and out, a signed-out visit, who added a record, the top-bar search, add, table filter, sort, edit, delete with confirmation, status filter, drag to another column and within one with a refresh in between, logging an activity and a follow-up, marking it done, the dashboard changing when a deal is won, and the theme choice in the user menu working, System following the device and the choice being remembered after a reload. Each test also fails if the browser console shows an error.
+- **Speed**: every unit test runs in under a second, because CI runs on a slower machine than a laptop.
 - **Coverage**: unit test coverage must stay at 80% or more, for the backend (statements) and the frontend (statements, branches, functions and lines). `npm run check` fails below that.
 - **Checks**: `npm run check` also runs Prettier and ESLint (TypeScript, React Hooks and accessibility rules), ruff format and check, tsc, ty and gitleaks. No function may have a cyclomatic complexity above 15 (ESLint `complexity`, ruff `C901`). Rules are fixed in the code, not switched off.
 - **Contrast**: a unit test reads the tokens and checks every text and background pairing used for small text, in light and in dark mode, at 4.5:1 or more.

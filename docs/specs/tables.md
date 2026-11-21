@@ -16,6 +16,6 @@ Part of the Accountable spec. The index is in `docs/spec.md`. What Organizations
 
 **Table pages.** Heading and Add button, a toolbar with the search box (and the status filter on Contacts), then a white panel with the table. Rows are 48px, the header text is small and muted, numbers are right-aligned in mono. The row menu is a three-dot button.
 
-**Record pages.** A header with the name, its tags (status or stage) and Edit and Delete. Below, two columns: details and linked records on the left, the timeline and Log activity on the right. Timeline items have a type icon in a colored circle.
+**Record pages.** A header with the name, its tags (status or stage) and Edit and Delete. Below, two columns: details and linked records on the left, the timeline and Log activity on the right. Timeline items have a type icon in a colored circle. The details show who added the record and who last changed it, or "Sample data" (R46, `docs/specs/accounts.md`). The tables don't have columns for this.
 
 **Dialogs and forms.** Centered, 480 to 560px, one column of fields, Cancel on the left of the actions and the primary action on the right. Primary buttons are Sea Green with Midnight text; destructive ones are Raspberry with white text.

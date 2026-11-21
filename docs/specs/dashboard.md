@@ -19,7 +19,7 @@ Part of the Accountable spec. The index is in `docs/spec.md`.
 - R10. **Revenue won** line chart, the last 12 months including this one, from Won deals' close dates.
 - R11. **Deals won** bar chart for the same 12 months.
 - R12. **Sales funnel**: for each stage from New to Won, the value of non-lost deals at that stage or later (each deal counts at its current stage and every earlier one), with a plain note giving the value of Lost deals.
-- R13. **Recent activity**: the latest 10 activities of all types, including stage changes, each linking to its deal or contact.
+- R13. **Recent activity**: the latest 10 activities of all types, including stage changes, each linking to its deal or contact and showing who added it.
 - R14. **Follow-ups**: open follow-ups, overdue ones first and marked in Raspberry, then upcoming by date. Each has a checkbox that marks it done and removes it from the list at once, and a link to its deal or contact.
 - R9a. **Open pipeline by stage**: a strip under the tiles with one block per open stage (New to Negotiation), as wide as its share of the open value. Each block shows the stage, its deal count and its value. A slim bar below shows the stage's probability of close, with the expected revenue it stands for.
 - R15. Every figure comes from `GET /dashboard`, and it refreshes after any change anywhere in the app.
