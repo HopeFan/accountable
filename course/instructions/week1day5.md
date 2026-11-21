@@ -99,9 +99,6 @@ Supabase's MCP server lets your agent look at your project. Connect it read-only
 
 ```
 claude mcp add --transport http supabase "https://mcp.supabase.com/mcp?project_ref=abcdefghijklmnopqrst&read_only=true"
-
-claude mcp add --transport http supabase "https://mcp.supabase.com/mcp?project_ref=tviqtobgkikxqgvsbaml&read_only=true"
-
 ```
 
 3. Restart Claude Code (`/exit`, then `claude`). Type `/mcp`, choose **supabase**, then **Authenticate**, and sign in to Supabase in the browser.
@@ -203,12 +200,6 @@ Start a fresh session (`/clear` in Claude Code), then:
 ```
 Implement docs/changes/multi-user/plan.md, following its order of work. Write the tests in its Proof section and run them as you go. Leave the commits to me.
 ```
-
-```
-or 
-Create an agent team to implement docs/changes/multi-user/plan.md, following its order of work, with one teammate for each part in its Files that change. Each teammate edits only its own files. Have them write the tests in the plan's Proof section and run them as they go. Only one teammate at a time runs npm run check or the end-to-end tests, because they use fixed ports. If a test times out while other checks are running, rerun it on its own before treating it as a failure. Leave the commits to me.
-```
-
 
 ```
 git add .

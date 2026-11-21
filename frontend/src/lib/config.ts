@@ -1,4 +1,3 @@
-import { createTestAuth } from "./testAuth";
 import type { AuthClient } from "./auth";
 
 export type Config =
@@ -11,8 +10,12 @@ export async function fetchConfig(): Promise<Config> {
 }
 
 export async function createAuthClient(config: Config): Promise<AuthClient> {
-  if ("testAuth" in config) return createTestAuth();
-  // Loaded only when needed, so test mode never pulls in the Supabase client.
+  // Each client is loaded only when needed, so the production bundle never
+  // carries the test client and test mode never pulls in Supabase.
+  if ("testAuth" in config) {
+    const { createTestAuth } = await import("./testAuth");
+    return createTestAuth();
+  }
   const { createSupabaseAuth } = await import("./supabaseAuth");
   return createSupabaseAuth(config.supabaseUrl, config.supabasePublishableKey);
 }

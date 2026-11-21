@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Query
 from pydantic import BaseModel
 from sqlalchemy import func, select
 
@@ -8,6 +8,7 @@ from ..db import contact, deal, get_engine, organization
 router = APIRouter(prefix="/search", tags=["search"])
 
 LIMIT = 5
+MAX_QUERY = 100
 ESCAPE = "\\"
 
 
@@ -93,7 +94,7 @@ def _deals(conn, pattern: str) -> list[SearchHit]:
 
 
 @router.get("", response_model=SearchResults)
-def search(q: str = ""):
+def search(q: str = Query("", max_length=MAX_QUERY)):
     text = q.strip()
     if not text:
         return SearchResults(organizations=[], contacts=[], deals=[])
