@@ -12,7 +12,7 @@ The MVP is built, phases 0 to 8 of `docs/changes/mvp/plan.md`. All tests and `np
 - **Tests**: 67 backend (pytest, 97% coverage), 152 frontend (Vitest, 85% branch coverage), 32 end-to-end (Playwright with Chrome).
 - **Checks**: `npm run check` runs Prettier, ESLint (TypeScript, React Hooks, accessibility, complexity 15), ruff (including complexity 15), tsc, ty, gitleaks and all tests with at least 80% unit coverage. `npm run check:quick` skips the end-to-end tests and `npm run format` fixes formatting. The existing code was brought up to these rules without weakening any of them.
 - **Hooks**: a lefthook pre-commit hook (`lefthook.yml`) first fails the commit if it changes anything outside `docs/` without also updating `docs/STATUS.md`, then formats the staged files and runs lint, types and gitleaks, without the tests. It refuses to run if gitleaks isn't installed and says how to install it. Two Claude Code hooks in `.claude/settings.json` run scripts from `scripts/`: `agent-check-on-stop.mjs` runs `npm run check:quick` when a turn ends and sends a failure back once, then lets the agent stop, and `agent-guard-env.mjs` blocks reading or editing the secrets file, including shell commands that name it. `npm install` sets up the git hook.
-- **CI** (`.github/workflows/ci.yml`): one job, `check`, on every push to any branch. It installs a pinned gitleaks (checksum verified) and scans the repo first, then installs Node 26 and the latest uv, and runs `npm run check` with the runner's Google Chrome. If it fails, the Playwright report is uploaded. It uses no secrets. It passes on GitHub; its first run failed on one end-to-end test, a timing race in the pipeline test helper that read the cards before they loaded, which is fixed.
+- **CI** (`.github/workflows/ci.yml`): one job, `check`, on every push to any branch. It installs a pinned gitleaks (checksum verified) and scans the repo first, then installs Node 26 and the latest uv, and runs `npm run check:quick`, which leaves out the end-to-end tests. Those run locally with `npm run check`, so CI needs no Chrome and uploads no Playwright report. It uses no secrets.
 - **Standards**: `docs/STANDARDS.md` says how code is written. `AGENTS.md` points to it and `docs/REVIEW.md` has a Standards pass that checks changes against it.
 - **Improve step** (`docs/IMPROVE.md`): at Deploy, after the review fixes and before the merge, look at what went wrong, add corrections for repeated mistakes, remove what is out of date and improve the file itself. `AGENTS.md` points to it.
 - **Pipeline fix**: if loading deals fails, the Pipeline page now shows the error with a retry button instead of a skeleton forever. Its drag logic moved into pure functions in `boardMath.ts` so it can be unit tested.
@@ -36,6 +36,7 @@ npm run dev      # API on :8000, app on http://localhost:5173
 ## Known limits
 
 - Only tested on a Mac. Linux and Windows are untested.
+- CI doesn't run the end-to-end tests. Run `npm run check` locally before merging, because a broken end-to-end test won't fail CI.
 - No pagination: tables load every record and search and sort run in the browser.
 - Laptop screens from 1280px wide. The device's own dark mode setting isn't followed.
 - Sample dates are relative to the day the database was created, so an old database shows stale late and overdue items. `npm run seed` refreshes it.

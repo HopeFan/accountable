@@ -38,13 +38,5 @@ jobs:
 
       - run: npm ci
 
-      # The runner already has Google Chrome, which the end-to-end tests use.
-      - run: npm run check
-
-      - name: Upload the Playwright report
-        if: failure()
-        uses: actions/upload-artifact@v7.0.2
-        with:
-          name: playwright-report
-          path: playwright-report/
-          if-no-files-found: ignore
+      # Everything except the end-to-end tests, which run locally with npm run check.
+      - run: npm run check:quick
