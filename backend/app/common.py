@@ -6,11 +6,12 @@ from fastapi import HTTPException
 from sqlalchemy import Connection, delete, func, insert, or_, select
 
 from . import clock, rules
-from .db import activity, contact, deal, organization
+from .db import AUTHOR_COLUMNS, activity, contact, deal, organization
 
 
-def insert_row(conn: Connection, table, values: dict) -> int:
-    pk = conn.execute(insert(table).values(**values)).inserted_primary_key
+def insert_row(conn: Connection, table, values: dict, user: str) -> int:
+    authored = {**values, "created_by": user, "updated_by": user}
+    pk = conn.execute(insert(table).values(**authored)).inserted_primary_key
     if pk is None:
         raise RuntimeError(f"Insert into {table.name} returned no primary key")
     return pk[0]
@@ -42,7 +43,10 @@ def contact_name(row) -> str:
 
 
 def serialize_organization(row) -> dict:
-    return {k: row[k] for k in ("id", "name", "website", "industry", "notes")}
+    return {
+        k: row[k]
+        for k in ("id", "name", "website", "industry", "notes", *AUTHOR_COLUMNS)
+    }
 
 
 def serialize_contact(row, org_name: str | None = None) -> dict:
@@ -57,6 +61,7 @@ def serialize_contact(row, org_name: str | None = None) -> dict:
             "job_title",
             "organization_id",
             "status",
+            *AUTHOR_COLUMNS,
         )
     }
     d["name"] = contact_name(row)
@@ -77,6 +82,7 @@ def serialize_deal(row, org_name: str, contact_nm: str | None, today: date) -> d
             "probability",
             "close_date",
             "position",
+            *AUTHOR_COLUMNS,
         )
     }
     d["organization_name"] = org_name
@@ -102,6 +108,7 @@ def serialize_activity(
             "occurred_at",
             "follow_up_date",
             "follow_up_done",
+            *AUTHOR_COLUMNS,
         )
     }
     d["follow_up_state"] = rules.follow_up_state(

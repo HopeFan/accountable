@@ -113,3 +113,13 @@ export function joinList(items: string[]): string {
 export function toLocalInput(iso: string): string {
   return iso.slice(0, 16);
 }
+
+/** The person who made a record, or "Sample data" when nobody did. */
+export function authorName(email: string | null | undefined): string {
+  return email || "Sample data";
+}
+
+/** "Added by name@example.com", or "Sample data" when there is no author. */
+export function addedBy(email: string | null | undefined): string {
+  return email ? `Added by ${email}` : "Sample data";
+}

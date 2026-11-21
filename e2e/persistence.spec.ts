@@ -34,7 +34,7 @@ async function start(): Promise<ChildProcess> {
   );
   for (let i = 0; i < 100; i++) {
     try {
-      if ((await fetch(`${BASE}/api/health`)).ok) return child;
+      if ((await fetch(`${BASE}/healthz`)).ok) return child;
     } catch {
       /* not up yet */
     }

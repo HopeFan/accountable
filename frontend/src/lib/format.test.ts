@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
+  addedBy,
+  authorName,
   formatDate,
   formatDateTime,
   formatLongDate,
@@ -50,5 +52,14 @@ describe("text helpers", () => {
     expect(joinList(["a"])).toBe("a");
     expect(joinList(["a", "b"])).toBe("a and b");
     expect(joinList(["a", "b", "c"])).toBe("a, b and c");
+  });
+});
+
+describe("authors", () => {
+  it("says who added a record, or that it is sample data", () => {
+    expect(addedBy("sam@example.com")).toBe("Added by sam@example.com");
+    expect(addedBy(null)).toBe("Sample data");
+    expect(authorName("sam@example.com")).toBe("sam@example.com");
+    expect(authorName(null)).toBe("Sample data");
   });
 });

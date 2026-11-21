@@ -4,6 +4,19 @@ import pytest
 from fastapi.testclient import TestClient
 
 os.environ["ACCOUNTABLE_TODAY"] = "2026-11-17"
+SIGNED_IN = {"Authorization": "Bearer test:tester@example.com"}
+
+
+@pytest.fixture(autouse=True)
+def no_real_settings(monkeypatch):
+    """Nothing in the shell can send a test to Supabase or switch test sign-in on."""
+    for name in (
+        "DATABASE_URL",
+        "SUPABASE_URL",
+        "SUPABASE_PUBLISHABLE_KEY",
+        "ACCOUNTABLE_TEST_AUTH",
+    ):
+        monkeypatch.delenv(name, raising=False)
 
 
 @pytest.fixture()
@@ -15,22 +28,32 @@ def db_file(tmp_path, monkeypatch):
 
 
 @pytest.fixture()
-def client(db_file):
-    """An app on an empty database (no sample data)."""
+def client(db_file, monkeypatch):
+    """A signed-in app on an empty database (no sample data)."""
     from app import db
     from app.main import app
 
     db.create_tables()
+    monkeypatch.setenv("ACCOUNTABLE_TEST_AUTH", "1")
+    return TestClient(app, headers=SIGNED_IN)
+
+
+@pytest.fixture()
+def signed_out(client):
+    """The same app and database, with no token."""
+    from app.main import app
+
     return TestClient(app)
 
 
 @pytest.fixture()
-def seeded(db_file):
+def seeded(db_file, monkeypatch):
     from app import seed
     from app.main import app
 
     seed.reset()
-    return TestClient(app)
+    monkeypatch.setenv("ACCOUNTABLE_TEST_AUTH", "1")
+    return TestClient(app, headers=SIGNED_IN)
 
 
 @pytest.fixture()

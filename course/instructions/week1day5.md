@@ -27,8 +27,8 @@ The reviewer runs on Sonnet, so that a different model from your session's check
 
 ```
 Create two project subagents for this coding agent:
-- reviewer: reviews the changes on a branch with docs/REVIEW.md and reports its findings by severity. It reads files and runs commands that only read, such as git diff, git log, git show and grep, and it never changes anything. It runs on Sonnet.
-- ui-check: checks the running app in the browser with the Playwright MCP server. It opens each page, takes a screenshot, checks it against the brand skill and docs/spec.md, and reports anything off-brand or broken. It saves its screenshots in .playwright-mcp/, which git ignores, and it doesn't change any code. It runs on Sonnet.
+- reviewer: reviews the changes on a branch with docs/REVIEW.md and reports its findings by severity. It reads files and runs commands that only read, such as git diff, git log, git show and grep, and it never changes anything. It runs on Haiku.
+- ui-check: checks the running app in the browser with the Playwright MCP server. It opens each page, takes a screenshot, checks it against the brand skill and docs/spec.md, and reports anything off-brand or broken. It saves its screenshots in .playwright-mcp/, which git ignores, and it doesn't change any code. It runs on Haiku.
 Leave the commits to me.
 ```
 
@@ -99,6 +99,9 @@ Supabase's MCP server lets your agent look at your project. Connect it read-only
 
 ```
 claude mcp add --transport http supabase "https://mcp.supabase.com/mcp?project_ref=abcdefghijklmnopqrst&read_only=true"
+
+claude mcp add --transport http supabase "https://mcp.supabase.com/mcp?project_ref=tviqtobgkikxqgvsbaml&read_only=true"
+
 ```
 
 3. Restart Claude Code (`/exit`, then `claude`). Type `/mcp`, choose **supabase**, then **Authenticate**, and sign in to Supabase in the browser.
@@ -200,6 +203,12 @@ Start a fresh session (`/clear` in Claude Code), then:
 ```
 Implement docs/changes/multi-user/plan.md, following its order of work. Write the tests in its Proof section and run them as you go. Leave the commits to me.
 ```
+
+```
+or 
+Create an agent team to implement docs/changes/multi-user/plan.md, following its order of work, with one teammate for each part in its Files that change. Each teammate edits only its own files. Have them write the tests in the plan's Proof section and run them as they go. Only one teammate at a time runs npm run check or the end-to-end tests, because they use fixed ports. If a test times out while other checks are running, rerun it on its own before treating it as a failure. Leave the commits to me.
+```
+
 
 ```
 git add .

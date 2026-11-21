@@ -2,10 +2,9 @@
 
 from datetime import datetime, time, timedelta
 
-from sqlalchemy import insert
+from sqlalchemy import delete, insert
 
 from . import clock, db, rules
-from .common import insert_row
 
 ORGS = [
     (
@@ -263,13 +262,18 @@ UPCOMING_OFFSETS = [1, 2, 3, 5, 7, 9, 11, 13]
 DONE_OFFSETS = [-14, -10, -6, -3]
 
 
+def insert_sample_row(conn, table, values: dict) -> int:
+    """Sample rows have no author, so this skips the helper the routes use."""
+    return conn.execute(insert(table).values(**values)).inserted_primary_key[0]
+
+
 def at(day, hour: int = 10) -> datetime:
     return datetime.combine(day, time(hour, 0))
 
 
 def seed_organizations(conn) -> list[int]:
     return [
-        insert_row(
+        insert_sample_row(
             conn,
             db.organization,
             {"name": name, "website": site, "industry": industry, "notes": notes},
@@ -286,7 +290,7 @@ def seed_contacts(conn, org_ids: list[int]) -> list[list[int]]:
             email = f"{first}.{last}".lower().replace("'", "") + "@" + ORGS[oi][1]
             phone = f"+1 555 {100 + len(contact_ids) * 7 + len(ids):03d} {1000 + oi * 37 + len(ids) * 11:04d}"
             ids.append(
-                insert_row(
+                insert_sample_row(
                     conn,
                     db.contact,
                     {
@@ -328,7 +332,7 @@ class DealSeeder:
         people = self.contact_ids[oi]
         contact_id = None if self.count % 7 == 6 else people[self.count % len(people)]
         probability = HAND_PROBABILITY.get(name, rules.usual_probability(stage))
-        deal_id = insert_row(
+        deal_id = insert_sample_row(
             self.conn,
             db.deal,
             {
@@ -427,14 +431,22 @@ def seed_all(conn) -> None:
 
 
 def reset() -> None:
-    db.drop_tables()
+    """Replace everything with the sample data. Deletes rows, so it works on Postgres too."""
     db.create_tables()
     with db.get_engine().begin() as conn:
+        for table in reversed(db.metadata.sorted_tables):
+            conn.execute(delete(table))
         seed_all(conn)
 
 
 def ensure_seeded() -> None:
-    if not db.db_path().exists():
-        reset()
-    else:
-        db.create_tables()
+    """Run the migrations, and add the sample data only if this start created the tables.
+
+    One transaction, so on Postgres a crash part-way leaves nothing behind and the next start
+    tries again. SQLite commits schema changes on its own, so there a crash can leave empty tables.
+    """
+    with db.get_engine().begin() as conn:
+        is_new = db.is_new_database(conn)
+        db.migrate(conn)
+        if is_new:
+            seed_all(conn)

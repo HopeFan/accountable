@@ -6,7 +6,7 @@ import {
   Users,
 } from "lucide-react";
 import { NavLink, Outlet } from "react-router-dom";
-import { ThemeToggle } from "./ThemeToggle";
+import { TopBar } from "./TopBar";
 import { cx } from "./ui";
 
 const NAV = [
@@ -47,15 +47,10 @@ export function Shell() {
             </NavLink>
           ))}
         </nav>
-        <p className="mt-auto px-2 text-xs text-sidebar-muted">
-          Data is saved on this computer
-        </p>
       </aside>
       <main className="min-w-0 flex-1 p-8">
         <div className="mx-auto max-w-[1440px]">
-          <div className="mb-2 flex justify-end">
-            <ThemeToggle />
-          </div>
+          <TopBar />
           <Outlet />
         </div>
       </main>

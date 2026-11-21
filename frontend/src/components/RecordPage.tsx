@@ -1,6 +1,8 @@
 import { Pencil, Trash2 } from "lucide-react";
 import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
+import { authorName } from "../lib/format";
+import type { Authored } from "../lib/types";
 import { Button, Panel, cx } from "./ui";
 
 export function RecordHeader({
@@ -45,10 +47,29 @@ export function RecordHeader({
   );
 }
 
-export function Details({ rows }: { rows: [string, ReactNode][] }) {
+function Author({ email }: { email: string | null }) {
   return (
-    <dl className="grid grid-cols-[120px_1fr] gap-x-4 gap-y-3">
-      {rows.map(([label, value]) => (
+    <span className={cx("text-[13px] text-muted", email && "font-mono")}>
+      {authorName(email)}
+    </span>
+  );
+}
+
+export function Details({
+  rows,
+  author,
+}: {
+  rows: [string, ReactNode][];
+  author: Authored;
+}) {
+  const all: [string, ReactNode][] = [
+    ...rows,
+    ["Added by", <Author key="by" email={author.created_by} />],
+    ["Last changed by", <Author key="up" email={author.updated_by} />],
+  ];
+  return (
+    <dl className="grid grid-cols-[130px_1fr] gap-x-4 gap-y-3">
+      {all.map(([label, value]) => (
         <div key={label} className="contents">
           <dt className="text-[13px] text-muted">{label}</dt>
           <dd className="min-w-0 break-words">

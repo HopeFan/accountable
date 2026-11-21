@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Response
-from sqlalchemy import func, insert, select, update
+from sqlalchemy import func, select, update
 
 from .. import clock, rules
+from ..auth import CurrentUser
 from ..common import (
     activities,
     all_deals,
@@ -46,18 +47,21 @@ def _count(conn, stage: str, exclude: int | None = None) -> int:
     return conn.execute(q).scalar_one()
 
 
-def _log_stage_change(conn, deal_id: int, old: str, new: str) -> None:
-    conn.execute(
-        insert(activity).values(
-            type="stage_change",
-            deal_id=deal_id,
-            description=f"Moved from {rules.STAGE_LABELS[old]} to {rules.STAGE_LABELS[new]}",
-            occurred_at=clock.now(),
-        )
+def _log_stage_change(conn, deal_id: int, old: str, new: str, user: str) -> None:
+    insert_row(
+        conn,
+        activity,
+        {
+            "type": "stage_change",
+            "deal_id": deal_id,
+            "description": f"Moved from {rules.STAGE_LABELS[old]} to {rules.STAGE_LABELS[new]}",
+            "occurred_at": clock.now(),
+        },
+        user,
     )
 
 
-def move_deal(conn, deal_id: int, stage: str, position: int | None) -> dict:
+def move_deal(conn, deal_id: int, stage: str, position: int | None, user: str) -> dict:
     """Move a deal to a stage and place. Everything in one transaction (the caller's)."""
     row = get_or_404(conn, deal, deal_id, "Deal")
     old_stage = row["stage"]
@@ -84,17 +88,19 @@ def move_deal(conn, deal_id: int, stage: str, position: int | None) -> dict:
     ids.insert(at, deal_id)
     for pos, did in enumerate(ids):
         conn.execute(update(deal).where(deal.c.id == did).values(position=pos))
+    moved: dict[str, object] = {"updated_by": user}
     if stage != old_stage:
-        values = {
+        moved |= {
             "stage": stage,
             "probability": rules.usual_probability(stage),
             "close_date": rules.close_date_after_stage_change(
                 stage, row["close_date"], clock.today()
             ),
         }
-        conn.execute(update(deal).where(deal.c.id == deal_id).values(**values))
+    conn.execute(update(deal).where(deal.c.id == deal_id).values(**moved))
+    if stage != old_stage:
         renumber(conn, old_stage)
-        _log_stage_change(conn, deal_id, old_stage, stage)
+        _log_stage_change(conn, deal_id, old_stage, stage, user)
     return {"changed": True}
 
 
@@ -110,7 +116,7 @@ def list_deals():
 
 
 @router.post("", status_code=201)
-def create_deal(body: DealIn):
+def create_deal(body: DealIn, user: CurrentUser):
     with write_lock, get_engine().begin() as conn:
         _check_refs(conn, body.organization_id, body.contact_id)
         values = body.model_dump()
@@ -123,9 +129,9 @@ def create_deal(body: DealIn):
         if body.stage in ("won", "lost") and body.close_date is None:
             values["close_date"] = clock.today()
         values["position"] = _count(conn, body.stage)
-        new_id = insert_row(conn, deal, values)
+        new_id = insert_row(conn, deal, values, user)
         if position is not None:
-            move_deal(conn, new_id, body.stage, position)
+            move_deal(conn, new_id, body.stage, position, user)
         return _one(conn, new_id)
 
 
@@ -139,7 +145,7 @@ def get_deal(deal_id: int):
         return out
 
 
-def _apply_patch(conn, deal_id: int, changes: dict) -> dict:
+def _apply_patch(conn, deal_id: int, changes: dict, user: str) -> dict:
     current = get_or_404(conn, deal, deal_id, "Deal")
     org_id = changes.get("organization_id", current["organization_id"])
     contact_id = changes.get("contact_id", current["contact_id"])
@@ -155,30 +161,32 @@ def _apply_patch(conn, deal_id: int, changes: dict) -> dict:
         hand_date = (
             "close_date" in changes and changes["close_date"] != current["close_date"]
         )
-        move_deal(conn, deal_id, new_stage, None)
+        move_deal(conn, deal_id, new_stage, None, user)
         if not hand_prob:
             changes.pop("probability", None)
         if not hand_date:
             changes.pop("close_date", None)
     if changes:
-        conn.execute(update(deal).where(deal.c.id == deal_id).values(**changes))
+        conn.execute(
+            update(deal).where(deal.c.id == deal_id).values(**changes, updated_by=user)
+        )
     return _one(conn, deal_id)
 
 
 @router.patch("/{deal_id}")
-def update_deal(deal_id: int, body: DealPatch):
+def update_deal(deal_id: int, body: DealPatch, user: CurrentUser):
     changes = body.model_dump(exclude_unset=True)
     for f in ("name", "organization_id", "stage", "value", "probability"):
         if f in changes and changes[f] is None:
             raise field_error(f, "This field is required")
     with write_lock, get_engine().begin() as conn:
-        return _apply_patch(conn, deal_id, changes)
+        return _apply_patch(conn, deal_id, changes, user)
 
 
 @router.post("/{deal_id}/move")
-def move(deal_id: int, body: MoveIn):
+def move(deal_id: int, body: MoveIn, user: CurrentUser):
     with write_lock, get_engine().begin() as conn:
-        move_deal(conn, deal_id, body.stage, body.position)
+        move_deal(conn, deal_id, body.stage, body.position, user)
         return _one(conn, deal_id)
 
 

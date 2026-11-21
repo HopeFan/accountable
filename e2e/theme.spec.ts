@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import type { Page } from "@playwright/test";
-import { dialog, expect, test } from "./fixtures";
+import { chooseTheme, dialog, expect, openUserMenu, test } from "./fixtures";
 
 test.use({ viewport: { width: 1280, height: 800 } });
 
@@ -19,8 +19,6 @@ const SCREENS = [
 const LIGHT = { page: "rgb(240, 244, 245)", panel: "rgb(255, 255, 255)" };
 const DARK = { page: "rgb(4, 35, 46)", panel: "rgb(0, 0, 0)" };
 
-const toggle = (page: Page, name: "Dark mode" | "Light mode") =>
-  page.getByRole("button", { name });
 const theme = (page: Page) =>
   page.evaluate(() => document.documentElement.dataset.theme ?? "light");
 
@@ -29,13 +27,15 @@ async function waitForContent(page: Page) {
   await expect(page.getByRole("status", { name: "Loading" })).toHaveCount(0);
 }
 
-test("the toggle works and the choice is remembered", async ({ page }) => {
+test("the choice in the menu works and is remembered", async ({ page }) => {
   await page.goto("/");
   expect(await theme(page)).toBe("light");
 
-  await toggle(page, "Dark mode").click();
+  await chooseTheme(page, "Dark");
   expect(await theme(page)).toBe("dark");
-  await expect(toggle(page, "Light mode")).toBeVisible();
+  await openUserMenu(page);
+  await expect(page.getByRole("menuitemradio", { name: "Dark" })).toBeChecked();
+  await page.keyboard.press("Escape");
 
   await page.reload();
   expect(await theme(page)).toBe("dark");
@@ -43,10 +43,59 @@ test("the toggle works and the choice is remembered", async ({ page }) => {
   await expect(page).toHaveURL(/\/deals$/);
   expect(await theme(page)).toBe("dark");
 
-  await toggle(page, "Light mode").click();
+  await chooseTheme(page, "Light");
   await page.reload();
   expect(await theme(page)).toBe("light");
-  await expect(toggle(page, "Dark mode")).toBeVisible();
+  await openUserMenu(page);
+  await expect(
+    page.getByRole("menuitemradio", { name: "Light" }),
+  ).toBeChecked();
+});
+
+test("System follows the device, both ways, and updates live", async ({
+  page,
+}) => {
+  await page.emulateMedia({ colorScheme: "dark" });
+  await page.goto("/");
+  await waitForContent(page);
+  expect(await theme(page)).toBe("dark");
+
+  await page.emulateMedia({ colorScheme: "light" });
+  await expect.poll(() => theme(page)).toBe("light");
+  await page.emulateMedia({ colorScheme: "dark" });
+  await expect.poll(() => theme(page)).toBe("dark");
+
+  // an explicit choice ignores the device
+  await chooseTheme(page, "Light");
+  await page.emulateMedia({ colorScheme: "light" });
+  await page.emulateMedia({ colorScheme: "dark" });
+  expect(await theme(page)).toBe("light");
+
+  // back to System follows it again, and is remembered after a reload
+  await chooseTheme(page, "System");
+  await expect.poll(() => theme(page)).toBe("dark");
+  await page.reload();
+  expect(await theme(page)).toBe("dark");
+  await openUserMenu(page);
+  await expect(
+    page.getByRole("menuitemradio", { name: "System" }),
+  ).toBeChecked();
+});
+
+test("a dark device on System is dark before the page runs any script", async ({
+  page,
+}) => {
+  await page.emulateMedia({ colorScheme: "dark" });
+  const seen = page.waitForEvent("console", (m) =>
+    m.text().startsWith("first:"),
+  );
+  await page.addInitScript(() =>
+    document.addEventListener("DOMContentLoaded", () =>
+      console.log("first:" + document.documentElement.dataset.theme),
+    ),
+  );
+  await page.goto("/");
+  expect((await seen).text()).toBe("first:dark");
 });
 
 test("a stored dark choice is applied before the page runs any script", async ({
@@ -67,17 +116,16 @@ test("a stored dark choice is applied before the page runs any script", async ({
   expect((await seen).text()).toBe("first:dark");
 });
 
-test("every screen has the toggle and follows the mode", async ({ page }) => {
+test("every screen has the menu and follows the mode", async ({ page }) => {
   for (const mode of ["light", "dark"] as const) {
     const colors = mode === "light" ? LIGHT : DARK;
     await page.goto("/");
-    if (mode === "dark" && (await theme(page)) !== "dark")
-      await toggle(page, "Dark mode").click();
+    await chooseTheme(page, mode === "light" ? "Light" : "Dark");
     for (const url of SCREENS) {
       await page.goto(url);
       await waitForContent(page);
       await expect(
-        toggle(page, mode === "light" ? "Dark mode" : "Light mode"),
+        page.getByRole("button", { name: "User menu" }),
       ).toBeVisible();
       await expect(page.locator("body")).toHaveCSS(
         "background-color",
@@ -93,7 +141,7 @@ test("every screen has the toggle and follows the mode", async ({ page }) => {
 
 test("the charts take the dark colours", async ({ page }) => {
   await page.goto("/");
-  await toggle(page, "Dark mode").click();
+  await chooseTheme(page, "Dark");
   const chart = page.getByTestId("revenue-chart");
   await expect(
     chart.locator(".recharts-cartesian-axis-tick-value").first(),
@@ -106,23 +154,26 @@ test("the charts take the dark colours", async ({ page }) => {
 test("local storage blocked: the app opens in light mode with no errors", async ({
   page,
 }) => {
+  // Storage fails for the theme's key only, so test sign-in (also in local storage) still works.
   await page.addInitScript(() => {
-    Object.defineProperty(window, "localStorage", {
-      get() {
-        throw new Error("blocked");
-      },
-    });
+    for (const method of ["getItem", "setItem"] as const) {
+      const original = Storage.prototype[method] as (...a: string[]) => unknown;
+      Storage.prototype[method] = function (this: Storage, ...args: string[]) {
+        if (args[0] === "accountable-theme") throw new Error("blocked");
+        return original.apply(this, args);
+      } as never;
+    }
   });
   await page.goto("/");
   await waitForContent(page);
   expect(await theme(page)).toBe("light");
-  await toggle(page, "Dark mode").click();
+  await chooseTheme(page, "Dark");
   expect(await theme(page)).toBe("dark");
 });
 
 test("dialogs and messages use the dark colours", async ({ page }) => {
   await page.goto("/organizations");
-  await toggle(page, "Dark mode").click();
+  await chooseTheme(page, "Dark");
   await page.getByRole("button", { name: "Add organization" }).first().click();
   await expect(dialog(page)).toHaveCSS("background-color", DARK.panel);
   await dialog(page).getByLabel("Name").fill("Zenith Aerospace");
@@ -145,7 +196,7 @@ test("screenshots of the dashboard and the pipeline in both modes", async ({
     ]) {
       await page.goto(url);
       if (mode === "dark" && (await theme(page)) !== "dark")
-        await toggle(page, "Dark mode").click();
+        await chooseTheme(page, "Dark");
       await waitForContent(page);
       await page.evaluate(() => document.fonts.ready);
       await page.screenshot({

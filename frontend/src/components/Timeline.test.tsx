@@ -21,6 +21,8 @@ function activity(
     follow_up_state: null,
     deal_name: "Big deal",
     contact_name: null,
+    created_by: null,
+    updated_by: null,
     ...extra,
   };
 }
@@ -103,5 +105,23 @@ describe("Timeline", () => {
   it("says so when there is nothing", () => {
     render_([]);
     expect(screen.getByText("Nothing logged yet.")).toBeInTheDocument();
+  });
+
+  it("shows who added each entry, and who moved the deal", () => {
+    render_([
+      activity(1, "2026-11-01T09:00:00", { created_by: "sam@example.com" }),
+      activity(2, "2026-11-02T09:00:00", {
+        type: "stage_change",
+        description: "Moved from New to Qualified",
+        created_by: "kim@example.com",
+      }),
+      activity(3, "2026-11-03T09:00:00"),
+    ]);
+    const rows = screen.getAllByRole("listitem");
+    expect(rows[0]).toHaveTextContent("Sample data");
+    expect(rows[1]).toHaveTextContent("Added by kim@example.com");
+    expect(rows[1]).toHaveTextContent("Moved from New to Qualified");
+    expect(rows[2]).toHaveTextContent("Added by sam@example.com");
+    expect(screen.getByText("kim@example.com")).toHaveClass("font-mono");
   });
 });

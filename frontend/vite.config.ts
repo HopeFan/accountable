@@ -9,7 +9,10 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
     port: 5173,
-    proxy: { "/api": `http://127.0.0.1:${apiPort}` },
+    proxy: {
+      "/api": `http://127.0.0.1:${apiPort}`,
+      "/config.json": `http://127.0.0.1:${apiPort}`,
+    },
   },
   test: {
     environment: "jsdom",

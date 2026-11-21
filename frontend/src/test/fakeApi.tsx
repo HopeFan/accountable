@@ -4,6 +4,8 @@ import { MemoryRouter } from "react-router-dom";
 import { vi } from "vitest";
 import { App } from "../App";
 import { ToastProvider } from "../components/Toast";
+import { AuthContext, setActiveAuthClient } from "../lib/auth";
+import { createTestAuth, testSession } from "../lib/testAuth";
 import type {
   Activity,
   Contact,
@@ -18,6 +20,8 @@ export const org: Organization = {
   website: "https://acme.test",
   industry: "Software",
   notes: null,
+  created_by: "sam@example.com",
+  updated_by: "sam@example.com",
   contacts_count: 1,
   open_deals_count: 2,
   open_deals_value: 30000,
@@ -33,6 +37,8 @@ export const contact: Contact = {
   organization_id: 1,
   organization_name: "Acme Corp",
   status: "lead",
+  created_by: "sam@example.com",
+  updated_by: "sam@example.com",
 };
 const baseDeal: Deal = {
   id: 1,
@@ -48,6 +54,8 @@ const baseDeal: Deal = {
   position: 0,
   is_late: true,
   expected_revenue: 500,
+  created_by: "sam@example.com",
+  updated_by: "sam@example.com",
 };
 export const deals: Deal[] = [
   baseDeal,
@@ -85,6 +93,8 @@ const note: Activity = {
   follow_up_state: "overdue",
   deal_name: "Platform rollout",
   contact_name: "Ada Lovelace",
+  created_by: "sam@example.com",
+  updated_by: "sam@example.com",
 };
 export const dashboard: Dashboard = {
   today: "2026-11-17",
@@ -168,16 +178,31 @@ export function fakeBackend(failWith?: Response, dealList: Deal[] = deals) {
   return calls;
 }
 
+export const TEST_EMAIL = "tester@example.com";
+
+/** Renders the whole app signed in as `TEST_EMAIL`. */
 export function renderApp(at: string) {
+  const session = testSession(TEST_EMAIL);
+  setActiveAuthClient({
+    ...createTestAuth(),
+    getSession: async () => session,
+  });
+  const auth = {
+    session,
+    signIn: async () => {},
+    signOut: async () => {},
+  };
   const client = new QueryClient({
     defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
   });
   return render(
     <QueryClientProvider client={client}>
       <MemoryRouter initialEntries={[at]}>
-        <ToastProvider>
-          <App />
-        </ToastProvider>
+        <AuthContext.Provider value={auth}>
+          <ToastProvider>
+            <App />
+          </ToastProvider>
+        </AuthContext.Provider>
       </MemoryRouter>
     </QueryClientProvider>,
   );

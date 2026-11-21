@@ -2,6 +2,7 @@ from fastapi import APIRouter, Response
 from sqlalchemy import func, select, update
 
 from .. import clock, rules
+from ..auth import CurrentUser
 from ..common import (
     all_deals,
     execute_delete,
@@ -64,10 +65,10 @@ def list_organizations():
 
 
 @router.post("", status_code=201)
-def create_organization(body: OrganizationIn):
+def create_organization(body: OrganizationIn, user: CurrentUser):
     with get_engine().begin() as conn:
         _check_unique(conn, body.name)
-        new_id = insert_row(conn, organization, body.model_dump())
+        new_id = insert_row(conn, organization, body.model_dump(), user)
         row = get_or_404(conn, organization, new_id, "Organization")
         return _with_counts(conn, [row])[0]
 
@@ -89,7 +90,7 @@ def get_organization(org_id: int):
 
 
 @router.patch("/{org_id}")
-def update_organization(org_id: int, body: OrganizationPatch):
+def update_organization(org_id: int, body: OrganizationPatch, user: CurrentUser):
     changes = body.model_dump(exclude_unset=True)
     if "name" in changes and changes["name"] is None:
         raise field_error("name", "Name is required")
@@ -101,7 +102,7 @@ def update_organization(org_id: int, body: OrganizationPatch):
             conn.execute(
                 update(organization)
                 .where(organization.c.id == org_id)
-                .values(**changes)
+                .values(**changes, updated_by=user)
             )
         row = get_or_404(conn, organization, org_id, "Organization")
         return _with_counts(conn, [row])[0]

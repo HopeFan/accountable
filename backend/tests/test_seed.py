@@ -1,4 +1,5 @@
-from sqlalchemy import func, select
+import pytest
+from sqlalchemy import delete, func, select
 
 from app import db, seed
 
@@ -108,13 +109,51 @@ def test_reset_replaces_changes(seeded):
     )
 
 
+def count(table) -> int:
+    with db.get_engine().connect() as conn:
+        return conn.execute(select(func.count()).select_from(table)).scalar_one()
+
+
 def test_database_is_created_and_seeded_when_missing(db_file):
     assert not db_file.exists()
     seed.ensure_seeded()
     assert db_file.exists()
-    seed.ensure_seeded()  # an existing file isn't touched
+    assert count(db.organization) == 12
+    seed.ensure_seeded()  # an existing database isn't seeded again
+    assert count(db.organization) == 12
+
+
+def test_not_seeded_again_after_everything_is_deleted(db_file):
+    seed.ensure_seeded()
+    with db.get_engine().begin() as conn:
+        for table in reversed(db.metadata.sorted_tables):
+            conn.execute(delete(table))
+    seed.ensure_seeded()
+    assert count(db.organization) == 0
+
+
+def test_an_older_database_with_tables_is_not_seeded(db_file):
+    db.create_tables()
+    seed.ensure_seeded()
+    assert count(db.organization) == 0
+
+
+def test_reset_recreates_the_sample_data_after_deleting_everything(db_file):
+    seed.reset()
+    with db.get_engine().begin() as conn:
+        for table in reversed(db.metadata.sorted_tables):
+            conn.execute(delete(table))
+    seed.reset()
+    assert (count(db.organization), count(db.contact), count(db.deal)) == (12, 35, 40)
+
+
+@pytest.mark.parametrize("table", [db.organization, db.contact, db.deal, db.activity])
+def test_sample_rows_have_no_author(db_file, table):
+    seed.reset()
     with db.get_engine().connect() as conn:
-        assert (
-            conn.execute(select(func.count()).select_from(db.organization)).scalar_one()
-            == 12
-        )
+        authored = conn.execute(
+            select(func.count())
+            .select_from(table)
+            .where(table.c.created_by.is_not(None) | table.c.updated_by.is_not(None))
+        ).scalar_one()
+    assert authored == 0

@@ -51,6 +51,7 @@ export function ContactPage() {
         <div className="flex flex-col gap-5">
           <Panel>
             <Details
+              author={c}
               rows={[
                 [
                   "Organization",

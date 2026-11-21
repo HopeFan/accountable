@@ -2,6 +2,7 @@ from fastapi import APIRouter, Response
 from sqlalchemy import select, update
 
 from .. import clock
+from ..auth import CurrentUser
 from ..common import (
     activities,
     all_deals,
@@ -51,10 +52,10 @@ def list_contacts():
 
 
 @router.post("", status_code=201)
-def create_contact(body: ContactIn):
+def create_contact(body: ContactIn, user: CurrentUser):
     with get_engine().begin() as conn:
         _org_name(conn, body.organization_id)
-        new_id = insert_row(conn, contact, body.model_dump())
+        new_id = insert_row(conn, contact, body.model_dump(), user)
         return _one(conn, new_id)
 
 
@@ -77,7 +78,7 @@ def get_contact(contact_id: int):
 
 
 @router.patch("/{contact_id}")
-def update_contact(contact_id: int, body: ContactPatch):
+def update_contact(contact_id: int, body: ContactPatch, user: CurrentUser):
     changes = body.model_dump(exclude_unset=True)
     for f in ("first_name", "last_name", "status"):
         if f in changes and changes[f] is None:
@@ -88,7 +89,9 @@ def update_contact(contact_id: int, body: ContactPatch):
             _org_name(conn, changes["organization_id"])
         if changes:
             conn.execute(
-                update(contact).where(contact.c.id == contact_id).values(**changes)
+                update(contact)
+                .where(contact.c.id == contact_id)
+                .values(**changes, updated_by=user)
             )
         new_org = changes.get("organization_id", current["organization_id"])
         if new_org != current["organization_id"]:

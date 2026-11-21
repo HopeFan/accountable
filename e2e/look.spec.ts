@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { expect, test } from "./fixtures";
+import { chooseTheme, expect, openUserMenu, signOut, test } from "./fixtures";
 
 const OUT = path.resolve(__dirname, "../test-results/screens");
 test.use({ viewport: { width: 1280, height: 800 } });
@@ -84,4 +84,46 @@ test("the dashboard has a line chart, a bar chart and the pipeline visual", asyn
   await page.mouse.move(box.x + box.width * 0.55, box.y + box.height * 0.5);
   await expect(chart.locator(".recharts-tooltip-wrapper")).toContainText("USD");
   await page.screenshot({ path: path.join(OUT, "dashboard-tooltip.png") });
+});
+
+const PANEL = {
+  light: "rgb(255, 255, 255)",
+  dark: "rgb(0, 0, 0)",
+} as const;
+const PAGE = {
+  light: "rgb(240, 244, 245)",
+  dark: "rgb(4, 35, 46)",
+} as const;
+
+test("the sign-in screen and the open menu look right in both modes", async ({
+  page,
+}) => {
+  fs.mkdirSync(OUT, { recursive: true });
+  for (const mode of ["light", "dark"] as const) {
+    await page.goto("/");
+    await chooseTheme(page, mode === "light" ? "Light" : "Dark");
+    await openUserMenu(page);
+    await expect(page.getByRole("menu")).toHaveCSS(
+      "background-color",
+      PANEL[mode],
+    );
+    await expect(
+      page.getByRole("menu").getByText("tester@example.com"),
+    ).toBeVisible();
+    await page.screenshot({ path: path.join(OUT, `menu-${mode}.png`) });
+    await page.keyboard.press("Escape");
+
+    await signOut(page);
+    await expect(page.getByRole("button", { name: "Sign in" })).toBeVisible();
+    await expect(page.locator("body")).toHaveCSS(
+      "background-color",
+      PAGE[mode],
+    );
+    await page.screenshot({ path: path.join(OUT, `sign-in-${mode}.png`) });
+    // let the next round sign in again
+    await page.evaluate(() => sessionStorage.removeItem("e2e-signed-out"));
+    await page.context().setExtraHTTPHeaders({
+      Authorization: "Bearer test:tester@example.com",
+    });
+  }
 });

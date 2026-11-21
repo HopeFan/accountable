@@ -83,6 +83,16 @@ export function FollowUpChip({ activity }: { activity: Activity }) {
   );
 }
 
+/** "Added by name@example.com" in small print; "Sample data" without an author. */
+export function AddedBy({ email }: { email: string | null }) {
+  if (!email) return <span>Sample data</span>;
+  return (
+    <span>
+      Added by <span className="font-mono">{email}</span>
+    </span>
+  );
+}
+
 export function Timeline({
   items,
   onEdit,
@@ -116,6 +126,8 @@ export function Timeline({
             </p>
             <p className="mt-0.5 text-[12.5px] text-muted">
               <span className="font-mono">{formatDateTime(a.occurred_at)}</span>
+              {" · "}
+              <AddedBy email={a.created_by} />
               {showLinks && a.deal_id && a.deal_name && (
                 <>
                   {" · "}

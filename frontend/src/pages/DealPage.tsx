@@ -67,6 +67,7 @@ export function DealPage() {
       <div className="grid grid-cols-[minmax(0,5fr)_minmax(0,4fr)] items-start gap-5">
         <Panel>
           <Details
+            author={d}
             rows={[
               [
                 "Organization",

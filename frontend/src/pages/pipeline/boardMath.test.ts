@@ -33,6 +33,8 @@ function deal(
     position,
     is_late: false,
     expected_revenue: expectedRevenue(stage, value, probability),
+    created_by: null,
+    updated_by: null,
     ...extra,
   };
 }

@@ -27,9 +27,17 @@ export default defineConfig({
     // Builds the app, then serves the API and the built frontend on one port, on a test database and a fixed date.
     command: `npm run build && uv run uvicorn app.main:app --app-dir backend --port ${PORT}`,
     cwd: path.resolve(__dirname, ".."),
-    url: `http://127.0.0.1:${PORT}/api/health`,
+    url: `http://127.0.0.1:${PORT}/healthz`,
     reuseExistingServer: false,
     timeout: 180_000,
-    env: { ACCOUNTABLE_DB: TEST_DB, ACCOUNTABLE_TODAY: TEST_TODAY },
+    env: {
+      ACCOUNTABLE_DB: TEST_DB,
+      ACCOUNTABLE_TODAY: TEST_TODAY,
+      // Test sign-in, and no Supabase and no hosted database, whatever the shell holds.
+      ACCOUNTABLE_TEST_AUTH: "1",
+      SUPABASE_URL: "",
+      SUPABASE_PUBLISHABLE_KEY: "",
+      DATABASE_URL: "",
+    },
   },
 });

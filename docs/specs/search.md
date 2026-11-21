@@ -12,15 +12,15 @@ Part of the Accountable spec. The index is in `docs/spec.md`. This is the search
 
 - Matching ignores case and finds the text anywhere in the name, and it behaves the same on SQLite and Postgres. The characters `%` and `_` in the query mean themselves.
 - Organizations match on `name`. Deals match on `name`. Contacts match on first name, last name or the two together, so "ada lov" finds Ada Lovelace.
-- Within a group, results are ordered by name. A query of only spaces returns nothing.
-- Each result has what the dropdown shows: the name and one line of context (an organization's industry, a contact's organization, a deal's organization and stage).
+- Within a group, results are ordered by name (a contact by first name, then last). A blank query, or one of only spaces, returns nothing.
+- Each result has what the dropdown shows: the name and one line of context (an organization's industry, a contact's organization name, and for a deal "<Organization> · <Stage>", for example "Acme · Proposal"). The context is empty when the organization has no industry or the contact has no organization. There is no city to show.
 
 ## Requirements
 
 - R50. Every page has a search box in the top bar, to the left of the user menu. Placeholder: "Search organizations, contacts and deals".
-- R51. Typing shows a dropdown under the box that updates as you type, without a request for every keystroke. It lists the results in three groups headed **Organizations**, **Contacts** and **Deals**, a few in each. A group with no results is left out.
+- R51. Typing shows a dropdown under the box that updates as you type, 250 ms after the last keystroke, so there is not a request for every one. It lists the results in three groups headed **Organizations**, **Contacts** and **Deals**, a few in each. A group with no results is left out.
 - R52. A query with no results shows "No results for" and the query. An empty box shows no dropdown.
-- R53. Choosing a result opens its page, closes the dropdown and clears the box. A click or Enter does it, and the up and down arrows move through the results across groups. Escape closes the dropdown.
+- R53. Choosing a result opens its page, closes the dropdown and clears the box. A click or Enter does it, and the up and down arrows move through the results across groups and wrap from the last back to the first. Enter opens the highlighted result and does nothing when none is highlighted. Escape closes the dropdown, as does leaving the box.
 - R54. The search works for every organization, contact and deal, whoever added it, including sample data.
 
 ## Screen

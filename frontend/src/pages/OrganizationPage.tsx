@@ -45,6 +45,7 @@ export function OrganizationPage() {
       <div className="flex flex-col gap-5">
         <Panel>
           <Details
+            author={org}
             rows={[
               ["Industry", org.industry],
               ["Website", org.website],

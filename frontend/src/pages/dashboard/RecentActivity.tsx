@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ActivityIcon } from "../../components/Timeline";
+import { ActivityIcon, AddedBy } from "../../components/Timeline";
 import { Panel } from "../../components/ui";
 import { formatDateTime } from "../../lib/format";
 import type { Activity } from "../../lib/types";
@@ -29,14 +29,20 @@ export function RecentActivity({ items }: { items: Activity[] }) {
                 <ActivityIcon type={a.type} />
                 <div className="min-w-0">
                   <p className="font-medium break-words">{a.description}</p>
-                  {link && (
-                    <Link
-                      to={link.to}
-                      className="text-[12.5px] font-semibold text-info-text hover:underline"
-                    >
-                      {link.text}
-                    </Link>
-                  )}
+                  <p className="text-[12.5px] text-muted">
+                    {link && (
+                      <>
+                        <Link
+                          to={link.to}
+                          className="font-semibold text-info-text hover:underline"
+                        >
+                          {link.text}
+                        </Link>
+                        {" · "}
+                      </>
+                    )}
+                    <AddedBy email={a.created_by} />
+                  </p>
                 </div>
                 <span className="font-mono text-xs whitespace-nowrap text-muted">
                   {formatDateTime(a.occurred_at)}

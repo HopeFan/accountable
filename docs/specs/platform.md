@@ -62,11 +62,28 @@ JSON over `/api`, served by FastAPI on one port in development with the frontend
 ## Reset and persistence
 
 - R36. Every change is saved at once in the database, so it survives refresh and restart.
-- R37. When the app starts, migrations bring the database up to date, and the sample data is added once, when the tables are first created. It is not added again, even if everything is later deleted. `npm run seed` deletes the data and recreates the sample data. Because that would wipe the team's data, it asks for confirmation first when `DATABASE_URL` isn't a local SQLite file.
+- R37. When the app starts, migrations bring the database up to date, and the sample data is added once, when the tables are first created. It is not added again, even if everything is later deleted. `npm run seed` deletes the data and recreates the sample data. Because that would wipe the team's data, it asks for "yes" first on any database that isn't SQLite. Migrations and the first seeding run in one transaction: on Postgres a crash part-way rolls everything back and the next start tries again. SQLite commits schema changes on its own, so there a crash can leave empty tables that never get sample data (a known limit).
 
 ## Deployment
 
-The app runs on Render's free plan as one web service. FastAPI serves the built frontend and the API from the same address, migrations run when it starts, and it answers at its onrender.com address. `render.yaml` describes the service. `DATABASE_URL`, `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` are entered in Render and never written in the file or committed. Locally the same three settings live in `.env` (git-ignored). The built app can be run on a computer the way Render runs it, signed in against Supabase. A free service can be slow to answer after it has been idle.
+The app runs on Render's free plan as one web service, built from the `Dockerfile` (Node builds the frontend, then a Python image with uv serves it). FastAPI serves the built frontend and the API from the same address, migrations run when it starts, and it answers at its onrender.com address. `render.yaml` describes the service and its health check. `DATABASE_URL`, `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` are entered in Render and never written in the file or committed. Locally the same three settings live in `.env` (git-ignored, with `.env.example` as the template), which `npm run dev`, `npm start` and `npm run seed` read and the tests never do. The built app can be run on a computer the way Render runs it, signed in against Supabase. A free service can be slow to answer after it has been idle.
+
+`DATABASE_URL` must be Supabase's pooler address in transaction mode, because Render's free plan is IPv4 only and Supabase's direct address is IPv6. Its password must be URL-encoded.
+
+When test sign-in is off (the real mode), the app also refuses to start unless `DATABASE_URL` (or `ACCOUNTABLE_DB`) is set, with the message "Set DATABASE_URL. Without it the app would keep the team's data in a local file." This stops a deployment such as Render from silently keeping the team's data in a local file that disappears with the container. Locally, `npm start` therefore needs `DATABASE_URL` in `.env`.
+
+### Public addresses
+
+Two addresses outside `/api` need no sign-in, and nothing else does. FastAPI's `/docs`, `/redoc` and `/openapi.json` are switched off, so the map of the API isn't public.
+
+- `GET /healthz` returns only `{ "status": "ok" }`. Render uses it as the health check.
+- `GET /config.json` returns only what the page may know: the Supabase URL and the publishable key (or `{ "testAuth": true }` in test sign-in). The page fetches it before it renders anything, so nothing about Supabase is built into the frontend and one build runs everywhere.
+
+`/api/health`, which the app uses for today's date, stays behind sign-in.
+
+### Test sign-in
+
+Sign-in has a test mode, so the tests never contact Supabase. It is on only when `ACCOUNTABLE_TEST_AUTH=1`, `ACCOUNTABLE_DB` is set and `SUPABASE_URL` is empty, all three at once. That is never the case on Render, where `SUPABASE_URL` is set and `ACCOUNTABLE_DB` isn't. In this mode the sign-in screen checks a fixed test password in the browser and the backend accepts tokens of the form `test:<email>`. When test sign-in is off and `SUPABASE_URL` or `SUPABASE_PUBLISHABLE_KEY` is missing, the app refuses to start, so a mistake in the settings fails loudly instead of running open. `ACCOUNTABLE_DB` also wins over `DATABASE_URL`, so a test can never reach Supabase.
 
 ## Sample data
 
@@ -86,12 +103,16 @@ Created by the backend with dates relative to the day it runs so overdue and lat
 
 ```
 frontend/         React app (Vite)
-backend/          FastAPI app, SQLAlchemy Core tables, seed code
+backend/          FastAPI app, SQLAlchemy Core tables, sign-in check, seed code
+backend/migrations/ Alembic migrations, run when the app starts
 e2e/              Playwright tests
 eslint.config.mjs ESLint rules for the frontend and e2e
 .gitleaks.toml    secret scan settings (allows the git-ignored .env)
 data/             local SQLite files, for tests and offline use (git-ignored)
+Dockerfile        builds the frontend and serves everything, for Render
+.dockerignore     keeps data, secrets and node_modules out of the image
 render.yaml       the Render web service
+.env.example      the three settings to copy to .env (git-ignored)
 package.json      workspace and scripts at the repo root
 pyproject.toml    uv project at the repo root
 uv.lock

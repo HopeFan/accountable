@@ -37,7 +37,12 @@ export const STATUS_LABEL: Record<ContactStatus, string> = {
   customer: "Customer",
 };
 
-export interface Organization {
+/** Set by the backend; null on sample data. */
+export interface Authored {
+  created_by: string | null;
+  updated_by: string | null;
+}
+export interface Organization extends Authored {
   id: number;
   name: string;
   website: string | null;
@@ -47,7 +52,7 @@ export interface Organization {
   open_deals_count: number;
   open_deals_value: number;
 }
-export interface Contact {
+export interface Contact extends Authored {
   id: number;
   first_name: string;
   last_name: string;
@@ -59,7 +64,7 @@ export interface Contact {
   organization_name: string | null;
   status: ContactStatus;
 }
-export interface Deal {
+export interface Deal extends Authored {
   id: number;
   name: string;
   organization_id: number;
@@ -76,7 +81,7 @@ export interface Deal {
 }
 export type ActivityType = "note" | "call" | "email" | "stage_change";
 export type FollowUpState = "open" | "done" | "overdue" | null;
-export interface Activity {
+export interface Activity extends Authored {
   id: number;
   type: ActivityType;
   contact_id: number | null;

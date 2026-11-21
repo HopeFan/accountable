@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, Response
 from sqlalchemy import delete, update
 
 from .. import clock
+from ..auth import CurrentUser
 from ..common import activities, field_error, get_or_404, insert_row
 from ..db import activity, contact, deal, get_engine
 from ..schemas import ActivityIn, ActivityPatch
@@ -14,7 +15,7 @@ def _one(conn, activity_id: int) -> dict:
 
 
 @router.post("", status_code=201)
-def create_activity(body: ActivityIn):
+def create_activity(body: ActivityIn, user: CurrentUser):
     if body.contact_id is None and body.deal_id is None:
         raise field_error("contact_id", "Choose a contact or a deal")
     with get_engine().begin() as conn:
@@ -24,12 +25,12 @@ def create_activity(body: ActivityIn):
             get_or_404(conn, deal, body.deal_id, "Deal")
         values = body.model_dump()
         values["occurred_at"] = body.occurred_at or clock.now()
-        new_id = insert_row(conn, activity, values)
+        new_id = insert_row(conn, activity, values, user)
         return _one(conn, new_id)
 
 
 @router.patch("/{activity_id}")
-def update_activity(activity_id: int, body: ActivityPatch):
+def update_activity(activity_id: int, body: ActivityPatch, user: CurrentUser):
     changes = body.model_dump(exclude_unset=True)
     for f in ("type", "description", "occurred_at", "follow_up_done"):
         if f in changes and changes[f] is None:
@@ -40,7 +41,9 @@ def update_activity(activity_id: int, body: ActivityPatch):
             raise HTTPException(400, detail="Stage changes can't be edited")
         if changes:
             conn.execute(
-                update(activity).where(activity.c.id == activity_id).values(**changes)
+                update(activity)
+                .where(activity.c.id == activity_id)
+                .values(**changes, updated_by=user)
             )
         return _one(conn, activity_id)
 

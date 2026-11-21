@@ -6,14 +6,14 @@
     "frontend"
   ],
   "scripts": {
-    "dev": "concurrently -k -n api,web -c cyan,magenta \"uv run uvicorn app.main:app --app-dir backend --reload --port 8000\" \"npm run dev -w frontend\"",
+    "dev": "concurrently -k -n api,web -c cyan,magenta \"uv run $(test -f .env && echo --env-file .env) uvicorn app.main:app --app-dir backend --reload --port 8000\" \"npm run dev -w frontend\"",
     "test": "npm run test:backend && npm run test:frontend && npm run test:e2e",
     "test:backend": "uv run pytest -q --cov --cov-fail-under=80",
     "test:frontend": "npm run test:coverage -w frontend",
     "test:e2e": "playwright test --config e2e/playwright.config.ts",
     "build": "npm run build -w frontend",
-    "start": "npm run build && uv run uvicorn app.main:app --app-dir backend --port 8000",
-    "seed": "uv run python backend/seed_cli.py",
+    "start": "npm run build && uv run $(test -f .env && echo --env-file .env) uvicorn app.main:app --app-dir backend --port 8000",
+    "seed": "uv run $(test -f .env && echo --env-file .env) python backend/seed_cli.py",
     "format": "prettier --write frontend e2e *.json *.mjs && uv run ruff format backend",
     "lint:frontend": "prettier --check frontend e2e *.json *.mjs && eslint frontend e2e eslint.config.mjs",
     "lint:backend": "uv run ruff format --check backend && uv run ruff check backend",

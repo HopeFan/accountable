@@ -90,6 +90,8 @@ const data: DashboardData = {
       follow_up_state: "overdue",
       deal_name: "Dispatch optimisation",
       contact_name: null,
+      created_by: null,
+      updated_by: null,
     },
     {
       id: 2,
@@ -103,6 +105,8 @@ const data: DashboardData = {
       follow_up_state: "open",
       deal_name: "Fraud alerts",
       contact_name: null,
+      created_by: null,
+      updated_by: null,
     },
   ],
   recent_activity: [
@@ -118,6 +122,23 @@ const data: DashboardData = {
       follow_up_state: null,
       deal_name: "Dispatch optimisation",
       contact_name: null,
+      created_by: "sam@example.com",
+      updated_by: null,
+    },
+    {
+      id: 6,
+      type: "note",
+      contact_id: null,
+      deal_id: 8,
+      description: "Seeded note",
+      occurred_at: "2026-11-15T09:30:00",
+      follow_up_date: null,
+      follow_up_done: false,
+      follow_up_state: null,
+      deal_name: "Fraud alerts",
+      contact_name: null,
+      created_by: null,
+      updated_by: null,
     },
   ],
 };
@@ -193,6 +214,10 @@ describe("Dashboard", () => {
         "Moved from Proposal to Negotiation",
       ),
     ).toBeInTheDocument();
+    const recent = within(screen.getByTestId("recent-activity"));
+    expect(recent.getByText("sam@example.com")).toBeInTheDocument();
+    expect(recent.getByText(/Added by/)).toBeInTheDocument();
+    expect(recent.getByText("Sample data")).toBeInTheDocument();
   });
 });
 

@@ -1,3 +1,5 @@
+import { getActiveAuthClient } from "./auth";
+
 export interface FieldError {
   field: string;
   message: string;
@@ -13,6 +15,14 @@ export class ApiError extends Error {
   }
 }
 
+async function requestHeaders(hasBody: boolean) {
+  const headers: Record<string, string> = {};
+  if (hasBody) headers["Content-Type"] = "application/json";
+  const session = await getActiveAuthClient()?.getSession();
+  if (session) headers.Authorization = `Bearer ${session.accessToken}`;
+  return headers;
+}
+
 export async function api<T>(
   path: string,
   init: { method?: string; body?: unknown } = {},
@@ -21,10 +31,7 @@ export async function api<T>(
   try {
     res = await fetch(`/api${path}`, {
       method: init.method ?? "GET",
-      headers:
-        init.body !== undefined
-          ? { "Content-Type": "application/json" }
-          : undefined,
+      headers: await requestHeaders(init.body !== undefined),
       body: init.body !== undefined ? JSON.stringify(init.body) : undefined,
     });
   } catch {
@@ -33,6 +40,7 @@ export async function api<T>(
       "Can't reach the server. Check that Accountable is running.",
     );
   }
+  if (res.status === 401) void getActiveAuthClient()?.signOut();
   if (res.status === 204) return undefined as T;
   const data = await res.json().catch(() => null);
   if (!res.ok) {

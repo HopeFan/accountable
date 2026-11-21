@@ -7,12 +7,22 @@
     <title>Accountable</title>
     <script>
       // Runs before the first paint so a reload in dark mode never flashes light.
+      // Same rule as lib/theme.ts: dark, or system on a dark device.
+      var choice = "system";
       try {
-        if (localStorage.getItem("accountable-theme") === "dark")
-          document.documentElement.setAttribute("data-theme", "dark");
-      } catch {
-        // storage is blocked; stay light
+        choice = localStorage.getItem("accountable-theme");
+      } catch (e) {
+        // storage is blocked; the choice stays system
       }
+      if (choice !== "light" && choice !== "dark") choice = "system";
+      var dark = choice === "dark";
+      try {
+        if (choice === "system")
+          dark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      } catch (e) {
+        // no matchMedia; stay light
+      }
+      if (dark) document.documentElement.setAttribute("data-theme", "dark");
     </script>
   </head>
   <body>

@@ -29,7 +29,7 @@ A change means any write to the record: an edit, a follow-up marked done or reop
 | -------- | -------------------------------------------------------------- |
 | Session  | `GET /me`, returns the signed-in person's email (for the menu) |
 
-Every route under `/api`, this one included, answers `401` with `{ "detail": ... }` when the token is missing, invalid or expired. Records in responses include `created_by` and `updated_by`.
+Every route under `/api`, this one included, answers `401` with `{ "detail": ... }` when the token is missing, invalid or expired. Records in responses include `created_by` and `updated_by`. Outside `/api` only `/healthz` and `/config.json` are public; `/docs`, `/redoc` and `/openapi.json` are switched off.
 
 ## Requirements
 
