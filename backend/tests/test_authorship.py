@@ -179,3 +179,41 @@ def test_responses_carry_both_fields(client, make):
 def test_sample_data_has_no_author(seeded):
     for record in seeded.get("/api/deals").json():
         assert authors(record) == (None, None)
+
+
+def _deal_with_contact(client):
+    org = make_org(client)
+    contact = post(
+        client,
+        "/api/contacts",
+        {"first_name": "A", "last_name": "B", "organization_id": org["id"]},
+    )
+    deal = post(
+        client,
+        "/api/deals",
+        {"name": "D", "organization_id": org["id"], "contact_id": contact["id"]},
+    )
+    return contact, deal
+
+
+def test_moving_a_contact_records_who_cleared_the_deals_contact(client):
+    contact, deal = _deal_with_contact(client)
+    other = post(client, "/api/organizations", {"name": "Other"})
+    r = client.patch(
+        f"/api/contacts/{contact['id']}",
+        json={"organization_id": other["id"]},
+        headers=BOB,
+    )
+    assert r.status_code == 200
+    after = client.get(f"/api/deals/{deal['id']}", headers=ADA).json()
+    assert after["contact_id"] is None
+    assert authors(after) == (ADA_EMAIL, BOB_EMAIL)
+
+
+def test_deleting_a_contact_records_who_cleared_the_deals_contact(client):
+    contact, deal = _deal_with_contact(client)
+    r = client.delete(f"/api/contacts/{contact['id']}", headers=BOB)
+    assert r.status_code == 204
+    after = client.get(f"/api/deals/{deal['id']}", headers=ADA).json()
+    assert after["contact_id"] is None
+    assert authors(after) == (ADA_EMAIL, BOB_EMAIL)

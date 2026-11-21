@@ -6,6 +6,7 @@ from ..auth import CurrentUser
 from ..common import (
     activities,
     all_deals,
+    clear_deal_contact,
     execute_delete,
     field_error,
     get_or_404,
@@ -96,12 +97,10 @@ def update_contact(contact_id: int, body: ContactPatch, user: CurrentUser):
         new_org = changes.get("organization_id", current["organization_id"])
         if new_org != current["organization_id"]:
             # a deal's contact must work at the deal's organization
-            conn.execute(
-                update(deal)
-                .where(
-                    deal.c.contact_id == contact_id, deal.c.organization_id != new_org
-                )
-                .values(contact_id=None)
+            clear_deal_contact(
+                conn,
+                (deal.c.contact_id == contact_id) & (deal.c.organization_id != new_org),
+                user,
             )
         return _one(conn, contact_id)
 
@@ -113,8 +112,9 @@ def delete_preview(contact_id: int):
 
 
 @router.delete("/{contact_id}", status_code=204)
-def delete_contact(contact_id: int):
+def delete_contact(contact_id: int, user: CurrentUser):
     with write_lock, get_engine().begin() as conn:
         plan = plan_delete(conn, "contact", contact_id)
+        clear_deal_contact(conn, deal.c.contact_id == contact_id, user)
         execute_delete(conn, "contact", contact_id, plan)
     return Response(status_code=204)

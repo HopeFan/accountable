@@ -3,7 +3,7 @@
 from datetime import date, datetime
 
 from fastapi import HTTPException
-from sqlalchemy import Connection, delete, func, insert, or_, select
+from sqlalchemy import Connection, delete, func, insert, or_, select, update
 
 from . import clock, rules
 from .db import AUTHOR_COLUMNS, activity, contact, deal, organization
@@ -221,13 +221,15 @@ def preview(plan: dict, kind: str) -> dict:
     }
 
 
+def clear_deal_contact(conn: Connection, where, user: str) -> None:
+    """Take a contact off the deals matching `where`, and record who did it."""
+    conn.execute(update(deal).where(where).values(contact_id=None, updated_by=user))
+
+
 def execute_delete(conn: Connection, kind: str, id_: int, plan: dict) -> None:
     if plan["activities"]:
         conn.execute(delete(activity).where(activity.c.id.in_(plan["activities"])))
     if kind == "contact":
-        conn.execute(
-            deal.update().where(deal.c.contact_id == id_).values(contact_id=None)
-        )
         conn.execute(delete(contact).where(contact.c.id == id_))
         return
     if plan["deals"]:
