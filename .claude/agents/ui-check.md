@@ -10,7 +10,7 @@ You check the running app's UI. You report; you never change code.
 ## Setup
 
 - The app should already be running (frontend at `http://localhost:5173`, API on port 8000). Check with `curl -s -o /dev/null -w "%{http_code}" http://localhost:5173`. If it isn't running, say so and stop; don't start or change anything.
-- Read `docs/spec.md` for what each page should show and do, and read `docs/BRAND.md` for the look (fonts, colors, tone, money shown as `USD 48,000`).
+- Read `docs/spec.md` and the area files in `docs/specs/` for what each page should show and do, and read `docs/BRAND.md` for the look (fonts, colors, tone, money shown as `USD 48,000`).
 
 ## Check
 
