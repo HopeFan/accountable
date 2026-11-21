@@ -16,6 +16,7 @@ The MVP is built, phases 0 to 8 of `docs/changes/mvp/plan.md`. All tests and `np
 - **Standards**: `docs/STANDARDS.md` says how code is written. `AGENTS.md` points to it and `docs/REVIEW.md` has a Standards pass that checks changes against it.
 - **Improve step** (`docs/IMPROVE.md`): at Deploy, after the review fixes and before the merge, look at what went wrong, add corrections for repeated mistakes, remove what is out of date and improve the file itself. `AGENTS.md` points to it.
 - **Pipeline fix**: if loading deals fails, the Pipeline page now shows the error with a retry button instead of a skeleton forever. Its drag logic moved into pure functions in `boardMath.ts` so it can be unit tested.
+- **Subagents** (`.claude/agents/`): `reviewer` (Haiku, read-only) reviews a branch against `docs/REVIEW.md` and reports by severity. `ui-check` (Haiku, Playwright MCP) screenshots every page in light and dark mode, checks them against `docs/BRAND.md` and `docs/spec.md`, and saves the screenshots in `.playwright-mcp/`. Neither changes any code. A first run of both found nothing broken or Important.
 
 - **Dark mode** (`docs/changes/dark-mode/`): a toggle at the top right of the page, remembered in local storage and applied before the first paint. All colors are tokens in `tokens.css` (a guard test fails on any hex color in a component), with a dark block under `:root[data-theme="dark"]`. The contrast test checks every pairing in both modes. New tests: `theme.test.ts`, `ThemeToggle.test.tsx`, `tokens.test.ts` and `e2e/theme.spec.ts`. Screenshots of the dashboard and pipeline in both modes are in `docs/changes/dark-mode/`. The Lost dot uses its own token (`--lost-dot`) so it stays visible on black. Still to do: a person's by-eye pass in both modes.
 
@@ -47,5 +48,6 @@ npm run dev      # API on :8000, app on http://localhost:5173
 - TypeScript is pinned to 6.0.3 because typescript-eslint doesn't support 7 yet (it needs below 6.1). Move back to 7 once it does.
 - ESLint shows one warning, `react-hooks/incompatible-library` for TanStack Table's `useReactTable` in `DataTable.tsx`. It comes from the library and doesn't fail the check. Revisit if the library or plugin changes.
 - The pipeline's keyboard move is tested only end to end, because jsdom can't measure the layout it needs.
+- Minor layout issues from `ui-check`, in both modes: money and phone values wrap onto several lines (Organizations "Open deal value", Contacts Phone, Deals Value and late close dates, the dashboard pipeline strip, the deal record follow-up pill and "Mark done"). On the Pipeline page "Expected" runs into the amount with no space, and the Negotiation header may be missing its stage dot.
 
 - The by-eye pass in a real browser (success criterion 8) by a person, with the console open. Screenshots of every screen are written to `test-results/screens/` by the end-to-end run.
