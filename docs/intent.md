@@ -16,7 +16,7 @@ Accountable is a business management system: a sales CRM that will grow into a f
 - **Deals**: the potential sales, with each one's stage, value and close date. Open one to see its details and its timeline. A deal still open after its expected close date stands out, in the table and on its pipeline card.
 - **Pipeline**: the deals as cards on a board, one column per stage. Drag a card to another column to change the deal's stage, or within a column to change its place; a card can be dropped anywhere in a column, and it stays where it was dropped. A new deal can be added straight into a column, at that stage. The board shows the total value and expected revenue of the deals still open, each column shows its own, and the figures change as soon as a card moves.
 
-Every table has a search box, columns you can sort by clicking their headings, a way to add a new record, and edit and delete on each row. That's how we add a new deal, a new lead or a new customer. Deleting asks first, and says what will happen to the records linked to the one being deleted.
+Every table has a search box, columns you can sort by clicking their headings, a way to add a new record, and edit and delete on each row. That's how we add a new deal, a new lead or a new customer. Deleting asks first, and says what will happen to the records linked to the one being deleted. Deleting an organization also deletes its contacts, deals and their activities, and the confirmation says how many of each will go.
 
 From any contact or deal you can log an activity (a note, call or email) and give it a follow-up date. A follow-up shows on the dashboard as a task until it's marked done. Activities can be edited and deleted too. When a deal moves to another stage, including Won or Lost, an entry such as "Moved from Proposal to Negotiation" appears in its timeline and in the dashboard's recent activity by itself.
 
@@ -24,7 +24,7 @@ From any contact or deal you can log an activity (a note, call or email) and giv
 
 - **Organization**: a company we do business with. Name, website, industry and notes. An organization has many contacts and many deals.
 - **Contact**: a person we deal with. Name, email, phone, job title, the organization they belong to, and a status (lead, qualified or customer). A lead is a contact with the lead status, so there's no separate list of leads.
-- **Deal**: a potential sale. Name, the organization and the main contact it is with, its stage (New, Qualified, Proposal, Negotiation, Won or Lost), its value in US dollars, its probability of close, and its expected or actual close date. Each stage has a usual probability of close, and a deal takes its new stage's probability when it moves; a probability set by hand is kept until the stage changes.
+- **Deal**: a potential sale. Name, the organization and the main contact it is with, its stage (New, Qualified, Proposal, Negotiation, Won or Lost), its value in US dollars, its probability of close, and its expected or actual close date. Each stage has a usual probability of close: New 5%, Qualified 20%, Proposal 40%, Negotiation 70%, Won 100% and Lost 0%. A deal takes its new stage's probability when it moves; a probability set by hand is kept until the stage changes.
 - **Activity**: something that happened, or needs to happen, with a contact or deal. Type (note, call or email), the contact or deal it relates to, a description and when it happened, and optionally a follow-up date and whether it's done.
 
 ### Sample data
@@ -37,7 +37,7 @@ The look follows Accountable's brand guidelines, which take priority over any ge
 
 ## Affected users and systems
 
-- One salesperson, using Accountable on their own computer every day. The rest of the sales team joins later.
+- One salesperson selling B2B services and software, using Accountable on their own computer every day. Typical deals are roughly $5k to $100k, with a few contacts per company and sales cycles of weeks to months; the sample data should reflect this. The rest of the sales team joins later.
 - No other systems are involved yet.
 
 ## Constraints
@@ -58,6 +58,8 @@ The look follows Accountable's brand guidelines, which take priority over any ge
 6. The dashboard's figures match the data, and they reflect a deal marked won or a new follow-up.
 7. Every screen is sharp, modern and professional, and follows the brand. The dashboard is visually stunning, with a line chart, a bar chart and a visual of the pipeline.
 8. Before it's called done, someone has used it end to end in a real browser, the way a salesperson would: every section and every action above, each screen checked by eye, with no errors in the browser's console. Passing tests is necessary, but it isn't enough.
+
+9. Beyond the checklist, it is a real success if: the salesperson would use it daily in place of their spreadsheet; it is demo-ready, impressive enough to show a prospective team or investor; the code and data model are a clean foundation that can grow into a Business OS and ERP; and it is fast and reliable, with every interaction feeling instant and nothing ever lost.
 
 ## Open questions
 
