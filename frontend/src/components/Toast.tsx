@@ -51,7 +51,9 @@ export function ToastProvider({ children }: { children: ReactNode }) {
             key={t.id}
             role={t.kind === "error" ? "alert" : "status"}
             className={`pointer-events-auto flex items-center gap-2.5 rounded-xl px-4 py-3 text-sm font-medium shadow-[var(--shadow-lift)] ${
-              t.kind === "error" ? "bg-alert text-white" : "bg-ink text-white"
+              t.kind === "error"
+                ? "bg-alert text-white"
+                : "bg-float text-on-float"
             }`}
           >
             {t.kind === "error" ? (

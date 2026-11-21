@@ -3,10 +3,10 @@ import { STAGE_LABEL, type Dashboard } from "../../lib/types";
 import { EmptyState, Panel } from "../../components/ui";
 
 const BLOCK: Record<string, { bg: string; fg: string }> = {
-  new: { bg: "var(--info-text)", fg: "#fff" },
-  qualified: { bg: "var(--secondary)", fg: "var(--ink)" },
-  proposal: { bg: "var(--tertiary)", fg: "var(--ink)" },
-  negotiation: { bg: "var(--primary)", fg: "var(--ink)" },
+  new: { bg: "var(--info-solid)", fg: "white" },
+  qualified: { bg: "var(--secondary)", fg: "var(--on-accent)" },
+  proposal: { bg: "var(--tertiary)", fg: "var(--on-accent)" },
+  negotiation: { bg: "var(--primary)", fg: "var(--on-accent)" },
 };
 
 export function PipelineStrip({
@@ -62,7 +62,7 @@ export function PipelineStrip({
                 <div
                   className="mt-2.5 h-2 rounded"
                   style={{
-                    background: `color-mix(in srgb, ${c.bg} 22%, white)`,
+                    background: `color-mix(in srgb, ${c.bg} 22%, var(--panel))`,
                   }}
                   role="img"
                   aria-label={p.probability + "% chance of closing"}

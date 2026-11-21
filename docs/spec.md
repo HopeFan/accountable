@@ -15,25 +15,25 @@ The user is a salesperson selling B2B services and software, with deals of about
 - It runs locally with one documented command that works on Mac, Linux and Windows (only the Mac is tested), and needs no internet connection to use. Fonts are installed from npm (`@fontsource/*`) and served by the app, never loaded from another host.
 - Every change is kept: it survives a browser refresh and a restart.
 - One documented command resets the data to the sample data.
-- Light mode only, designed for laptops from 1280px wide. There is no pagination: tables load every record and search and sort run in the browser, which is fine for one user's data but needs a rethink before team data arrives.
-- Not part of the product: sign-in, user accounts or several users, dark mode, phone layouts, AI features, email/calendar/phone integrations, currencies other than US dollars, reports beyond the dashboard, tags and custom fields, editable stages, import and export. The tokens in section 8 are built so dark mode can be added later.
+- Light and dark modes, light by default, designed for laptops from 1280px wide. The device's own dark mode setting is not followed. There is no pagination: tables load every record and search and sort run in the browser, which is fine for one user's data but needs a rethink before team data arrives.
+- Not part of the product: sign-in, user accounts or several users, following the device's dark mode setting, phone layouts, AI features, email/calendar/phone integrations, currencies other than US dollars, reports beyond the dashboard, tags and custom fields, editable stages, import and export.
 
 ## 3. Libraries
 
 Popular libraries over custom code, as the stack doc asks.
 
-| Need | Choice |
-| --- | --- |
-| Routing | React Router |
-| Server data and cache | TanStack Query |
-| Tables (sort, search, rows) | TanStack Table |
-| Forms and validation | React Hook Form with Zod |
-| Drag and drop | dnd-kit (supports keyboard dragging) |
-| Charts | Recharts (line, bar, funnel) |
-| Styling | Tailwind CSS with Radix UI primitives for dialogs, menus and selects |
-| Icons | Lucide |
-| Fonts | `@fontsource` packages for Instrument Sans, Instrument Serif and JetBrains Mono |
-| Backend | FastAPI, Pydantic models, SQLAlchemy Core (no raw SQL) over SQLite |
+| Need                        | Choice                                                                          |
+| --------------------------- | ------------------------------------------------------------------------------- |
+| Routing                     | React Router                                                                    |
+| Server data and cache       | TanStack Query                                                                  |
+| Tables (sort, search, rows) | TanStack Table                                                                  |
+| Forms and validation        | React Hook Form with Zod                                                        |
+| Drag and drop               | dnd-kit (supports keyboard dragging)                                            |
+| Charts                      | Recharts (line, bar, funnel)                                                    |
+| Styling                     | Tailwind CSS with Radix UI primitives for dialogs, menus and selects            |
+| Icons                       | Lucide                                                                          |
+| Fonts                       | `@fontsource` packages for Instrument Sans, Instrument Serif and JetBrains Mono |
+| Backend                     | FastAPI, Pydantic models, SQLAlchemy Core (no raw SQL) over SQLite              |
 
 ## 4. Data model
 
@@ -44,6 +44,7 @@ SQLite, one file at `data/accountable.db` (git-ignored). The tests use their own
 **contact**: `first_name`, `last_name` (required), `email`, `phone`, `job_title`, `organization_id` (optional), `status` (`lead`, `qualified`, `customer`; default `lead`).
 
 **deal**:
+
 - `name` (required)
 - `organization_id` (required)
 - `contact_id` (optional; must belong to the same organization)
@@ -54,6 +55,7 @@ SQLite, one file at `data/accountable.db` (git-ignored). The tests use their own
 - `position` (integer, order within its stage)
 
 **activity**:
+
 - `type` (`note`, `call`, `email`, `stage_change`)
 - `contact_id` (optional), `deal_id` (optional), at least one required
 - `description`
@@ -65,14 +67,14 @@ SQLite, one file at `data/accountable.db` (git-ignored). The tests use their own
 
 **Stage rules**
 
-| Stage | Usual probability | Open? |
-| --- | --- | --- |
-| New | 5% | yes |
-| Qualified | 20% | yes |
-| Proposal | 40% | yes |
-| Negotiation | 70% | yes |
-| Won | 100% | no |
-| Lost | 0% | no |
+| Stage       | Usual probability | Open? |
+| ----------- | ----------------- | ----- |
+| New         | 5%                | yes   |
+| Qualified   | 20%               | yes   |
+| Proposal    | 40%               | yes   |
+| Negotiation | 70%               | yes   |
+| Won         | 100%              | no    |
+| Lost        | 0%                | no    |
 
 - A new deal gets its stage's usual probability unless one is given.
 - Moving a deal to a different stage sets its probability to the new stage's usual one. A probability edited by hand stays until the stage next changes.
@@ -92,16 +94,16 @@ SQLite, one file at `data/accountable.db` (git-ignored). The tests use their own
 
 JSON over `/api`, served by FastAPI on one port in development with the frontend proxied by Vite. Errors return a status code and `{ "detail": ... }`. Validation errors name the field so the form can show them.
 
-| Resource | Endpoints |
-| --- | --- |
-| Organizations | `GET /organizations`, `POST`, `GET /organizations/{id}` (with contacts and deals), `PATCH`, `DELETE` |
-| Contacts | `GET /contacts`, `POST`, `GET /contacts/{id}` (with organization, deals and timeline), `PATCH`, `DELETE` |
-| Deals | `GET /deals`, `POST`, `GET /deals/{id}` (with timeline), `PATCH`, `DELETE` |
-| Pipeline | `POST /deals/{id}/move` with `{ stage, position }` |
-| Activities | `POST /activities`, `PATCH /activities/{id}`, `DELETE /activities/{id}` |
-| Follow-ups | `GET /follow-ups` (open ones, soonest first) |
-| Dashboard | `GET /dashboard` |
-| Delete preview | `GET /organizations/{id}/delete-preview`, same for contacts and deals; returns counts of what would go |
+| Resource       | Endpoints                                                                                                |
+| -------------- | -------------------------------------------------------------------------------------------------------- |
+| Organizations  | `GET /organizations`, `POST`, `GET /organizations/{id}` (with contacts and deals), `PATCH`, `DELETE`     |
+| Contacts       | `GET /contacts`, `POST`, `GET /contacts/{id}` (with organization, deals and timeline), `PATCH`, `DELETE` |
+| Deals          | `GET /deals`, `POST`, `GET /deals/{id}` (with timeline), `PATCH`, `DELETE`                               |
+| Pipeline       | `POST /deals/{id}/move` with `{ stage, position }`                                                       |
+| Activities     | `POST /activities`, `PATCH /activities/{id}`, `DELETE /activities/{id}`                                  |
+| Follow-ups     | `GET /follow-ups` (open ones, soonest first)                                                             |
+| Dashboard      | `GET /dashboard`                                                                                         |
+| Delete preview | `GET /organizations/{id}/delete-preview`, same for contacts and deals; returns counts of what would go   |
 
 Rules worth stating:
 
@@ -178,6 +180,14 @@ Each is testable. "R" numbers are referenced by tests and plans.
 - R36. Every change is saved at once in SQLite, so it survives refresh and restart.
 - R37. The database is created and seeded when its file doesn't exist. `npm run seed` deletes the data and recreates the sample data.
 
+### Appearance
+
+- R38. A toggle at the top right of the page, above the heading, switches between light and dark mode. It is on every page, so every section has it.
+- R39. Light mode is the default. The choice is remembered in the browser only (local storage), not in the database, and is applied before the page paints, so a reload in dark mode never flashes light.
+- R40. Every screen follows the mode: tables, record pages, the dashboard and its charts, the pipeline, dialogs, forms, menus and the confirmation messages. Nothing stays light in dark mode.
+- R41. Light mode looks exactly as it did before dark mode, apart from the toggle.
+- R42. Small text in dark mode passes the same 4.5:1 contrast as in light mode, checked for every pairing in section 8.
+
 ## 7. Sample data
 
 Created by the backend with dates relative to the day it runs so overdue and late deals are true on any day (a database created months ago drifts, and `npm run seed` refreshes it). It is fixed in code, not random, so tests can rely on it. The same file serves `npm run dev` and `npm run seed`.
@@ -196,58 +206,79 @@ Created by the backend with dates relative to the day it runs so overdue and lat
 
 ### Principles
 
-Clean, calm and dense enough to be useful. White panels on a pale page, one strong accent, numbers in a monospace face, plenty of space. Tone is plain business English: short labels, no jargon, no exclamation marks.
+Clean, calm and dense enough to be useful. In light mode, white panels on a pale page; in dark mode, black panels on a deep teal page. One strong accent, numbers in a monospace face, plenty of space. Tone is plain business English: short labels, no jargon, no exclamation marks.
 
 ### Tokens
 
-Defined once as CSS variables, which Tailwind reads, so a dark theme can be added by changing them.
+Defined once as CSS variables, which Tailwind reads. Light mode sets them on the page, and dark mode sets the same names again when the page is in dark mode, so no component carries colors of its own. The brand colors (Sea Green, Marigold, Coral, Cerulean, Raspberry) keep their values for fills in both modes. Dark mode changes the surfaces, the ink and the text and tint colors.
 
-| Token | Value | Use |
-| --- | --- | --- |
-| `--page` | `#F0F4F5` | page background |
-| `--panel` | `#FFFFFF` | panels, cards, dialogs |
-| `--ink` | Midnight `#073B4C` | text |
-| `--ink-muted` | `#42697A` | secondary text, 5.9:1 on white and 4.8:1 on the pipeline lanes |
-| `--primary` | Sea Green `#06D6A0` | primary buttons (Midnight text), selected nav, Won |
-| `--secondary` | Marigold `#FFC145` | highlights (Midnight text) |
-| `--tertiary` | Coral `#F78C6B` | highlights (Midnight text) |
-| `--info` | Cerulean `#118AB2` | links, info (white text) |
-| `--alert` | Raspberry `#EF476F` | overdue, late, destructive (white text) |
-| `--ink-on-dark` | Sea Mist `#CDD8DB` | text on the dark sidebar |
+| Token             | Light                         | Dark                         | Use                                                                                                   |
+| ----------------- | ----------------------------- | ---------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `--page`          | `#F0F4F5`                     | `#04232E`                    | page background                                                                                       |
+| `--panel`         | `#FFFFFF`                     | `#000000`                    | panels, cards, dialogs                                                                                |
+| `--ink`           | Midnight `#073B4C`            | Sea Mist `#CDD8DB`           | text                                                                                                  |
+| `--muted`         | `#42697A`                     | `#8FA9B2`                    | secondary text, at least 4.5:1 on panels, the page, pills and the pipeline lanes                      |
+| `--soft`          | `#E6EDEF`                     | `#0F3340`                    | pills, stat boxes, loading skeletons                                                                  |
+| `--lane`          | Sea Mist at 40% over the page | Sea Mist at 8% over the page | pipeline lanes                                                                                        |
+| `--primary`       | Sea Green `#06D6A0`           | same                         | primary buttons, selected nav, Negotiation                                                            |
+| `--secondary`     | Marigold `#FFC145`            | same                         | highlights, Qualified                                                                                 |
+| `--tertiary`      | Coral `#F78C6B`               | same                         | highlights, Proposal                                                                                  |
+| `--info`          | Cerulean `#118AB2`            | same                         | info                                                                                                  |
+| `--alert`         | Raspberry `#EF476F`           | same                         | overdue and late markers                                                                              |
+| `--on-accent`     | Midnight `#073B4C`            | same                         | text on Sea Green, Marigold and Coral fills                                                           |
+| `--sidebar`       | Midnight `#073B4C`            | same                         | the sidebar background, in both modes                                                                 |
+| `--on-sidebar`    | Sea Mist `#CDD8DB`            | same                         | text on the sidebar                                                                                   |
+| `--panel-edge`    | none                          | Sea Mist at 10% opacity      | a 1px ring around every panel, card and dialog, in dark mode only; it is the dark value of `--shadow` |
+| `--sidebar-muted` | `#8FA9B2`                     | same                         | the sidebar footer text                                                                               |
+| `--float`         | Midnight `#073B4C`            | `#000000`                    | toasts and chart tooltips                                                                             |
+| `--on-float`      | `#FFFFFF`                     | Sea Mist `#CDD8DB`           | text on toasts and tooltips                                                                           |
+| `--won`           | Midnight `#073B4C`            | Sea Mist `#CDD8DB`           | the Won tag and dot                                                                                   |
+| `--on-won`        | `#FFFFFF`                     | Midnight `#073B4C`           | text on the Won tag                                                                                   |
+| `--lost`          | Sea Mist `#CDD8DB`            | Midnight `#073B4C`           | the Lost tag                                                                                          |
+| `--lost-dot`      | Sea Mist `#CDD8DB`            | slate `#5F808C`              | the Lost dot, at least 3:1 on panels and the page                                                     |
+| `--on-lost`       | Midnight `#073B4C`            | Sea Mist `#CDD8DB`           | text on the Lost tag                                                                                  |
+| `--alert-solid`   | `#C2284F`                     | same                         | destructive buttons, with white text                                                                  |
+| `--info-solid`    | `#0E7394`                     | same                         | the New stage block, with white text                                                                  |
+| `--overlay`       | Midnight at 40%               | black at 60%                 | behind dialogs                                                                                        |
+| `--field-ring`    | `#CDD8DB`                     | `#245160`                    | the ring around form fields and the chart cursor                                                      |
+| `--checkbox-edge` | `#9DB5BE`                     | `#5F808C`                    | the follow-up checkbox border                                                                         |
+| `--grid`          | `#E6EDEF`                     | Sea Mist at 12%              | chart gridlines                                                                                       |
+| `--axis`          | `#4C7280`                     | `#8FA9B2`                    | chart labels                                                                                          |
 
-- **Text on light backgrounds**: Sea Green and Marigold are too bright for small text, so text uses darkened versions (Sea Green about `#05795B`). Each must pass 4.5:1 on white and is checked, not assumed.
+- **Text and tint colors**: Sea Green, Marigold and Coral are too bright for small text on a light background, so light mode uses darkened versions (Sea Green about `#05795B`), each on a pale tint. Dark mode does the opposite and lightens them (Sea Green `#4DE3B8`, Cerulean `#62C4E6`, Raspberry `#FF8DA6`, Marigold `#FFC145`, Coral `#FFA98C`), each on a dark tint (for example `#0B3A31` for green). The tokens are `--primary-text`, `--info-text`, `--alert-text`, `--marigold-text`, `--coral-text` and `--primary-tint`, `--info-tint`, `--alert-tint`, `--marigold-tint`, `--coral-tint`. Each pairing must pass 4.5:1 and is checked, not assumed.
+- **Solid fills with white text**: destructive buttons use the darker Raspberry `#C2284F` and the New stage uses the darker Cerulean `#0E7394`, both with white text, in both modes.
 - **Fonts**: Instrument Sans for headings and body, JetBrains Mono for all numbers, money, dates in tables, and identifiers, Instrument Serif only for the dashboard's greeting line.
-- **Shape**: panels and cards are rounded (12px) with no outline, separated from the page by their white fill and a soft shadow. No single-edge borders and no top-of-page rule. Gradients are not used, except possibly one subtle fill in a chart area.
+- **Shape**: panels and cards are rounded (12px), separated from the page by their fill (white on pale in light mode, black on deep teal in dark mode). Light mode has no outline and uses a soft shadow. A shadow is too faint to see in dark mode, and black on deep teal is only 1.29:1, so dark mode uses a faint 1px ring all the way around each panel, card and dialog (`--panel-edge`) in its place. No single-edge borders and no top-of-page rule. Gradients are not used, except possibly one subtle fill in a chart area.
 - **Spacing**: 4px base unit; panel padding 20 to 24px; page margin 32px.
 
 ### Stage colors
 
 Used for pipeline column accents, stage tags and funnel bars.
 
-| Stage | Color |
-| --- | --- |
-| New | Cerulean |
-| Qualified | Marigold |
-| Proposal | Coral |
-| Negotiation | Sea Green (darkened for text) |
-| Won | Midnight |
-| Lost | Sea Mist, with Midnight text |
+| Stage       | Light mode                    | Dark mode                      |
+| ----------- | ----------------------------- | ------------------------------ |
+| New         | Cerulean                      | same                           |
+| Qualified   | Marigold                      | same                           |
+| Proposal    | Coral                         | same                           |
+| Negotiation | Sea Green (darkened for text) | Sea Green (lightened for text) |
+| Won         | Midnight, with white text     | Sea Mist, with Midnight text   |
+| Lost        | Sea Mist, with Midnight text  | Midnight, with Sea Mist text   |
 
-Raspberry is kept for overdue and late things, so a Lost deal doesn't look like an alert. Won in Midnight and Lost in Sea Mist keep Sea Green and Raspberry free for meaning "go" and "alert". Color is never the only signal: every tag also has the stage's name.
+Raspberry is kept for overdue and late things, so a Lost deal doesn't look like an alert. Won and Lost use Midnight and Sea Mist, swapped in dark mode so Won still stands out and Lost still recedes (the Lost dot is a lighter slate in dark mode so it stays visible on black), and that keeps Sea Green and Raspberry free for meaning "go" and "alert". Color is never the only signal: every tag also has the stage's name.
 
 ### Chart colors
 
-Revenue line: Sea Green. Deals bars: Cerulean. Funnel bars: the stage colors. All charts have plain labels and axis titles, light gridlines, and hover tooltips with the exact figure. Money axes use the compact form (`USD 50k`).
+Revenue line: Sea Green. Deals bars: Cerulean. Funnel bars: the stage colors. All charts have plain labels and axis titles, light gridlines, and hover tooltips with the exact figure. Money axes use the compact form (`USD 50k`). In dark mode the labels, axis titles, gridlines and tooltips take the dark tokens (gridlines a faint Sea Mist, tooltips on the black panel color), and the series colors stay the same.
 
 ### Layout
 
-- A fixed left sidebar, 232px wide, Midnight background, with the product name in Instrument Sans, five nav items with icons and the active one marked by a Sea Green pill, text in Sea Mist.
-- A content area on the page color, max width about 1440px, with a page heading and its main action on the right.
+- A fixed left sidebar, 232px wide, Midnight background in both modes, with the product name in Instrument Sans, five nav items with icons and the active one marked by a Sea Green pill, text in Sea Mist.
+- A content area on the page color, max width about 1440px. At its top right, above the page heading, sits the light and dark mode toggle. It shows the mode it will switch to ("Dark mode" or "Light mode") with an icon, and has a visible focus ring like every other control. Below it is the page heading with its main action on the right.
 - Minimum supported width 1280px.
 
 ### Screens
 
-**Dashboard.** The design is mockup A, `docs/mockups/dashboard-a-overview.html` (screenshot beside it). Top: a greeting line in Instrument Serif and today's date. Then the four figure tiles in a row, and under them the open pipeline by stage strip. Then a two-thirds and one-third row: the revenue line chart next to the funnel. Then the deals-won bar chart next to the follow-ups list. The recent activity list sits at the bottom, full width.
+**Dashboard.** The design is mockup A, `docs/mockups/dashboard-a-overview.html` (screenshot beside it). The mockup shows light mode; dark mode is the same layout with the dark tokens. Top: a greeting line in Instrument Serif and today's date. Then the four figure tiles in a row, and under them the open pipeline by stage strip. Then a two-thirds and one-third row: the revenue line chart next to the funnel. Then the deals-won bar chart next to the follow-ups list. The recent activity list sits at the bottom, full width.
 
 **Table pages.** Heading and Add button, a toolbar with the search box (and the status filter on Contacts), then a white panel with the table. Rows are 48px, the header text is small and muted, numbers are right-aligned in mono. The row menu is a three-dot button.
 
@@ -286,7 +317,8 @@ Scripts as in the stack doc: `npm run dev`, `npm test`, `npm run seed`, and `npm
 
 - **Backend (pytest)**: the stage, probability, close-date and late rules; move and reorder (positions stay consecutive, probability and stage-change entry written); delete cascades and previews; timeline composition; follow-up states; dashboard figures against a small known data set; seed idempotence.
 - **Frontend (Vitest)**: money and date formatting, table sort and search logic, optimistic pipeline totals, the pipeline's drag and drop rules, form validation, and each page's loading, empty and error states.
-- **End to end (Playwright with Chrome)**: one test per area of behavior, on a test database with a fixed clock, covering add, search, sort, edit, delete with confirmation, status filter, drag to another column and within one with a refresh in between, logging an activity and a follow-up, marking it done, and the dashboard changing when a deal is won. Each test also fails if the browser console shows an error.
+- **End to end (Playwright with Chrome)**: one test per area of behavior, on a test database with a fixed clock, covering add, search, sort, edit, delete with confirmation, status filter, drag to another column and within one with a refresh in between, logging an activity and a follow-up, marking it done, the dashboard changing when a deal is won, and the dark mode toggle working and being remembered after a reload. Each test also fails if the browser console shows an error.
 - **Coverage**: unit test coverage must stay at 80% or more, for the backend (statements) and the frontend (statements, branches, functions and lines). `npm run check` fails below that.
 - **Checks**: `npm run check` also runs Prettier and ESLint (TypeScript, React Hooks and accessibility rules), ruff format and check, tsc, ty and gitleaks. No function may have a cyclomatic complexity above 15 (ESLint `complexity`, ruff `C901`). Rules are fixed in the code, not switched off.
-- **By eye**: before calling it done, someone uses it end to end in a real browser and checks every screen against this spec and the brand.
+- **Contrast**: a unit test reads the tokens and checks every text and background pairing used for small text, in light and in dark mode, at 4.5:1 or more.
+- **By eye**: before calling it done, someone uses it end to end in a real browser, in both modes, and checks every screen against this spec and the brand.

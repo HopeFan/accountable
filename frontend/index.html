@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>Accountable</title>
+    <script>
+      // Runs before the first paint so a reload in dark mode never flashes light.
+      try {
+        if (localStorage.getItem("accountable-theme") === "dark")
+          document.documentElement.setAttribute("data-theme", "dark");
+      } catch {
+        // storage is blocked; stay light
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

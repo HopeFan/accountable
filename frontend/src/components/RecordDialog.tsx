@@ -20,7 +20,7 @@ export function RecordDialog({
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 z-40 bg-ink/40" />
+        <Dialog.Overlay className="fixed inset-0 z-40 bg-overlay" />
         <Dialog.Content
           className={`fixed top-1/2 left-1/2 z-50 max-h-[90vh] w-[calc(100vw-48px)] ${width} -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-xl bg-panel p-6 shadow-[var(--shadow-lift)]`}
         >
@@ -70,7 +70,7 @@ export function FormActions({
       <button
         type="submit"
         disabled={busy}
-        className="inline-flex h-10 items-center rounded-[10px] bg-primary px-5 text-sm font-semibold text-ink hover:brightness-95 disabled:opacity-60"
+        className="inline-flex h-10 items-center rounded-[10px] bg-primary px-5 text-sm font-semibold text-on-accent hover:brightness-95 disabled:opacity-60"
       >
         {submitLabel}
       </button>

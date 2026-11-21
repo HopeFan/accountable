@@ -24,8 +24,63 @@
   --alert-tint: #fde6ec;
   --marigold-tint: #fff1d6;
   --coral-tint: #fde7df;
+  --on-accent: #073b4c;
+  --sidebar: #073b4c;
+  --on-sidebar: #cdd8db;
+  --sidebar-muted: #8fa9b2;
+  --float: #073b4c;
+  --on-float: #ffffff;
+  --won: #073b4c;
+  --on-won: #ffffff;
+  --lost: #cdd8db;
+  --lost-dot: #cdd8db;
+  --on-lost: #073b4c;
+  --alert-solid: #c2284f;
+  --info-solid: #0e7394;
+  --overlay: rgba(7, 59, 76, 0.4);
+  --field-ring: #cdd8db;
+  --checkbox-edge: #9db5be;
+  --grid: #e6edef;
+  --axis: #4c7280;
+  --panel-edge: transparent;
   --shadow: 0 1px 2px rgba(7, 59, 76, 0.06), 0 4px 16px rgba(7, 59, 76, 0.05);
   --shadow-lift: 0 8px 28px rgba(7, 59, 76, 0.22);
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --page: #04232e;
+  --panel: #000000;
+  --ink: #cdd8db;
+  --muted: #8fa9b2;
+  --soft: #0f3340;
+  --lane: rgba(205, 216, 219, 0.08);
+  --primary-text: #4de3b8;
+  --info-text: #62c4e6;
+  --alert-text: #ff8da6;
+  --marigold-text: #ffc145;
+  --coral-text: #ffa98c;
+  --primary-tint: #0b3a31;
+  --info-tint: #0c3445;
+  --alert-tint: #4a1b28;
+  --marigold-tint: #3f3010;
+  --coral-tint: #432416;
+  --float: #000000;
+  --on-float: #cdd8db;
+  --won: #cdd8db;
+  --on-won: #073b4c;
+  --lost: #073b4c;
+  --lost-dot: #5f808c;
+  --on-lost: #cdd8db;
+  --overlay: rgba(0, 0, 0, 0.6);
+  --field-ring: #245160;
+  --checkbox-edge: #5f808c;
+  --grid: rgba(205, 216, 219, 0.12);
+  --axis: #8fa9b2;
+  --panel-edge: rgba(205, 216, 219, 0.1);
+  --shadow: 0 0 0 1px var(--panel-edge);
+  --shadow-lift: 0 0 0 1px var(--panel-edge), 0 8px 28px rgba(0, 0, 0, 0.5);
+  color-scheme: dark;
 }
 
 @theme inline {
@@ -51,6 +106,24 @@
   --color-alert-tint: var(--alert-tint);
   --color-marigold-tint: var(--marigold-tint);
   --color-coral-tint: var(--coral-tint);
+  --color-on-accent: var(--on-accent);
+  --color-sidebar: var(--sidebar);
+  --color-on-sidebar: var(--on-sidebar);
+  --color-sidebar-muted: var(--sidebar-muted);
+  --color-float: var(--float);
+  --color-on-float: var(--on-float);
+  --color-won: var(--won);
+  --color-on-won: var(--on-won);
+  --color-lost: var(--lost);
+  --color-lost-dot: var(--lost-dot);
+  --color-on-lost: var(--on-lost);
+  --color-alert-solid: var(--alert-solid);
+  --color-info-solid: var(--info-solid);
+  --color-overlay: var(--overlay);
+  --color-field-ring: var(--field-ring);
+  --color-checkbox-edge: var(--checkbox-edge);
+  --color-grid: var(--grid);
+  --color-axis: var(--axis);
   --shadow-panel: var(--shadow);
   --font-sans: "Instrument Sans", system-ui, sans-serif;
   --font-serif: "Instrument Serif", Georgia, serif;
