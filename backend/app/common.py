@@ -1,11 +1,19 @@
 """Shared helpers: row serialisation, delete plans, errors."""
+
 from datetime import date, datetime
 
 from fastapi import HTTPException
-from sqlalchemy import Connection, delete, func, or_, select
+from sqlalchemy import Connection, delete, func, insert, or_, select
 
 from . import clock, rules
 from .db import activity, contact, deal, organization
+
+
+def insert_row(conn: Connection, table, values: dict) -> int:
+    pk = conn.execute(insert(table).values(**values)).inserted_primary_key
+    if pk is None:
+        raise RuntimeError(f"Insert into {table.name} returned no primary key")
+    return pk[0]
 
 
 def field_error(field: str, message: str, status: int = 422) -> HTTPException:
@@ -40,7 +48,16 @@ def serialize_organization(row) -> dict:
 def serialize_contact(row, org_name: str | None = None) -> dict:
     d = {
         k: row[k]
-        for k in ("id", "first_name", "last_name", "email", "phone", "job_title", "organization_id", "status")
+        for k in (
+            "id",
+            "first_name",
+            "last_name",
+            "email",
+            "phone",
+            "job_title",
+            "organization_id",
+            "status",
+        )
     }
     d["name"] = contact_name(row)
     d["organization_name"] = org_name
@@ -50,21 +67,46 @@ def serialize_contact(row, org_name: str | None = None) -> dict:
 def serialize_deal(row, org_name: str, contact_nm: str | None, today: date) -> dict:
     d = {
         k: iso(row[k])
-        for k in ("id", "name", "organization_id", "contact_id", "stage", "value", "probability", "close_date", "position")
+        for k in (
+            "id",
+            "name",
+            "organization_id",
+            "contact_id",
+            "stage",
+            "value",
+            "probability",
+            "close_date",
+            "position",
+        )
     }
     d["organization_name"] = org_name
     d["contact_name"] = contact_nm
     d["is_late"] = rules.is_late(row["stage"], row["close_date"], today)
-    d["expected_revenue"] = rules.expected_revenue(row["stage"], row["value"], row["probability"])
+    d["expected_revenue"] = rules.expected_revenue(
+        row["stage"], row["value"], row["probability"]
+    )
     return d
 
 
-def serialize_activity(row, deal_name: str | None, contact_nm: str | None, today: date) -> dict:
+def serialize_activity(
+    row, deal_name: str | None, contact_nm: str | None, today: date
+) -> dict:
     d = {
         k: iso(row[k])
-        for k in ("id", "type", "contact_id", "deal_id", "description", "occurred_at", "follow_up_date", "follow_up_done")
+        for k in (
+            "id",
+            "type",
+            "contact_id",
+            "deal_id",
+            "description",
+            "occurred_at",
+            "follow_up_date",
+            "follow_up_done",
+        )
     }
-    d["follow_up_state"] = rules.follow_up_state(row["follow_up_date"], row["follow_up_done"], today)
+    d["follow_up_state"] = rules.follow_up_state(
+        row["follow_up_date"], row["follow_up_done"], today
+    )
     d["deal_name"] = deal_name
     d["contact_name"] = contact_nm
     return d
@@ -94,9 +136,8 @@ def all_deals(conn: Connection, where=None) -> list[dict]:
 def activities(conn: Connection, where, limit: int | None = None) -> list[dict]:
     today = clock.today()
     c_alias = contact.alias("ac")
-    j = (
-        activity.outerjoin(deal, activity.c.deal_id == deal.c.id)
-        .outerjoin(c_alias, activity.c.contact_id == c_alias.c.id)
+    j = activity.outerjoin(deal, activity.c.deal_id == deal.c.id).outerjoin(
+        c_alias, activity.c.contact_id == c_alias.c.id
     )
     q = (
         select(
@@ -125,8 +166,18 @@ def plan_delete(conn: Connection, kind: str, id_: int) -> dict:
     """Return ids of everything that goes when this record is deleted."""
     if kind == "organization":
         get_or_404(conn, organization, id_, "Organization")
-        contact_ids = [r[0] for r in conn.execute(select(contact.c.id).where(contact.c.organization_id == id_))]
-        deal_ids = [r[0] for r in conn.execute(select(deal.c.id).where(deal.c.organization_id == id_))]
+        contact_ids = [
+            r[0]
+            for r in conn.execute(
+                select(contact.c.id).where(contact.c.organization_id == id_)
+            )
+        ]
+        deal_ids = [
+            r[0]
+            for r in conn.execute(
+                select(deal.c.id).where(deal.c.organization_id == id_)
+            )
+        ]
     elif kind == "contact":
         get_or_404(conn, contact, id_, "Contact")
         contact_ids, deal_ids = [id_], []
@@ -141,10 +192,17 @@ def plan_delete(conn: Connection, kind: str, id_: int) -> dict:
     if deal_ids:
         conds.append(activity.c.deal_id.in_(deal_ids))
     activity_ids = (
-        [r[0] for r in conn.execute(select(activity.c.id).where(or_(*conds)))] if conds else []
+        [r[0] for r in conn.execute(select(activity.c.id).where(or_(*conds)))]
+        if conds
+        else []
     )
     kept = count_where(conn, deal, deal.c.contact_id == id_) if kind == "contact" else 0
-    return {"contacts": contact_ids, "deals": deal_ids, "activities": activity_ids, "kept": kept}
+    return {
+        "contacts": contact_ids,
+        "deals": deal_ids,
+        "activities": activity_ids,
+        "kept": kept,
+    }
 
 
 def preview(plan: dict, kind: str) -> dict:
@@ -160,7 +218,9 @@ def execute_delete(conn: Connection, kind: str, id_: int, plan: dict) -> None:
     if plan["activities"]:
         conn.execute(delete(activity).where(activity.c.id.in_(plan["activities"])))
     if kind == "contact":
-        conn.execute(deal.update().where(deal.c.contact_id == id_).values(contact_id=None))
+        conn.execute(
+            deal.update().where(deal.c.contact_id == id_).values(contact_id=None)
+        )
         conn.execute(delete(contact).where(contact.c.id == id_))
         return
     if plan["deals"]:
@@ -183,7 +243,9 @@ def renumber(conn: Connection, stage: str | None) -> None:
         ids = [
             r[0]
             for r in conn.execute(
-                select(deal.c.id).where(deal.c.stage == s).order_by(deal.c.position, deal.c.id)
+                select(deal.c.id)
+                .where(deal.c.stage == s)
+                .order_by(deal.c.position, deal.c.id)
             )
         ]
         for pos, did in enumerate(ids):
@@ -191,4 +253,6 @@ def renumber(conn: Connection, stage: str | None) -> None:
 
 
 def count_where(conn: Connection, table, cond) -> int:
-    return conn.execute(select(func.count()).select_from(table).where(cond)).scalar_one()
+    return conn.execute(
+        select(func.count()).select_from(table).where(cond)
+    ).scalar_one()

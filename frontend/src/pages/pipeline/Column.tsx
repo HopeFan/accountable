@@ -1,4 +1,7 @@
-import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import { useDroppable } from "@dnd-kit/core";
 import { Plus } from "lucide-react";
 import { money } from "../../lib/format";
@@ -35,22 +38,38 @@ export function Column({
     <section
       aria-label={`${STAGE_LABEL[stage]} column`}
       data-stage={stage}
-      className={cx("flex min-w-0 flex-col rounded-xl p-2.5 transition-colors", highlight ? "bg-primary/20" : "bg-lane")}
+      className={cx(
+        "flex min-w-0 flex-col rounded-xl p-2.5 transition-colors",
+        highlight ? "bg-primary/20" : "bg-lane",
+      )}
     >
       <header className="px-1 pb-3">
         <div className="flex items-center gap-2">
-          <i className="size-2.5 rounded-[3px]" style={{ background: STAGE_STYLE[stage].dot }} aria-hidden />
+          <i
+            className="size-2.5 rounded-[3px]"
+            style={{ background: STAGE_STYLE[stage].dot }}
+            aria-hidden
+          />
           <h2 className="text-sm font-semibold">{STAGE_LABEL[stage]}</h2>
-          <span className="ml-auto rounded-full bg-panel px-2 py-px text-xs font-semibold" data-testid="column-count">
+          <span
+            className="ml-auto rounded-full bg-panel px-2 py-px text-xs font-semibold"
+            data-testid="column-count"
+          >
             {t.count}
           </span>
         </div>
-        <p className="mt-2 font-mono text-[15px] font-semibold" data-testid="column-value">
+        <p
+          className="mt-2 font-mono text-[15px] font-semibold"
+          data-testid="column-value"
+        >
           {money(t.value)}
         </p>
         <p className="mt-0.5 flex justify-between text-[11.5px] whitespace-nowrap text-muted">
           Expected{" "}
-          <b className="font-mono font-medium text-ink" data-testid="column-expected">
+          <b
+            className="font-mono font-medium text-ink"
+            data-testid="column-expected"
+          >
             {money(t.expected)}
           </b>
         </p>
@@ -62,7 +81,12 @@ export function Column({
             return d ? <DealCard key={id} deal={d} /> : null;
           })}
         </SortableContext>
-        {hidden > 0 && <p className="pt-1 text-center text-xs text-muted">+ {hidden} earlier {STAGE_LABEL[stage].toLowerCase()} {hidden === 1 ? "deal" : "deals"}</p>}
+        {hidden > 0 && (
+          <p className="pt-1 text-center text-xs text-muted">
+            + {hidden} earlier {STAGE_LABEL[stage].toLowerCase()}{" "}
+            {hidden === 1 ? "deal" : "deals"}
+          </p>
+        )}
       </div>
       <button
         type="button"

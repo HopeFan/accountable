@@ -1,6 +1,40 @@
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-const WEEKDAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-const LONG_MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const MONTHS = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
+const WEEKDAYS = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
+const LONG_MONTHS = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 
 /** USD 48,000 */
 export function money(value: number): string {
@@ -12,7 +46,8 @@ export function money(value: number): string {
 /** USD 50k, USD 1.2M, USD 800 (chart axes) */
 export function moneyCompact(value: number): string {
   const abs = Math.abs(value);
-  const trim = (n: number) => String(Math.round(n * 10) / 10).replace(/\.0$/, "");
+  const trim = (n: number) =>
+    String(Math.round(n * 10) / 10).replace(/\.0$/, "");
   if (abs >= 1_000_000) return `USD ${trim(value / 1_000_000)}M`;
   if (abs >= 1_000) return `USD ${trim(value / 1_000)}k`;
   return `USD ${Math.round(value)}`;
@@ -33,7 +68,9 @@ export function formatDate(iso: string | null | undefined): string {
 /** 17 Nov, or 17 Nov 2027 when the year isn't the current one. */
 export function formatDateShort(iso: string, today: string): string {
   const [y, m, d] = parts(iso);
-  return y === Number(today.slice(0, 4)) ? `${d} ${MONTHS[m - 1]}` : `${d} ${MONTHS[m - 1]} ${y}`;
+  return y === Number(today.slice(0, 4))
+    ? `${d} ${MONTHS[m - 1]}`
+    : `${d} ${MONTHS[m - 1]} ${y}`;
 }
 
 /** 17 Nov 2026, 14:05 */
@@ -59,7 +96,11 @@ export function monthLabelLong(ym: string): string {
   return `${monthLabel(ym)} ${ym.slice(0, 4)}`;
 }
 
-export function plural(n: number, singular: string, pluralForm = `${singular}s`): string {
+export function plural(
+  n: number,
+  singular: string,
+  pluralForm = `${singular}s`,
+): string {
   return `${n} ${n === 1 ? singular : pluralForm}`;
 }
 

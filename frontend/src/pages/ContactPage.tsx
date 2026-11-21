@@ -8,7 +8,13 @@ import { LinkedDeals } from "../components/LinkedLists";
 import { RecordDialog } from "../components/RecordDialog";
 import { Details, LinkedPanel, RecordHeader } from "../components/RecordPage";
 import { useToast } from "../components/Toast";
-import { Button, ErrorState, PageSkeleton, Panel, StatusTag } from "../components/ui";
+import {
+  Button,
+  ErrorState,
+  PageSkeleton,
+  Panel,
+  StatusTag,
+} from "../components/ui";
 import { ApiError } from "../lib/api";
 import { useContact, useRemove } from "../lib/queries";
 import { NotFound } from "./NotFound";
@@ -22,7 +28,8 @@ export function ContactPage() {
   const [dialog, setDialog] = useState<"edit" | "deal" | "delete" | null>(null);
 
   if (q.isPending) return <PageSkeleton />;
-  if (q.error instanceof ApiError && q.error.status === 404) return <NotFound what="contact" />;
+  if (q.error instanceof ApiError && q.error.status === 404)
+    return <NotFound what="contact" />;
   if (q.isError) return <ErrorState onRetry={() => q.refetch()} />;
   const c = q.data;
   const close = () => setDialog(null);
@@ -32,7 +39,11 @@ export function ContactPage() {
       <RecordHeader
         title={c.name}
         tags={<StatusTag status={c.status} />}
-        subtitle={<Link to="/contacts" className="hover:underline">Contacts</Link>}
+        subtitle={
+          <Link to="/contacts" className="hover:underline">
+            Contacts
+          </Link>
+        }
         onEdit={() => setDialog("edit")}
         onDelete={() => setDialog("delete")}
       />
@@ -44,14 +55,22 @@ export function ContactPage() {
                 [
                   "Organization",
                   c.organization && (
-                    <Link to={`/organizations/${c.organization.id}`} className="font-semibold text-info-text hover:underline">
+                    <Link
+                      to={`/organizations/${c.organization.id}`}
+                      className="font-semibold text-info-text hover:underline"
+                    >
                       {c.organization.name}
                     </Link>
                   ),
                 ],
                 ["Job title", c.job_title],
                 ["Email", c.email],
-                ["Phone", c.phone && <span className="font-mono text-[13px]">{c.phone}</span>],
+                [
+                  "Phone",
+                  c.phone && (
+                    <span className="font-mono text-[13px]">{c.phone}</span>
+                  ),
+                ],
               ]}
             />
           </Panel>
@@ -73,12 +92,27 @@ export function ContactPage() {
         <ActivityPanel items={c.timeline} contactId={c.id} showLinks />
       </div>
 
-      <RecordDialog open={dialog === "edit"} onOpenChange={(o) => !o && close()} title="Edit contact">
-        {dialog === "edit" && <ContactForm initial={c} onDone={close} onCancel={close} />}
+      <RecordDialog
+        open={dialog === "edit"}
+        onOpenChange={(o) => !o && close()}
+        title="Edit contact"
+      >
+        {dialog === "edit" && (
+          <ContactForm initial={c} onDone={close} onCancel={close} />
+        )}
       </RecordDialog>
-      <RecordDialog open={dialog === "deal"} onOpenChange={(o) => !o && close()} title="Add deal">
+      <RecordDialog
+        open={dialog === "deal"}
+        onOpenChange={(o) => !o && close()}
+        title="Add deal"
+      >
         {dialog === "deal" && c.organization_id && (
-          <DealForm organizationId={c.organization_id} contactId={c.id} onDone={close} onCancel={close} />
+          <DealForm
+            organizationId={c.organization_id}
+            contactId={c.id}
+            onDone={close}
+            onCancel={close}
+          />
         )}
       </RecordDialog>
       <DeleteDialog

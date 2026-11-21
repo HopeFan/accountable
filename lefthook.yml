@@ -1,0 +1,30 @@
+# Pre-commit: format staged files, then lint, types and secrets. No tests, to stay quick.
+pre-commit:
+  piped: true
+  jobs:
+    - name: status updated
+      run: node scripts/check-status-updated.mjs
+    - name: format frontend
+      glob:
+        - "frontend/**/*.{ts,tsx,js,jsx,mjs,json,css,html}"
+        - "e2e/**/*.{ts,tsx,js,jsx,mjs,json}"
+      run: npx prettier --write {staged_files}
+      stage_fixed: true
+    - name: format root config
+      glob: "*.{json,mjs}"
+      run: npx prettier --write {staged_files}
+      stage_fixed: true
+    - name: format backend
+      glob:
+        - "backend/*.py"
+        - "backend/**/*.py"
+      run: uv run ruff format {staged_files}
+      stage_fixed: true
+    - name: lint
+      run: npm run lint:frontend && npm run lint:backend
+    - name: types
+      run: npm run typecheck
+    - name: gitleaks
+      run: |
+        command -v gitleaks >/dev/null || { echo "gitleaks is not installed. Install it: brew install gitleaks (Mac) or winget install -e --id Gitleaks.Gitleaks (Windows)"; exit 1; }
+        gitleaks git --pre-commit --staged --config .gitleaks.toml --no-banner

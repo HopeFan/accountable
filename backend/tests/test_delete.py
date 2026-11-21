@@ -9,13 +9,16 @@ def count(table):
 
 
 def totals():
-    return {t.name: count(t) for t in (db.organization, db.contact, db.deal, db.activity)}
+    return {
+        t.name: count(t) for t in (db.organization, db.contact, db.deal, db.activity)
+    }
 
 
 def build(make):
     org = make.org("Target")
     other = make.org("Other")
-    c1, c2 = make.contact(org["id"]), make.contact(org["id"], first="B", last="B")
+    c1 = make.contact(org["id"])
+    make.contact(org["id"], first="B", last="B")
     oc = make.contact(other["id"], first="O", last="O")
     d1, d2 = make.deal(org["id"], contact_id=c1["id"]), make.deal(org["id"])
     od = make.deal(other["id"], contact_id=oc["id"])
@@ -43,7 +46,7 @@ def test_delete_organization_removes_everything_linked(client, make):
 
 
 def test_delete_contact_keeps_deals(client, make):
-    org, c1, d1, *_ = build(make)
+    _, c1, d1, *_ = build(make)
     before = totals()
     preview = client.get(f"/api/contacts/{c1['id']}/delete-preview").json()
     assert preview == {"contacts": 0, "deals": 0, "activities": 2, "deals_kept": 1}
@@ -56,7 +59,7 @@ def test_delete_contact_keeps_deals(client, make):
 
 
 def test_delete_deal_removes_its_activities(client, make):
-    org, c1, d1, *_ = build(make)
+    _, _, d1, *_ = build(make)
     before = totals()
     preview = client.get(f"/api/deals/{d1['id']}/delete-preview").json()
     assert preview["activities"] == 2

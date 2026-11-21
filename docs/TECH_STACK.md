@@ -14,6 +14,7 @@ Commands are npm scripts in a `package.json` at the repo root, with `frontend/` 
 - `npm run dev` starts the backend and the frontend together
 - `npm test` runs all the tests and fails if any test fails
 - `npm run seed` resets the database to the sample data
+- `npm run check` runs every check and test and fails if any fails; `npm run check:quick` skips the end-to-end tests; `npm run format` fixes the formatting
 
 `docs/STATUS.md` says how to run the app. `README.md` is the course's own guide, so leave it as it is.
 
@@ -22,5 +23,13 @@ Testing will cover:
 1. Unit tests for the frontend, using Vitest
 2. Unit tests for the backend, using pytest
 3. End-to-end tests of the whole app in a browser, in `e2e/`, using Playwright Test (`@playwright/test`) with the installed Google Chrome. They start the app themselves, so `npm test` needs nothing else running.
+
+Code quality checks, all run by `npm run check`:
+
+1. Frontend: Prettier for formatting, ESLint (flat config in `eslint.config.mjs`) with the recommended TypeScript, React Hooks and accessibility (jsx-a11y) rules, and `tsc` for types. TypeScript is held at 6.0.x until typescript-eslint supports 7.
+2. Backend: `ruff format` and `ruff check`, and `ty` for types
+3. A cyclomatic complexity of at most 15 per function, from ESLint's `complexity` rule and ruff's `C901` rule
+4. `gitleaks` for secrets across the repo, with the git-ignored `.env` allowed (`.gitleaks.toml`)
+5. Unit test coverage of at least 80%, measured by pytest-cov for the backend and Vitest's v8 coverage for the frontend
 
 The tests use a database of their own, so running them never changes your data.

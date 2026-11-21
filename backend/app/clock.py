@@ -2,6 +2,7 @@
 
 Tests fix the date with ACCOUNTABLE_TODAY (YYYY-MM-DD).
 """
+
 import os
 from datetime import date, datetime, time
 

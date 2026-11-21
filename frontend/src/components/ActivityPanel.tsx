@@ -43,7 +43,12 @@ export function ActivityPanel({
         onToggleDone={(a, done) =>
           toggle.mutate(
             { id: a.id, done },
-            { onSuccess: () => toast.success(done ? "Follow-up marked done" : "Follow-up reopened") },
+            {
+              onSuccess: () =>
+                toast.success(
+                  done ? "Follow-up marked done" : "Follow-up reopened",
+                ),
+            },
           )
         }
       />
@@ -62,8 +67,18 @@ export function ActivityPanel({
           />
         )}
       </RecordDialog>
-      <RecordDialog open={deleting !== null} onOpenChange={(o) => !o && setDeleting(null)} title="Delete activity">
-        <p className="text-[15px]">Delete this {deleting?.type === "stage_change" ? "stage change entry" : "activity"}? This can't be undone.</p>
+      <RecordDialog
+        open={deleting !== null}
+        onOpenChange={(o) => !o && setDeleting(null)}
+        title="Delete activity"
+      >
+        <p className="text-[15px]">
+          Delete this{" "}
+          {deleting?.type === "stage_change"
+            ? "stage change entry"
+            : "activity"}
+          ? This can't be undone.
+        </p>
         <div className="mt-6 flex items-center justify-between">
           <Dialog.Close asChild>
             <Button variant="ghost">Cancel</Button>

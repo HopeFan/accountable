@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useQueryClient, type QueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  type QueryClient,
+} from "@tanstack/react-query";
 import { api } from "./api";
 import type {
   Activity,
@@ -28,18 +33,43 @@ export const keys = {
 };
 
 export const useHealth = () =>
-  useQuery({ queryKey: keys.health, queryFn: () => api<Health>("/health"), staleTime: Infinity });
+  useQuery({
+    queryKey: keys.health,
+    queryFn: () => api<Health>("/health"),
+    staleTime: Infinity,
+  });
 export const useOrganizations = () =>
-  useQuery({ queryKey: keys.organizations, queryFn: () => api<Organization[]>("/organizations") });
+  useQuery({
+    queryKey: keys.organizations,
+    queryFn: () => api<Organization[]>("/organizations"),
+  });
 export const useOrganization = (id: number) =>
-  useQuery({ queryKey: keys.organization(id), queryFn: () => api<OrganizationDetail>(`/organizations/${id}`) });
-export const useContacts = () => useQuery({ queryKey: keys.contacts, queryFn: () => api<Contact[]>("/contacts") });
+  useQuery({
+    queryKey: keys.organization(id),
+    queryFn: () => api<OrganizationDetail>(`/organizations/${id}`),
+  });
+export const useContacts = () =>
+  useQuery({
+    queryKey: keys.contacts,
+    queryFn: () => api<Contact[]>("/contacts"),
+  });
 export const useContact = (id: number) =>
-  useQuery({ queryKey: keys.contact(id), queryFn: () => api<ContactDetail>(`/contacts/${id}`) });
-export const useDeals = () => useQuery({ queryKey: keys.deals, queryFn: () => api<Deal[]>("/deals") });
+  useQuery({
+    queryKey: keys.contact(id),
+    queryFn: () => api<ContactDetail>(`/contacts/${id}`),
+  });
+export const useDeals = () =>
+  useQuery({ queryKey: keys.deals, queryFn: () => api<Deal[]>("/deals") });
 export const useDeal = (id: number) =>
-  useQuery({ queryKey: keys.deal(id), queryFn: () => api<DealDetail>(`/deals/${id}`) });
-export const useDashboard = () => useQuery({ queryKey: keys.dashboard, queryFn: () => api<Dashboard>("/dashboard") });
+  useQuery({
+    queryKey: keys.deal(id),
+    queryFn: () => api<DealDetail>(`/deals/${id}`),
+  });
+export const useDashboard = () =>
+  useQuery({
+    queryKey: keys.dashboard,
+    queryFn: () => api<Dashboard>("/dashboard"),
+  });
 
 export type RecordKind = "organizations" | "contacts" | "deals";
 export const useDeletePreview = (kind: RecordKind, id: number | null) =>
@@ -66,37 +96,51 @@ export function useSave<TBody, TResult = unknown>(
 
 /** Refetch what's on screen, but not delete previews, which describe a record that may be gone. */
 function refreshAll(qc: QueryClient) {
-  return qc.invalidateQueries({ predicate: (q) => q.queryKey[0] !== "preview" });
+  return qc.invalidateQueries({
+    predicate: (q) => q.queryKey[0] !== "preview",
+  });
 }
 
-export const useCreate = <T = unknown,>(kind: RecordKind | "activities") =>
+export const useCreate = <T = unknown>(kind: RecordKind | "activities") =>
   useSave<unknown, T>((body) => ({ path: `/${kind}`, method: "POST", body }));
-export const useUpdate = <T = unknown,>(kind: RecordKind | "activities") =>
-  useSave<{ id: number; body: unknown }, T>(({ id, body }) => ({ path: `/${kind}/${id}`, method: "PATCH", body }));
+export const useUpdate = <T = unknown>(kind: RecordKind | "activities") =>
+  useSave<{ id: number; body: unknown }, T>(({ id, body }) => ({
+    path: `/${kind}/${id}`,
+    method: "PATCH",
+    body,
+  }));
 /** Deletes a record. The page of the deleted record is left alone, so nothing asks for it again. */
 export function useRemove(kind: RecordKind | "activities") {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (id: number) => api<void>(`/${kind}/${id}`, { method: "DELETE" }),
+    mutationFn: (id: number) =>
+      api<void>(`/${kind}/${id}`, { method: "DELETE" }),
     onSettled: (_d, _e, id) =>
       qc.invalidateQueries({
-        predicate: (q) => q.queryKey[0] !== "preview" && !(q.queryKey[0] === kind && q.queryKey[1] === id),
+        predicate: (q) =>
+          q.queryKey[0] !== "preview" &&
+          !(q.queryKey[0] === kind && q.queryKey[1] === id),
       }),
   });
 }
 export const useMoveDeal = () =>
-  useSave<{ id: number; stage: Stage; position: number }, Deal>(({ id, stage, position }) => ({
-    path: `/deals/${id}/move`,
-    method: "POST",
-    body: { stage, position },
-  }));
+  useSave<{ id: number; stage: Stage; position: number }, Deal>(
+    ({ id, stage, position }) => ({
+      path: `/deals/${id}/move`,
+      method: "POST",
+      body: { stage, position },
+    }),
+  );
 
 /** Marks a follow-up done or reopens it. The dashboard list updates at once. */
 export function useToggleFollowUp() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: ({ id, done }: { id: number; done: boolean }) =>
-      api<Activity>(`/activities/${id}`, { method: "PATCH", body: { follow_up_done: done } }),
+      api<Activity>(`/activities/${id}`, {
+        method: "PATCH",
+        body: { follow_up_done: done },
+      }),
     onMutate: async ({ id, done }) => {
       await qc.cancelQueries({ queryKey: keys.dashboard });
       const previous = qc.getQueryData<Dashboard>(keys.dashboard);
@@ -107,7 +151,9 @@ export function useToggleFollowUp() {
           follow_ups: previous.follow_ups.filter((f) => f.id !== id),
           tiles: {
             ...previous.tiles,
-            overdue_follow_ups: previous.tiles.overdue_follow_ups - (gone?.follow_up_state === "overdue" ? 1 : 0),
+            overdue_follow_ups:
+              previous.tiles.overdue_follow_ups -
+              (gone?.follow_up_state === "overdue" ? 1 : 0),
           },
         });
       }

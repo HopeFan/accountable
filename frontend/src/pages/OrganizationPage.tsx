@@ -19,10 +19,13 @@ export function OrganizationPage() {
   const nav = useNavigate();
   const toast = useToast();
   const remove = useRemove("organizations");
-  const [dialog, setDialog] = useState<"edit" | "contact" | "deal" | "delete" | null>(null);
+  const [dialog, setDialog] = useState<
+    "edit" | "contact" | "deal" | "delete" | null
+  >(null);
 
   if (q.isPending) return <PageSkeleton />;
-  if (q.error instanceof ApiError && q.error.status === 404) return <NotFound what="organization" />;
+  if (q.error instanceof ApiError && q.error.status === 404)
+    return <NotFound what="organization" />;
   if (q.isError) return <ErrorState onRetry={() => q.refetch()} />;
   const org = q.data;
   const close = () => setDialog(null);
@@ -31,7 +34,11 @@ export function OrganizationPage() {
     <>
       <RecordHeader
         title={org.name}
-        subtitle={<Link to="/organizations" className="hover:underline">Organizations</Link>}
+        subtitle={
+          <Link to="/organizations" className="hover:underline">
+            Organizations
+          </Link>
+        }
         onEdit={() => setDialog("edit")}
         onDelete={() => setDialog("delete")}
       />
@@ -41,7 +48,10 @@ export function OrganizationPage() {
             rows={[
               ["Industry", org.industry],
               ["Website", org.website],
-              ["Open deals", `${org.open_deals_count} worth ${money(org.open_deals_value)}`],
+              [
+                "Open deals",
+                `${org.open_deals_count} worth ${money(org.open_deals_value)}`,
+              ],
               ["Notes", org.notes],
             ]}
           />
@@ -72,14 +82,36 @@ export function OrganizationPage() {
         </LinkedPanel>
       </div>
 
-      <RecordDialog open={dialog === "edit"} onOpenChange={(o) => !o && close()} title="Edit organization">
-        {dialog === "edit" && <OrganizationForm initial={org} onDone={close} onCancel={close} />}
+      <RecordDialog
+        open={dialog === "edit"}
+        onOpenChange={(o) => !o && close()}
+        title="Edit organization"
+      >
+        {dialog === "edit" && (
+          <OrganizationForm initial={org} onDone={close} onCancel={close} />
+        )}
       </RecordDialog>
-      <RecordDialog open={dialog === "contact"} onOpenChange={(o) => !o && close()} title="Add contact">
-        {dialog === "contact" && <ContactForm organizationId={org.id} onDone={close} onCancel={close} />}
+      <RecordDialog
+        open={dialog === "contact"}
+        onOpenChange={(o) => !o && close()}
+        title="Add contact"
+      >
+        {dialog === "contact" && (
+          <ContactForm
+            organizationId={org.id}
+            onDone={close}
+            onCancel={close}
+          />
+        )}
       </RecordDialog>
-      <RecordDialog open={dialog === "deal"} onOpenChange={(o) => !o && close()} title="Add deal">
-        {dialog === "deal" && <DealForm organizationId={org.id} onDone={close} onCancel={close} />}
+      <RecordDialog
+        open={dialog === "deal"}
+        onOpenChange={(o) => !o && close()}
+        title="Add deal"
+      >
+        {dialog === "deal" && (
+          <DealForm organizationId={org.id} onDone={close} onCancel={close} />
+        )}
       </RecordDialog>
       <DeleteDialog
         kind="organizations"

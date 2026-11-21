@@ -19,9 +19,13 @@ export function RecordHeader({
   return (
     <div className="mb-6 flex items-end justify-between gap-4">
       <div className="min-w-0">
-        {subtitle && <div className="mb-1 text-[13px] text-muted">{subtitle}</div>}
+        {subtitle && (
+          <div className="mb-1 text-[13px] text-muted">{subtitle}</div>
+        )}
         <div className="flex flex-wrap items-center gap-3">
-          <h1 className="text-[28px] leading-tight font-semibold tracking-tight">{title}</h1>
+          <h1 className="text-[28px] leading-tight font-semibold tracking-tight">
+            {title}
+          </h1>
           {tags}
         </div>
       </div>
@@ -29,7 +33,11 @@ export function RecordHeader({
         <Button variant="secondary" onClick={onEdit}>
           <Pencil className="size-4" aria-hidden /> Edit
         </Button>
-        <Button variant="secondary" onClick={onDelete} className="text-alert-text">
+        <Button
+          variant="secondary"
+          onClick={onDelete}
+          className="text-alert-text"
+        >
           <Trash2 className="size-4" aria-hidden /> Delete
         </Button>
       </div>
@@ -43,7 +51,9 @@ export function Details({ rows }: { rows: [string, ReactNode][] }) {
       {rows.map(([label, value]) => (
         <div key={label} className="contents">
           <dt className="text-[13px] text-muted">{label}</dt>
-          <dd className="min-w-0 break-words">{value || <span className="text-muted">None</span>}</dd>
+          <dd className="min-w-0 break-words">
+            {value || <span className="text-muted">None</span>}
+          </dd>
         </div>
       ))}
     </dl>
@@ -71,7 +81,11 @@ export function LinkedPanel({
         <h2 className="text-base font-semibold">{title}</h2>
         {action}
       </div>
-      {isEmpty ? <p className="px-6 pb-6 text-muted">{empty}</p> : <div className="pb-2">{children}</div>}
+      {isEmpty ? (
+        <p className="px-6 pb-6 text-muted">{empty}</p>
+      ) : (
+        <div className="pb-2">{children}</div>
+      )}
     </Panel>
   );
 }

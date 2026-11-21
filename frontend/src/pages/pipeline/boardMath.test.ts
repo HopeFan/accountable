@@ -1,10 +1,24 @@
 import { describe, expect, it } from "vitest";
 import type { Deal, Stage } from "../../lib/types";
-import { applyMove, column, columnIds, expectedRevenue, isLate, openTotals, totals } from "./boardMath";
+import {
+  applyMove,
+  column,
+  columnIds,
+  expectedRevenue,
+  isLate,
+  openTotals,
+  totals,
+} from "./boardMath";
 
 const TODAY = "2026-11-17";
 let nextId = 1;
-function deal(stage: Stage, position: number, value: number, probability: number, extra: Partial<Deal> = {}): Deal {
+function deal(
+  stage: Stage,
+  position: number,
+  value: number,
+  probability: number,
+  extra: Partial<Deal> = {},
+): Deal {
   return {
     id: nextId++,
     name: "Deal " + nextId,
@@ -41,7 +55,11 @@ describe("totals", () => {
     expect(t).toEqual({ count: 3, value: 6000, expected: 300 });
   });
   it("leaves Won and Lost out of the open totals", () => {
-    expect(openTotals(board())).toEqual({ count: 4, value: 16000, expected: 4300 });
+    expect(openTotals(board())).toEqual({
+      count: 4,
+      value: 16000,
+      expected: 4300,
+    });
   });
   it("counts a won deal at its full value and a lost deal at nothing", () => {
     expect(expectedRevenue("won", 5000, 100)).toBe(5000);
@@ -52,14 +70,25 @@ describe("totals", () => {
 describe("moving a card", () => {
   it("changes the open totals when a deal moves to another open column", () => {
     const moved = applyMove(board(), 1, "proposal", 0, TODAY);
-    expect(totals(column(moved, "new"))).toEqual({ count: 2, value: 5000, expected: 250 });
-    expect(totals(column(moved, "proposal"))).toEqual({ count: 2, value: 11000, expected: 4000 + 400 });
+    expect(totals(column(moved, "new"))).toEqual({
+      count: 2,
+      value: 5000,
+      expected: 250,
+    });
+    expect(totals(column(moved, "proposal"))).toEqual({
+      count: 2,
+      value: 11000,
+      expected: 4000 + 400,
+    });
     expect(openTotals(moved).count).toBe(4);
   });
 
   it("takes the new stage's probability", () => {
     const moved = applyMove(board(), 1, "negotiation", 0, TODAY);
-    expect(moved.find((d) => d.id === 1)).toMatchObject({ stage: "negotiation", probability: 70 });
+    expect(moved.find((d) => d.id === 1)).toMatchObject({
+      stage: "negotiation",
+      probability: 70,
+    });
   });
 
   it("drops a deal into the middle, first and last place of a column", () => {
@@ -74,7 +103,9 @@ describe("moving a card", () => {
   it("keeps positions at 0 to n-1 in both columns", () => {
     const moved = applyMove(board(), 2, "proposal", 1, TODAY);
     for (const stage of ["new", "proposal"] as Stage[]) {
-      expect(column(moved, stage).map((d) => d.position)).toEqual(column(moved, stage).map((_, i) => i));
+      expect(column(moved, stage).map((d) => d.position)).toEqual(
+        column(moved, stage).map((_, i) => i),
+      );
     }
     expect(columnIds(moved).new).toEqual([1, 3]);
     expect(columnIds(moved).proposal).toEqual([4, 2]);
@@ -105,15 +136,37 @@ describe("late flag", () => {
   });
 
   it("clears after moving a late deal to Won or Lost, and the close date becomes today", () => {
-    const late = [deal("proposal", 0, 9000, 40, { close_date: "2026-10-01", is_late: true })];
+    const late = [
+      deal("proposal", 0, 9000, 40, {
+        close_date: "2026-10-01",
+        is_late: true,
+      }),
+    ];
     const won = applyMove(late, late[0].id, "won", 0, TODAY);
-    expect(won[0]).toMatchObject({ is_late: false, close_date: TODAY, probability: 100, expected_revenue: 9000 });
+    expect(won[0]).toMatchObject({
+      is_late: false,
+      close_date: TODAY,
+      probability: 100,
+      expected_revenue: 9000,
+    });
     const lost = applyMove(late, late[0].id, "lost", 0, TODAY);
-    expect(lost[0]).toMatchObject({ is_late: false, close_date: TODAY, probability: 0, expected_revenue: 0 });
+    expect(lost[0]).toMatchObject({
+      is_late: false,
+      close_date: TODAY,
+      probability: 0,
+      expected_revenue: 0,
+    });
   });
 
   it("keeps a late deal late while it stays open", () => {
-    const late = [deal("proposal", 0, 9000, 40, { close_date: "2026-10-01", is_late: true })];
-    expect(applyMove(late, late[0].id, "negotiation", 0, TODAY)[0].is_late).toBe(true);
+    const late = [
+      deal("proposal", 0, 9000, 40, {
+        close_date: "2026-10-01",
+        is_late: true,
+      }),
+    ];
+    expect(
+      applyMove(late, late[0].id, "negotiation", 0, TODAY)[0].is_late,
+    ).toBe(true);
   });
 });

@@ -44,12 +44,22 @@ def make(client):
             return r.json()
 
         def contact(self, org_id=None, first="Ada", last="Lovelace", **kw):
-            r = client.post("/api/contacts", json={"first_name": first, "last_name": last, "organization_id": org_id, **kw})
+            r = client.post(
+                "/api/contacts",
+                json={
+                    "first_name": first,
+                    "last_name": last,
+                    "organization_id": org_id,
+                    **kw,
+                },
+            )
             assert r.status_code == 201, r.text
             return r.json()
 
         def deal(self, org_id, name="Deal", **kw):
-            r = client.post("/api/deals", json={"name": name, "organization_id": org_id, **kw})
+            r = client.post(
+                "/api/deals", json={"name": name, "organization_id": org_id, **kw}
+            )
             assert r.status_code == 201, r.text
             return r.json()
 

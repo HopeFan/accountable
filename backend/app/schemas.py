@@ -1,4 +1,5 @@
 """Pydantic models for requests."""
+
 from datetime import date, datetime
 from typing import Literal
 
@@ -40,7 +41,13 @@ class OrganizationPatch(Base):
 
 def _email(v: str | None) -> str | None:
     v = _clean(v)
-    if v is not None and ("@" not in v or v.startswith("@") or v.endswith("@") or " " in v or "." not in v.split("@")[-1]):
+    if v is not None and (
+        "@" not in v
+        or v.startswith("@")
+        or v.endswith("@")
+        or " " in v
+        or "." not in v.split("@")[-1]
+    ):
         raise ValueError("Enter a valid email address")
     return v
 

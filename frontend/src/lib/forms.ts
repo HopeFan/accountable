@@ -6,18 +6,36 @@ function wholeNumber(label: string, max?: number) {
     .string()
     .trim()
     .superRefine((v, ctx) => {
-      if (v === "") return ctx.addIssue({ code: "custom", message: `${label} is required` });
-      if (/^-/.test(v)) return ctx.addIssue({ code: "custom", message: `${label} can't be negative` });
-      if (!/^\d+$/.test(v)) return ctx.addIssue({ code: "custom", message: `${label} must be a whole number` });
+      if (v === "")
+        return ctx.addIssue({
+          code: "custom",
+          message: `${label} is required`,
+        });
+      if (/^-/.test(v))
+        return ctx.addIssue({
+          code: "custom",
+          message: `${label} can't be negative`,
+        });
+      if (!/^\d+$/.test(v))
+        return ctx.addIssue({
+          code: "custom",
+          message: `${label} must be a whole number`,
+        });
       if (max !== undefined && Number(v) > max)
-        ctx.addIssue({ code: "custom", message: `${label} can't be more than ${max}` });
+        ctx.addIssue({
+          code: "custom",
+          message: `${label} can't be more than ${max}`,
+        });
     });
 }
 
 const optionalEmail = z
   .string()
   .trim()
-  .refine((v) => v === "" || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v), "Enter a valid email address");
+  .refine(
+    (v) => v === "" || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v),
+    "Enter a valid email address",
+  );
 
 export const organizationSchema = z.object({
   name: z.string().trim().min(1, "Name is required"),
@@ -58,5 +76,7 @@ export const activitySchema = z.object({
 export type ActivityValues = z.infer<typeof activitySchema>;
 
 /** Empty string to null, for optional fields sent to the API. */
-export const orNull = (v: string): string | null => (v.trim() === "" ? null : v.trim());
-export const idOrNull = (v: string): number | null => (v === "" ? null : Number(v));
+export const orNull = (v: string): string | null =>
+  v.trim() === "" ? null : v.trim();
+export const idOrNull = (v: string): number | null =>
+  v === "" ? null : Number(v);

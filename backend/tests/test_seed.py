@@ -9,7 +9,9 @@ def dump():
             t.name: [
                 tuple(r)
                 for r in conn.execute(
-                    select(*[c for c in t.c if c.name not in ("created_at", "updated_at")]).order_by(t.c.id)
+                    select(
+                        *[c for c in t.c if c.name not in ("created_at", "updated_at")]
+                    ).order_by(t.c.id)
                 )
             ]
             for t in (db.organization, db.contact, db.deal, db.activity)
@@ -21,7 +23,14 @@ def test_counts_and_coverage(seeded):
     contacts = seeded.get("/api/contacts").json()
     orgs = seeded.get("/api/organizations").json()
     assert len(orgs) == 12 and len(contacts) == 35 and len(deals) == 40
-    assert {d["stage"] for d in deals} == {"new", "qualified", "proposal", "negotiation", "won", "lost"}
+    assert {d["stage"] for d in deals} == {
+        "new",
+        "qualified",
+        "proposal",
+        "negotiation",
+        "won",
+        "lost",
+    }
     assert {c["status"] for c in contacts} == {"lead", "qualified", "customer"}
     assert all(2 <= o["contacts_count"] <= 4 for o in orgs)
     assert all(5000 <= d["value"] <= 100000 for d in deals)
@@ -33,11 +42,20 @@ def test_counts_and_coverage(seeded):
 
 def test_deals_follow_the_rules(seeded):
     deals = seeded.get("/api/deals").json()
-    org_of_contact = {c["id"]: c["organization_id"] for c in seeded.get("/api/contacts").json()}
+    org_of_contact = {
+        c["id"]: c["organization_id"] for c in seeded.get("/api/contacts").json()
+    }
     for d in deals:
         if d["contact_id"]:
             assert org_of_contact[d["contact_id"]] == d["organization_id"]
-    usual = {"new": 5, "qualified": 20, "proposal": 40, "negotiation": 70, "won": 100, "lost": 0}
+    usual = {
+        "new": 5,
+        "qualified": 20,
+        "proposal": 40,
+        "negotiation": 70,
+        "won": 100,
+        "lost": 0,
+    }
     assert len([d for d in deals if d["probability"] != usual[d["stage"]]]) in (2, 3)
     for stage in ("new", "qualified", "proposal", "negotiation", "won", "lost"):
         positions = sorted(d["position"] for d in deals if d["stage"] == stage)
@@ -58,11 +76,17 @@ def test_activities_and_follow_ups(seeded):
 def test_every_non_new_deal_has_matching_stage_change(seeded):
     deals = seeded.get("/api/deals").json()
     for d in deals:
-        entries = [a for a in seeded.get(f"/api/deals/{d['id']}").json()["timeline"] if a["type"] == "stage_change"]
+        entries = [
+            a
+            for a in seeded.get(f"/api/deals/{d['id']}").json()["timeline"]
+            if a["type"] == "stage_change"
+        ]
         if d["stage"] == "new":
             assert entries == []
         else:
-            assert entries and entries[0]["description"].endswith(f"to {d['stage'].capitalize()}")
+            assert entries and entries[0]["description"].endswith(
+                f"to {d['stage'].capitalize()}"
+            )
 
 
 def test_seeding_twice_gives_the_same_data(db_file):
@@ -77,7 +101,11 @@ def test_reset_replaces_changes(seeded):
     seeded.delete("/api/deals/1")
     seed.reset()
     names = [o["name"] for o in seeded.get("/api/organizations").json()]
-    assert "Brand new" not in names and len(names) == 12 and len(seeded.get("/api/deals").json()) == 40
+    assert (
+        "Brand new" not in names
+        and len(names) == 12
+        and len(seeded.get("/api/deals").json()) == 40
+    )
 
 
 def test_database_is_created_and_seeded_when_missing(db_file):
@@ -86,4 +114,7 @@ def test_database_is_created_and_seeded_when_missing(db_file):
     assert db_file.exists()
     seed.ensure_seeded()  # an existing file isn't touched
     with db.get_engine().connect() as conn:
-        assert conn.execute(select(func.count()).select_from(db.organization)).scalar_one() == 12
+        assert (
+            conn.execute(select(func.count()).select_from(db.organization)).scalar_one()
+            == 12
+        )

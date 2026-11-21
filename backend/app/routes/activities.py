@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException, Response
-from sqlalchemy import delete, insert, select, update
+from sqlalchemy import delete, update
 
 from .. import clock
-from ..common import activities, field_error, get_or_404
+from ..common import activities, field_error, get_or_404, insert_row
 from ..db import activity, contact, deal, get_engine
 from ..schemas import ActivityIn, ActivityPatch
 
@@ -24,7 +24,7 @@ def create_activity(body: ActivityIn):
             get_or_404(conn, deal, body.deal_id, "Deal")
         values = body.model_dump()
         values["occurred_at"] = body.occurred_at or clock.now()
-        new_id = conn.execute(insert(activity).values(**values)).inserted_primary_key[0]
+        new_id = insert_row(conn, activity, values)
         return _one(conn, new_id)
 
 
@@ -39,7 +39,9 @@ def update_activity(activity_id: int, body: ActivityPatch):
         if row["type"] == "stage_change":
             raise HTTPException(400, detail="Stage changes can't be edited")
         if changes:
-            conn.execute(update(activity).where(activity.c.id == activity_id).values(**changes))
+            conn.execute(
+                update(activity).where(activity.c.id == activity_id).values(**changes)
+            )
         return _one(conn, activity_id)
 
 

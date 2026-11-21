@@ -1,6 +1,6 @@
 # Plan: the Accountable MVP
 
-Built from `docs/intent.md` and `docs/spec.md`. No code is written yet. The chosen design is mockup A in `docs/mockups/`, including its Pipeline page.
+Built from `docs/changes/mvp/intent.md` and `docs/spec.md`. No code is written yet. The chosen design is mockup A in `docs/mockups/`, including its Pipeline page.
 
 Each phase ends with something that runs, with its tests passing, a commit and an update to `docs/STATUS.md`. Requirement numbers (R1, R9a and so on) refer to `docs/spec.md`.
 

@@ -1,5 +1,8 @@
 def test_crud(client):
-    r = client.post("/api/organizations", json={"name": "Acme", "industry": "Retail", "website": " acme.example "})
+    r = client.post(
+        "/api/organizations",
+        json={"name": "Acme", "industry": "Retail", "website": " acme.example "},
+    )
     assert r.status_code == 201
     org = r.json()
     assert org["website"] == "acme.example" and org["contacts_count"] == 0
@@ -25,7 +28,12 @@ def test_names_are_unique_ignoring_case(client):
     other = client.post("/api/organizations", json={"name": "Other"}).json()
     r = client.patch(f"/api/organizations/{other['id']}", json={"name": "acme"})
     assert r.status_code == 422
-    assert client.patch(f"/api/organizations/{other['id']}", json={"name": "Other"}).status_code == 200
+    assert (
+        client.patch(
+            f"/api/organizations/{other['id']}", json={"name": "Other"}
+        ).status_code
+        == 200
+    )
 
 
 def test_list_counts_and_detail(client, make):
@@ -36,6 +44,10 @@ def test_list_counts_and_detail(client, make):
     make.deal(org["id"], value=500, stage="proposal")
     make.deal(org["id"], value=9000, stage="won")
     row = client.get("/api/organizations").json()[0]
-    assert (row["contacts_count"], row["open_deals_count"], row["open_deals_value"]) == (2, 2, 1500)
+    assert (
+        row["contacts_count"],
+        row["open_deals_count"],
+        row["open_deals_value"],
+    ) == (2, 2, 1500)
     detail = client.get(f"/api/organizations/{org['id']}").json()
     assert len(detail["contacts"]) == 2 and len(detail["deals"]) == 3

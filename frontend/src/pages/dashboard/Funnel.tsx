@@ -2,14 +2,22 @@ import { money, plural } from "../../lib/format";
 import { STAGE_LABEL, type Dashboard } from "../../lib/types";
 import { EmptyState, Panel, STAGE_STYLE } from "../../components/ui";
 
-export function Funnel({ funnel, lost }: { funnel: Dashboard["funnel"]; lost: Dashboard["lost"] }) {
+export function Funnel({
+  funnel,
+  lost,
+}: {
+  funnel: Dashboard["funnel"];
+  lost: Dashboard["lost"];
+}) {
   const max = Math.max(...funnel.map((f) => f.value), 1);
   const empty = funnel.every((f) => f.value === 0);
   return (
     <Panel className="flex flex-col">
       <div className="mb-4">
         <h2 className="text-base font-semibold">Sales funnel</h2>
-        <p className="mt-0.5 text-[13px] text-muted">Value of deals that reached each stage</p>
+        <p className="mt-0.5 text-[13px] text-muted">
+          Value of deals that reached each stage
+        </p>
       </div>
       {empty ? (
         <EmptyState message="No deals yet." />
@@ -27,13 +35,18 @@ export function Funnel({ funnel, lost }: { funnel: Dashboard["funnel"]; lost: Da
                   {STAGE_LABEL[f.stage]}
                 </span>
                 <span className="font-mono text-[12.5px] font-medium">
-                  {money(f.value)} <span className="text-muted">· {f.count}</span>
+                  {money(f.value)}{" "}
+                  <span className="text-muted">· {f.count}</span>
                 </span>
               </div>
               <div className="flex justify-center">
                 <div
                   className="h-5 rounded-[7px]"
-                  style={{ width: (f.value / max) * 100 + "%", minWidth: 6, background: STAGE_STYLE[f.stage].dot }}
+                  style={{
+                    width: (f.value / max) * 100 + "%",
+                    minWidth: 6,
+                    background: STAGE_STYLE[f.stage].dot,
+                  }}
                 />
               </div>
             </div>

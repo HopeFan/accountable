@@ -1,7 +1,6 @@
 from datetime import date
 
 from fastapi import APIRouter
-from sqlalchemy import select
 
 from .. import clock, rules
 from ..common import activities, all_deals
@@ -33,7 +32,9 @@ def build_dashboard(conn) -> dict:
     won = [d for d in deals if d["stage"] == "won" and d["close_date"]]
     monthly = []
     for m in months:
-        in_month = [d for d in won if date.fromisoformat(d["close_date"]).replace(day=1) == m]
+        in_month = [
+            d for d in won if date.fromisoformat(d["close_date"]).replace(day=1) == m
+        ]
         monthly.append(
             {
                 "month": m.strftime("%Y-%m"),
@@ -52,7 +53,9 @@ def build_dashboard(conn) -> dict:
             "expected_revenue": sum(d["expected_revenue"] for d in open_deals),
             "won_this_month_value": this_month["revenue"],
             "won_this_month_count": this_month["deals_won"],
-            "overdue_follow_ups": sum(1 for f in follow_ups if f["follow_up_state"] == "overdue"),
+            "overdue_follow_ups": sum(
+                1 for f in follow_ups if f["follow_up_state"] == "overdue"
+            ),
         },
         "pipeline": pipeline,
         "monthly": monthly,

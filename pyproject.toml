@@ -11,7 +11,13 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = ["pytest>=8", "httpx>=0.27"]
+dev = [
+    "pytest>=8",
+    "httpx>=0.27",
+    "ruff>=0.17.6",
+    "ty>=0.0.107",
+    "pytest-cov>=7.1.0",
+]
 
 [tool.uv]
 package = false
@@ -19,3 +25,15 @@ package = false
 [tool.pytest.ini_options]
 testpaths = ["backend/tests"]
 pythonpath = ["backend"]
+
+[tool.ruff]
+src = ["backend"]
+
+[tool.ruff.lint]
+extend-select = ["C901"]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 15
+
+[tool.coverage.run]
+source = ["backend/app"]

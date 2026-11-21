@@ -21,23 +21,39 @@ const isLocal = (url: string) => {
   return host === "127.0.0.1" || host === "localhost";
 };
 
+type Problems = {
+  errors: string[];
+  external: string[];
+  allow: RegExp[];
+};
+
 /** Every test starts from fresh sample data and fails on a console error or a request that leaves the computer. */
-export const test = base.extend<{ problems: { errors: string[]; external: string[] } }>({
-  problems: async ({}, use) => {
-    await use({ errors: [], external: [], allow: [] });
-  },
-  page: async ({ page, problems }, use) => {
+export const test = base.extend<{
+  problems: Problems;
+}>({
+  problems: [
+    async ({ page }, provide) => {
+      const problems: Problems = { errors: [], external: [], allow: [] };
+      page.on("console", (m) => {
+        if (
+          m.type() === "error" &&
+          !problems.allow.some((re) => re.test(m.text()))
+        )
+          problems.errors.push(m.text());
+      });
+      page.on("pageerror", (e) => problems.errors.push(String(e)));
+      page.on("request", (r) => {
+        if (!isLocal(r.url())) problems.external.push(r.url());
+      });
+      await provide(problems);
+      expect(problems.errors, "console errors").toEqual([]);
+      expect(problems.external, "requests that leave the computer").toEqual([]);
+    },
+    { auto: true },
+  ],
+  page: async ({ page }, provide) => {
     resetData();
-    page.on("console", (m) => {
-      if (m.type() === "error" && !problems.allow.some((re) => re.test(m.text()))) problems.errors.push(m.text());
-    });
-    page.on("pageerror", (e) => problems.errors.push(String(e)));
-    page.on("request", (r) => {
-      if (!isLocal(r.url())) problems.external.push(r.url());
-    });
-    await use(page);
-    expect(problems.errors, "console errors").toEqual([]);
-    expect(problems.external, "requests that leave the computer").toEqual([]);
+    await provide(page);
   },
 });
 
@@ -51,7 +67,11 @@ export async function firstColumn(page: Page): Promise<string[]> {
   return (await cells.allTextContents()).map((t) => t.trim());
 }
 
-export async function openRowMenu(page: Page, name: string, item: "Edit" | "Delete") {
+export async function openRowMenu(
+  page: Page,
+  name: string,
+  item: "Edit" | "Delete",
+) {
   await page.getByRole("button", { name: `Actions for ${name}` }).click();
   await page.getByRole("menuitem", { name: item }).click();
 }

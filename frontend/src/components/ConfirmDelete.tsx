@@ -5,12 +5,17 @@ import type { DeletePreview } from "../lib/types";
 import { RecordDialog } from "./RecordDialog";
 import { Button } from "./ui";
 
-export function deleteMessage(kind: RecordKind, name: string, preview: DeletePreview | undefined): string {
+export function deleteMessage(
+  kind: RecordKind,
+  name: string,
+  preview: DeletePreview | undefined,
+): string {
   const goes: string[] = [];
   if (preview) {
     if (preview.contacts) goes.push(plural(preview.contacts, "contact"));
     if (preview.deals) goes.push(plural(preview.deals, "deal"));
-    if (preview.activities) goes.push(plural(preview.activities, "activity", "activities"));
+    if (preview.activities)
+      goes.push(plural(preview.activities, "activity", "activities"));
   }
   let text = `Delete ${name}?`;
   if (goes.length) text += ` This also deletes ${joinList(goes)}.`;
@@ -38,7 +43,11 @@ export function ConfirmDelete({
   onCancel: () => void;
 }) {
   return (
-    <RecordDialog open onOpenChange={(o) => !o && onCancel()} title="Delete record">
+    <RecordDialog
+      open
+      onOpenChange={(o) => !o && onCancel()}
+      title="Delete record"
+    >
       <p className="text-[15px]" data-testid="delete-message">
         {deleteMessage(kind, name, preview)}
       </p>
@@ -46,7 +55,12 @@ export function ConfirmDelete({
         <Dialog.Close asChild>
           <Button variant="ghost">Cancel</Button>
         </Dialog.Close>
-        <Button variant="danger" busy={busy} disabled={!preview} onClick={onConfirm}>
+        <Button
+          variant="danger"
+          busy={busy}
+          disabled={!preview}
+          onClick={onConfirm}
+        >
           Delete
         </Button>
       </div>
