@@ -21,7 +21,7 @@ These are the Claude Code commands used in the lessons, with the closest match i
 | Manage MCP servers | `/mcp` | `/mcp` | `/mcp` | `/mcp` | `/mcps` | `/mcp` | `/mcp` | `/mcp` |
 | Manage plugins | `/plugin` | `/plugins` | `/plugin` | `/plugin` | `/plugins` | `pi install` | `/plugin` | `devin plugins` |
 
-- Devin has no `/effort` command: `Alt+T` (Option+T on a Mac) cycles the thinking level during a session.
+- Devin has no `/effort` command: `Alt+T` (Option+T on a Mac) cycles the thinking level during a session. On a Mac the terminal must send Option as Meta for it to reach Devin; Terminal.app does not by default (Settings, Profiles, Keyboard, "Use Option as Meta key"), and iTerm2, Ghostty, WezTerm and the rest have their own equivalent.
 - `/usage` shows the session's credit use; `/stats` (also `/session-stats`) gives the full breakdown.
 - Skills are invoked as `/<skill-name>` in a prompt. Typing `/` shows the ones available; `devin skills list` in the terminal lists them all.
 - `/mcp` lists servers in a session; `devin mcp add|list|remove` manages them from the terminal.
@@ -116,7 +116,7 @@ The repo's `.gitignore` doesn't know about the local files yet, so add them to i
 
 ## 6. Permissions
 
-Run `/permissions`-style approval prompts as they come up, or write the rules straight into `.devin/config.json`. Devin's matcher names differ from Claude Code's: shell commands are `Exec(...)` matched on a complete-word prefix, file access is `Read(...)`/`Write(...)` with globs, and fetches are `Fetch(...)`. Deny rules are checked first, then ask, then allow.
+Write the rules into `.devin/config.json` so they're shared with the repo, or save them from a permission prompt when one comes up. Devin's matcher names differ from Claude Code's: shell commands are `Exec(...)` matched on a complete-word prefix, file access is `Read(...)`/`Write(...)` with globs, and fetches are `Fetch(...)`. Deny rules are checked first, then ask, then allow.
 
 Create `.devin/config.json` with the same three rules as the lesson:
 
@@ -125,12 +125,14 @@ Create `.devin/config.json` with the same three rules as the lesson:
   "permissions": {
     "allow": ["Exec(npm test)"],
     "ask": ["Exec(git push)"],
-    "deny": ["Read(.env*)"]
+    "deny": ["Read(/**/.env*)"]
   }
 }
 ```
 
-`Exec(npm test)` matches `npm test` and `npm test -- --watch` but not `npm testfoo`. `Read(.env*)` blocks reads of `.env` and `.env.local` alike; `.env` files are gitignored here anyway, and the deny rule keeps the agent out of them too.
+`Exec(npm test)` matches `npm test` and `npm test -- --watch` but not `npm testfoo`. `Read(/**/.env*)` blocks reads of `.env` files anywhere: the agent reads files by their absolute path, so a relative pattern like `Read(.env*)` never matches anything.
+
+Tested on 3000.6.7: the `.env` deny fires exactly as written from `~/.config/devin/config.json`, but the project's `.devin/config.json` rules did not take effect in `-p` sessions. Add the deny line to your user config's `permissions.deny` as well if you want it enforced today, and keep the project file for sharing.
 
 **Permission modes.** Press Shift+Tab to cycle through them, or use `/mode`:
 
