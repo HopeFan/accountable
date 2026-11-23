@@ -77,7 +77,7 @@ npm run dev      # API on :8000, app on http://localhost:5173
 - Minor layout issues from `ui-check`, in both modes: money and phone values wrap onto several lines (Organizations "Open deal value", Contacts Phone, Deals Value and late close dates, the dashboard pipeline strip, the deal record follow-up pill and "Mark done"). On the Pipeline page "Expected" runs into the amount with no space, and the Negotiation header may be missing its stage dot.
 
 - Found while checking, not caused by the multi-user change and not fixed:
-  - `frontend/src/theme/tokens.css` has an unlayered `button, input, select, textarea { font: inherit; color: inherit }` that overrides Tailwind text colours. In dark mode Sea Green buttons (the shared primary Button, dialog submit buttons) get light text at about 1.3:1 instead of Midnight. The sign-in button is patched with `text-on-accent!`. The proper fix is to wrap that rule in `@layer base` and recheck every button in both modes.
+  - Fixed: the unlayered `button, input, select, textarea { color: inherit }` in `frontend/src/theme/tokens.css` overrode Tailwind text colours, so Sea Green buttons and the initials avatar had light text in dark mode. The rule is now in `@layer base`. Still to do: recheck every button in both modes in a browser, and the sign-in button's `text-on-accent!` patch can probably go.
   - Layout issues seen by `ui-check`: pipeline column footers read "ExpectedUSD 11,550" with no space, and money, dates and phone numbers wrap in the Organizations, Contacts and Deals tables.
 
 - The by-eye pass in a real browser (success criterion 8) by a person, with the console open. Screenshots of every screen are written to `test-results/screens/` by the end-to-end run.
