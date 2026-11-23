@@ -22,7 +22,7 @@ Part of the Accountable spec. The index is in `docs/spec.md`. The menu it lives 
 
 - The two options are radio-style items like the theme's, each with its flag, its name and a check on the selected one. A thin rule separates the currency group from the theme group, and a label ("Currency") sits above it, in the same small muted text as the theme's label.
 - The badge is a 16px circle with a ring in the panel color, at the lower right of the initials circle. It uses the flag's emoji, drawn by CSS from a `data-flag` attribute so it is not part of the button's text, and no image files are added. It is decorative (`aria-hidden`), because the button's name already says the currency.
-- The stat tiles on the dashboard show the currency code as a small label above the number, as they do for USD today, so they follow the same rule for AUD.
+- The stat tiles on the dashboard show the currency code as a small label before the number on the same line, as they do for USD today, so they follow the same rule for AUD.
 - The rate is an approximation for display, not for accounting, and the app says nothing about it on screen apart from this spec.
 
 ## Tests

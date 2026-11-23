@@ -78,6 +78,8 @@ npm run dev      # API on :8000, app on http://localhost:5173
 - The pipeline's keyboard move is tested only end to end, because jsdom can't measure the layout it needs.
 - Minor layout issues from `ui-check`, in both modes: money and phone values wrap onto several lines (Organizations "Open deal value", Contacts Phone, Deals Value and late close dates, the dashboard pipeline strip, the deal record follow-up pill and "Mark done"). On the Pipeline page "Expected" runs into the amount with no space, and the Negotiation header may be missing its stage dot.
 
+- Seen by `ui-check` during the currency change, not caused by it and not fixed: at a 1200px viewport the Deals table is wider than its box, so the actions column is cut off (it fits at 1280px, and overflows in USD too); the "4" above the tallest bar of the Deals won chart is partly clipped; the dashboard follow-ups box scrolls with no visible cue. The deal record's follow-up pill and "Mark done" wrapping is already listed above.
+
 - Found while checking, not caused by the multi-user change and not fixed:
   - Fixed: the unlayered `button, input, select, textarea { color: inherit }` in `frontend/src/theme/tokens.css` overrode Tailwind text colours, so Sea Green buttons and the initials avatar had light text in dark mode. The rule is now in `@layer base`. Still to do: recheck every button in both modes in a browser, and the sign-in button's `text-on-accent!` patch can probably go.
   - Layout issues seen by `ui-check`: pipeline column footers read "ExpectedUSD 11,550" with no space, and money, dates and phone numbers wrap in the Organizations, Contacts and Deals tables.
