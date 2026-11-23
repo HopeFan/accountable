@@ -5,7 +5,7 @@ import { chooseTheme, dialog, expect, openUserMenu, test } from "./fixtures";
 
 test.use({ viewport: { width: 1280, height: 800 } });
 
-const DOCS = path.resolve(__dirname, "../docs/changes/dark-mode");
+const DOCS = path.resolve(__dirname, "../test-results/screens");
 const SCREENS = [
   "/",
   "/organizations",

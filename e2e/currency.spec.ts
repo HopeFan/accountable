@@ -92,7 +92,7 @@ test("a deal's form still says USD and keeps the stored value", async ({
 test("screenshots of the dashboard and the pipeline in both currencies", async ({
   page,
 }) => {
-  const docs = path.resolve(__dirname, "../docs/changes/currency");
+  const docs = path.resolve(__dirname, "../test-results/screens");
   fs.mkdirSync(docs, { recursive: true });
   for (const [code, choose] of [
     ["usd", toUs],
