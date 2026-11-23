@@ -20,6 +20,7 @@ import {
 } from "../../lib/format";
 import type { Dashboard } from "../../lib/types";
 import { Panel } from "../../components/ui";
+import { useCurrency } from "../../lib/currency";
 
 type Month = Dashboard["monthly"][number];
 
@@ -85,6 +86,7 @@ function Header({
 }
 
 export function RevenueChart({ monthly }: { monthly: Month[] }) {
+  const currency = useCurrency();
   const data = chartData(monthly);
   const total = monthly.reduce((s, m) => s + m.revenue, 0);
   return (
@@ -115,7 +117,7 @@ export function RevenueChart({ monthly }: { monthly: Month[] }) {
               tickFormatter={moneyCompact}
               width={78}
               label={{
-                value: "Revenue won (USD)",
+                value: `Revenue won (${currency})`,
                 angle: -90,
                 position: "insideLeft",
                 offset: -2,

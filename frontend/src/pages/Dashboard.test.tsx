@@ -4,6 +4,7 @@ import { cloneElement } from "react";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { ToastProvider } from "../components/Toast";
+import { USD_TO_AUD, setCurrency } from "../lib/currency";
 import type { Dashboard as DashboardData } from "../lib/types";
 import { Dashboard } from "./Dashboard";
 import { chartData } from "./dashboard/Charts";
@@ -200,6 +201,16 @@ describe("Dashboard", () => {
     expect(within(funnel).getByText(/USD 500,000/)).toBeInTheDocument();
     expect(within(funnel).getByText(/USD 100,000/)).toBeInTheDocument();
     expect(screen.getByTestId("funnel-lost")).toHaveTextContent("USD 137,000");
+  });
+
+  it("shows converted amounts and the AUD label with Australian dollars", async () => {
+    setCurrency("AUD");
+    renderDashboard();
+    const tile = await screen.findByTestId("tile-pipeline");
+    const expected = Math.round(123456 * USD_TO_AUD).toLocaleString("en-US");
+    expect(tile).toHaveTextContent(`AUD ${expected}`);
+    expect(tile).not.toHaveTextContent("USD");
+    expect(await screen.findByText("Revenue won (AUD)")).toBeInTheDocument();
   });
 
   it("lists overdue follow-ups before upcoming ones, and recent activity", async () => {

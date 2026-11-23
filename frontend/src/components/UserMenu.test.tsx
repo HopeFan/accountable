@@ -2,6 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { AuthContext, type Auth } from "../lib/auth";
+import { getCurrency } from "../lib/currency";
 import { UserMenu, initialsOf } from "./UserMenu";
 
 const signOut = vi.fn(async () => {});
@@ -45,12 +46,9 @@ describe("UserMenu", () => {
     const user = setup();
     await user.click(trigger());
     expect(screen.getByText("ada@example.com")).toBeVisible();
-    const items = screen.getAllByRole("menuitemradio");
-    expect(items.map((i) => i.textContent)).toEqual([
-      "Light",
-      "Dark",
-      "System",
-    ]);
+    const items = ["Light", "Dark", "System"].map((name) =>
+      screen.getByRole("menuitemradio", { name }),
+    );
     expect(items.map((i) => i.getAttribute("aria-checked"))).toEqual([
       "false",
       "false",
@@ -103,5 +101,75 @@ describe("UserMenu", () => {
     await user.click(trigger());
     fireEvent.pointerDown(document.body);
     expect(screen.queryByRole("menu")).toBeNull();
+  });
+});
+
+describe("UserMenu currency", () => {
+  it("lists both currencies with US dollar selected by default", async () => {
+    const user = setup();
+    await user.click(trigger());
+    expect(screen.getByText("Currency")).toBeVisible();
+    expect(
+      screen.getByRole("menuitemradio", { name: /US dollar/ }),
+    ).toBeChecked();
+    expect(
+      screen.getByRole("menuitemradio", { name: /Australian dollar/ }),
+    ).not.toBeChecked();
+  });
+
+  it("choosing Australian dollar stores it and changes the badge and tooltip", async () => {
+    const user = setup();
+    expect(screen.getByTestId("currency-badge")).toHaveAttribute(
+      "data-flag",
+      "🇺🇸",
+    );
+    await user.click(trigger());
+    await user.click(
+      screen.getByRole("menuitemradio", { name: /Australian dollar/ }),
+    );
+    expect(getCurrency()).toBe("AUD");
+    expect(localStorage.getItem("accountable-currency")).toBe("AUD");
+    expect(screen.getByTestId("currency-badge")).toHaveAttribute(
+      "data-flag",
+      "🇦🇺",
+    );
+    expect(trigger()).toHaveAttribute("title", "Australian dollar");
+
+    await user.click(trigger());
+    expect(
+      screen.getByRole("menuitemradio", { name: /Australian dollar/ }),
+    ).toBeChecked();
+  });
+
+  it("choosing US dollar again restores it", async () => {
+    const user = setup();
+    await user.click(trigger());
+    await user.click(
+      screen.getByRole("menuitemradio", { name: /Australian dollar/ }),
+    );
+    await user.click(trigger());
+    await user.click(screen.getByRole("menuitemradio", { name: /US dollar/ }));
+    expect(getCurrency()).toBe("USD");
+    expect(trigger()).toHaveAttribute("title", "US dollar");
+  });
+
+  it("works with the keyboard", async () => {
+    const user = setup();
+    await user.tab();
+    await user.keyboard("{Enter}");
+    const aud = screen.getByRole("menuitemradio", {
+      name: /Australian dollar/,
+    });
+    for (let i = 0; i < 10 && document.activeElement !== aud; i++) {
+      await user.keyboard("{ArrowDown}");
+    }
+    expect(aud).toHaveFocus();
+    await user.keyboard("{Enter}");
+    expect(getCurrency()).toBe("AUD");
+  });
+
+  it("keeps the accessible name of the button", () => {
+    setup();
+    expect(trigger()).toHaveAccessibleName("User menu");
   });
 });

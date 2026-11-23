@@ -3,6 +3,12 @@ import { Check, LogOut } from "lucide-react";
 import { useState } from "react";
 import { useSession, useAuth } from "../lib/auth";
 import {
+  CURRENCIES,
+  setCurrency,
+  useCurrency,
+  type Currency,
+} from "../lib/currency";
+import {
   THEMES,
   applyTheme,
   readTheme,
@@ -28,6 +34,8 @@ export function UserMenu() {
   const email = useSession()?.email ?? "";
   const { signOut } = useAuth();
   const [theme, setTheme] = useState<Theme>(readTheme);
+  const currency = useCurrency();
+  const active = CURRENCIES.find((c) => c.code === currency) ?? CURRENCIES[0];
 
   function choose(value: string) {
     const next = value as Theme;
@@ -40,9 +48,17 @@ export function UserMenu() {
     <Menu.Root>
       <Menu.Trigger
         aria-label="User menu"
-        className="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-semibold text-on-accent"
+        title={active.name}
+        className="relative inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-semibold text-on-accent"
       >
         {initialsOf(email)}
+        <span
+          aria-hidden
+          data-testid="currency-badge"
+          data-flag={active.flag}
+          // The flag is drawn by CSS so it never becomes part of the button's text.
+          className="absolute -right-1 -bottom-1 grid size-4 place-items-center rounded-full bg-panel text-[10px] leading-none ring-2 ring-panel after:content-[attr(data-flag)]"
+        />
       </Menu.Trigger>
       <Menu.Portal>
         <Menu.Content
@@ -63,6 +79,26 @@ export function UserMenu() {
                   </Menu.ItemIndicator>
                 </span>
                 {LABELS[t]}
+              </Menu.RadioItem>
+            ))}
+          </Menu.RadioGroup>
+          <Menu.Separator className="mx-1.5 my-1 h-px bg-soft" />
+          <Menu.Label className="px-3 pt-1 pb-0.5 text-xs text-muted">
+            Currency
+          </Menu.Label>
+          <Menu.RadioGroup
+            value={currency}
+            onValueChange={(code) => setCurrency(code as Currency)}
+          >
+            {CURRENCIES.map((c) => (
+              <Menu.RadioItem key={c.code} value={c.code} className={itemClass}>
+                <span className="inline-flex size-4 items-center justify-center">
+                  <Menu.ItemIndicator>
+                    <Check className="size-4" aria-hidden />
+                  </Menu.ItemIndicator>
+                </span>
+                <span aria-hidden>{c.flag}</span>
+                {c.name}
               </Menu.RadioItem>
             ))}
           </Menu.RadioGroup>

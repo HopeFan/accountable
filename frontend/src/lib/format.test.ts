@@ -1,4 +1,7 @@
+import { readFileSync, readdirSync, statSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
+import { USD_TO_AUD, setCurrency } from "./currency";
 import {
   addedBy,
   authorName,
@@ -27,6 +30,44 @@ describe("moneyCompact", () => {
     expect(moneyCompact(50000)).toBe("USD 50k");
     expect(moneyCompact(12500)).toBe("USD 12.5k");
     expect(moneyCompact(1200000)).toBe("USD 1.2M");
+  });
+});
+
+describe("money in Australian dollars", () => {
+  const aud = (usd: number) => Math.round(usd * USD_TO_AUD);
+
+  it("converts with the fixed rate and shows AUD", () => {
+    setCurrency("AUD");
+    expect(money(48000)).toBe(`AUD ${aud(48000).toLocaleString("en-US")}`);
+    expect(money(48000)).toBe("AUD 72,960");
+    expect(money(0)).toBe("AUD 0");
+    expect(money(-1000)).toBe(`-AUD ${aud(1000).toLocaleString("en-US")}`);
+  });
+
+  it("shortens axis values", () => {
+    setCurrency("AUD");
+    expect(moneyCompact(0)).toBe("AUD 0");
+    expect(moneyCompact(100)).toBe(`AUD ${aud(100)}`);
+    expect(moneyCompact(50000)).toBe("AUD 76k");
+    expect(moneyCompact(1000000)).toBe("AUD 1.5M");
+    expect(moneyCompact(-50000)).toBe("AUD -76k");
+  });
+});
+
+function sourceFiles(dir: string): string[] {
+  return readdirSync(dir).flatMap((name) => {
+    const path = join(dir, name);
+    if (statSync(path).isDirectory()) return sourceFiles(path);
+    return /\.tsx$/.test(name) && !/\.test\./.test(name) ? [path] : [];
+  });
+}
+
+describe("currency guard", () => {
+  it("no component hard-codes a US dollar amount", () => {
+    const offenders = sourceFiles(join(__dirname, "..")).filter((file) =>
+      readFileSync(file, "utf8").includes("USD "),
+    );
+    expect(offenders).toEqual([]);
   });
 });
 

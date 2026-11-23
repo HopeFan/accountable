@@ -20,6 +20,7 @@ function Tile({
   testid: string;
   alert?: boolean;
 }) {
+  const code = /^[A-Z]{3}(?= )/.exec(value)?.[0];
   return (
     <Panel className="flex flex-col gap-2.5">
       <div className="flex items-center gap-2.5 text-[13px] font-medium text-muted">
@@ -40,12 +41,12 @@ function Tile({
         )}
         data-testid={testid}
       >
-        {value.startsWith("USD ") ? (
+        {code ? (
           <>
             <small className="mr-1.5 text-[13px] font-medium tracking-normal text-muted">
-              USD
+              {code}
             </small>{" "}
-            {value.slice(4)}
+            {value.slice(code.length + 1)}
           </>
         ) : (
           value

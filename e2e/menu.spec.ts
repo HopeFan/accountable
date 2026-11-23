@@ -10,7 +10,7 @@ test("the button shows the first two letters of the email in capitals", async ({
   await expect(trigger(page)).toHaveText("TE");
 });
 
-test("the menu holds the email, the theme choice and Sign out", async ({
+test("the menu holds the email, the theme choice, the currency choice and Sign out", async ({
   page,
 }) => {
   await page.goto("/");
@@ -21,12 +21,14 @@ test("the menu holds the email, the theme choice and Sign out", async ({
     "Light",
     "Dark",
     "System",
+    "🇺🇸US dollar",
+    "🇦🇺Australian dollar",
   ]);
   await expect(
     page.getByRole("menuitemradio", { name: "System" }),
   ).toBeChecked();
   await expect(page.getByRole("menuitemradio", { checked: true })).toHaveCount(
-    1,
+    2,
   );
   await expect(page.getByRole("menuitem", { name: "Sign out" })).toBeVisible();
 });

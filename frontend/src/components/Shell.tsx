@@ -5,7 +5,9 @@ import {
   LayoutDashboard,
   Users,
 } from "lucide-react";
+import { Fragment } from "react";
 import { NavLink, Outlet } from "react-router-dom";
+import { useCurrency } from "../lib/currency";
 import { TopBar } from "./TopBar";
 import { cx } from "./ui";
 
@@ -18,6 +20,7 @@ const NAV = [
 ];
 
 export function Shell() {
+  const currency = useCurrency();
   return (
     <div className="flex min-h-screen">
       <aside className="sticky top-0 flex h-screen w-[232px] shrink-0 flex-col gap-7 bg-sidebar px-4 py-6 text-on-sidebar">
@@ -51,7 +54,10 @@ export function Shell() {
       <main className="min-w-0 flex-1 p-8">
         <div className="mx-auto max-w-[1440px]">
           <TopBar />
-          <Outlet />
+          {/* Remount the page so every amount is formatted again. */}
+          <Fragment key={currency}>
+            <Outlet />
+          </Fragment>
         </div>
       </main>
     </div>

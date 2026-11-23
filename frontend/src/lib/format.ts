@@ -1,3 +1,5 @@
+import { convert, getCurrency } from "./currency";
+
 const MONTHS = [
   "Jan",
   "Feb",
@@ -36,21 +38,23 @@ const LONG_MONTHS = [
   "December",
 ];
 
-/** USD 48,000 */
+/** USD 48,000, or AUD 72,960 when Australian dollars are chosen. */
 export function money(value: number): string {
-  const rounded = Math.round(value);
-  const sign = rounded < 0 ? "-" : "";
-  return `${sign}USD ${Math.abs(rounded).toLocaleString("en-US")}`;
+  const converted = Math.round(convert(value));
+  const sign = converted < 0 ? "-" : "";
+  return `${sign}${getCurrency()} ${Math.abs(converted).toLocaleString("en-US")}`;
 }
 
 /** USD 50k, USD 1.2M, USD 800 (chart axes) */
 export function moneyCompact(value: number): string {
-  const abs = Math.abs(value);
+  const converted = convert(value);
+  const abs = Math.abs(converted);
+  const code = getCurrency();
   const trim = (n: number) =>
     String(Math.round(n * 10) / 10).replace(/\.0$/, "");
-  if (abs >= 1_000_000) return `USD ${trim(value / 1_000_000)}M`;
-  if (abs >= 1_000) return `USD ${trim(value / 1_000)}k`;
-  return `USD ${Math.round(value)}`;
+  if (abs >= 1_000_000) return `${code} ${trim(converted / 1_000_000)}M`;
+  if (abs >= 1_000) return `${code} ${trim(converted / 1_000)}k`;
+  return `${code} ${Math.round(converted)}`;
 }
 
 function parts(iso: string): [number, number, number] {
