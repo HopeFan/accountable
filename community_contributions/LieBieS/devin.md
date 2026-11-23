@@ -176,13 +176,13 @@ description: Accountable's brand guidelines for fonts, colours, surfaces and ton
 
 Run `devin skills list` in the terminal to see it. Until UI work comes up, only the name and description are in Devin's context. The full content loads when Devin needs it.
 
-To install a skill someone else has published, Vercel's skills tool works with the agents on the open `.agents/skills/` standard (it needs Node 22.20 or later), for example:
+To install a skill someone else has published, Vercel's skills tool knows `devin` as a target and installs into `.devin/skills/` (it needs Node 22.20 or later), for example:
 
 ```bash
 npx skills add vercel-labs/agent-skills --skill web-design-guidelines -a devin
 ```
 
-If your version of the tool doesn't list `devin` as a target, install to `.agents/skills/` with another agent flag and Devin reads it from there, or copy the skill's folder into `.devin/skills/` yourself. You don't need to install one today.
+You don't need to install one today.
 
 ## 10. A plugin
 
@@ -194,7 +194,7 @@ The plugin installed in the lesson, Anthropic's `frontend-design`, is a Claude C
 npx skills add anthropics/skills --skill frontend-design -a devin
 ```
 
-It installs into `.agents/skills/frontend-design/` (which Devin reads natively) or `.devin/skills/frontend-design/`, and records the install in `skills-lock.json`. Commit both with the rest of today's setup.
+It installs into `.devin/skills/frontend-design/` and records the install in `skills-lock.json`. Commit both with the rest of today's setup.
 
 ## 11. Check and commit your setup
 
@@ -202,14 +202,14 @@ Your repo should now look like this:
 
 ```text
 accountable/
-├── .agents/skills/
-│   └── frontend-design/         added today (if you installed it)
 ├── .devin/
 │   ├── config.json              added today
 │   ├── config.local.json        ignored by git, once it exists
 │   ├── mcp_config.json          added today
 │   ├── mcp_config.local.json    ignored by git, once it exists
-│   └── skills/brand/SKILL.md    added today
+│   └── skills/
+│       ├── brand/SKILL.md       added today
+│       └── frontend-design/     added today
 ├── assets/
 ├── community_contributions/
 ├── course/
@@ -248,5 +248,5 @@ git checkout week1day2-end
 
 That branch has Claude Code's setup, not Devin's. After switching:
 
-- If you did today's steps and committed them, bring your files across from `main` with `git checkout main -- .devin .agents skills-lock.json` (skip any path that doesn't exist).
-- If you didn't, redo steps 5, 6, 7 and 10 of this guide. For the brand skill, copy `.claude/skills/brand/` to `.devin/skills/brand/`, since `docs/BRAND.md` is gone on that branch.
+- If you did today's steps and committed them, bring your files across from `main` with `git checkout main -- .devin skills-lock.json`.
+- If you didn't, redo steps 5, 6, 7 and 10 of this guide. For the brand skill, copy `.claude/skills/brand/` to `.devin/skills/brand/`, since `docs/BRAND.md` is gone on that branch. The skills tool's `-a devin` flag installs into `.devin/skills/`; `.agents/skills/` works too if you'd rather keep skills shared with other agents.
