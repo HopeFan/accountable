@@ -64,7 +64,7 @@ export function Column({
         >
           {money(t.value)}
         </p>
-        <p className="mt-0.5 flex justify-between text-[11.5px] whitespace-nowrap text-muted">
+        <p className="mt-0.5 flex justify-between gap-2 text-[11.5px] whitespace-nowrap text-muted">
           Expected{" "}
           <b
             className="font-mono font-medium text-ink"

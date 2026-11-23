@@ -7,7 +7,8 @@ import { ToastProvider } from "../components/Toast";
 import { USD_TO_AUD, setCurrency } from "../lib/currency";
 import type { Dashboard as DashboardData } from "../lib/types";
 import { Dashboard } from "./Dashboard";
-import { chartData } from "./dashboard/Charts";
+import { axisTicks, chartData } from "./dashboard/Charts";
+import { moneyCompact } from "../lib/format";
 
 vi.mock("recharts", async (orig) => {
   const actual = await orig<typeof import("recharts")>();
@@ -248,5 +249,27 @@ describe("chart data", () => {
       revenue: 11000,
       deals_won: 2,
     });
+  });
+});
+
+describe("axis ticks", () => {
+  it("are round in the displayed currency, so AUD labels are whole", () => {
+    setCurrency("AUD");
+    const labels = axisTicks(180000).map(moneyCompact);
+    expect(labels.every((l) => /^AUD \d+k?$/.test(l))).toBe(true);
+    expect(new Set(labels).size).toBe(labels.length);
+  });
+
+  it("start at zero and cover the largest value", () => {
+    for (const code of ["USD", "AUD"] as const) {
+      setCurrency(code);
+      const ticks = axisTicks(180000);
+      expect(ticks[0]).toBe(0);
+      expect(ticks[ticks.length - 1]).toBeGreaterThanOrEqual(180000);
+    }
+  });
+
+  it("copes with no revenue", () => {
+    expect(axisTicks(0).length).toBeGreaterThan(1);
   });
 });

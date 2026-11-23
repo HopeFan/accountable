@@ -20,13 +20,23 @@ import {
 } from "../../lib/format";
 import type { Dashboard } from "../../lib/types";
 import { Panel } from "../../components/ui";
-import { useCurrency } from "../../lib/currency";
+import { convert, unconvert, useCurrency } from "../../lib/currency";
 
 type Month = Dashboard["monthly"][number];
 
 /** The rows the charts draw: the API's months with a short label, no other maths. */
 export function chartData(monthly: Month[]) {
   return monthly.map((m) => ({ ...m, label: monthLabel(m.month) }));
+}
+
+/** Round steps (1, 2, 5, 10 times a power of ten) in the displayed currency, as stored USD. */
+export function axisTicks(maxUsd: number): number[] {
+  const top = Math.max(convert(maxUsd), 1);
+  const power = 10 ** Math.floor(Math.log10(top / 4));
+  const ratio = top / 4 / power;
+  const step = ([1, 2, 5, 10].find((m) => m >= ratio) ?? 10) * power;
+  const count = Math.ceil(top / step);
+  return Array.from({ length: count + 1 }, (_, i) => unconvert(i * step));
 }
 
 const axis = { fontSize: 11, fill: "var(--axis)" };
@@ -89,6 +99,7 @@ export function RevenueChart({ monthly }: { monthly: Month[] }) {
   const currency = useCurrency();
   const data = chartData(monthly);
   const total = monthly.reduce((s, m) => s + m.revenue, 0);
+  const ticks = axisTicks(Math.max(...monthly.map((m) => m.revenue), 0));
   return (
     <Panel>
       <Header title="Revenue won" total={money(total)} testid="revenue-total" />
@@ -115,7 +126,9 @@ export function RevenueChart({ monthly }: { monthly: Month[] }) {
               tickLine={false}
               axisLine={false}
               tickFormatter={moneyCompact}
-              width={78}
+              ticks={ticks}
+              domain={[0, ticks[ticks.length - 1]]}
+              width={88}
               label={{
                 value: `Revenue won (${currency})`,
                 angle: -90,

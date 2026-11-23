@@ -36,7 +36,9 @@ function Tile({
       </div>
       <div
         className={cx(
-          "font-mono text-[26px] leading-none font-semibold tracking-tight",
+          "font-mono leading-none font-semibold tracking-tight whitespace-nowrap",
+          // Longer figures, such as AUD millions, shrink a little to stay on one line.
+          value.length > 12 ? "text-[22px]" : "text-[26px]",
           alert && "text-alert-text",
         )}
         data-testid={testid}

@@ -58,7 +58,9 @@ export function Funnel({
         data-testid="funnel-lost"
       >
         <span>Lost, not counted above ({plural(lost.count, "deal")})</span>
-        <b className="font-mono font-semibold text-ink">{money(lost.value)}</b>
+        <b className="font-mono font-semibold whitespace-nowrap text-ink">
+          {money(lost.value)}
+        </b>
       </p>
     </Panel>
   );

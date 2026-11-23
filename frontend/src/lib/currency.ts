@@ -56,6 +56,11 @@ export function convert(usd: number): number {
   return current === "AUD" ? Math.round(usd * USD_TO_AUD) : usd;
 }
 
+/** The reverse of `convert`, without rounding: a displayed amount back to stored USD. */
+export function unconvert(shown: number): number {
+  return current === "AUD" ? shown / USD_TO_AUD : shown;
+}
+
 export function useCurrency(): Currency {
   return useSyncExternalStore(subscribe, getCurrency);
 }

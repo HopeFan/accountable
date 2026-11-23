@@ -202,7 +202,8 @@ export function DataTable<T extends { id: number }>({
                         className={cx(
                           "px-4",
                           meta?.align === "right" && "text-right",
-                          meta?.mono && "font-mono text-[13px]",
+                          meta?.mono &&
+                            "font-mono text-[13px] whitespace-nowrap",
                         )}
                       >
                         {flexRender(
