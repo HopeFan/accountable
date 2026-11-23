@@ -38,14 +38,14 @@ Every route under `/api`, this one included, answers `401` with `{ "detail": ...
 - R45. Signed out, every API route refuses with `401`. This holds for the pages' data, the search, the dashboard and the moves alike.
 - R46. Each record and activity shows who added it as "Added by name@example.com", and "Sample data" when it has no author. Record pages also show "Last changed by" with the same rule. Timeline rows and recent activity rows show who added the activity.
 - R47. A stage change entry records the person who moved the deal. It is shown the same way, as the person who added that entry.
-- R48. The top right of every page has a button with the person's initials, the first two letters of their email address, in capitals. It opens a menu with, from the top: their email address, the theme choice (**Light**, **Dark**, **System**, one marked as selected) and **Sign out**. The menu opens and closes with the keyboard, has a visible focus ring and closes on Escape or a click outside.
+- R48. The top right of every page has a button with the person's initials, the first two letters of their email address, in capitals. It opens a menu with, from the top: their email address, the theme choice (**Light**, **Dark**, **System**, one marked as selected), the currency choice (**US dollar**, **Australian dollar**, one marked as selected, `docs/specs/currency.md`) and **Sign out**. The menu opens and closes with the keyboard, has a visible focus ring and closes on Escape or a click outside.
 - R49. **Sign out** ends the session and shows the sign-in screen. Back and refresh don't show the app again.
 
 ## Screens
 
 **Sign-in.** A centered panel on the page color with the product name, the two fields and the button. It uses the tokens, so it follows the saved theme like every other screen. Errors use `--alert-text`. No sidebar and no top bar.
 
-**User menu.** A small rounded panel under the initials button. The initials sit in a Sea Green circle with Midnight text. The theme choice is a group of three radio-style items, and the selected one has a check. In dark mode the panel has the usual faint ring.
+**User menu.** A small rounded panel under the initials button. The initials sit in a Sea Green circle with Midnight text, with the current currency's flag as a small badge at its corner. The theme choice is a group of three radio-style items, and the selected one has a check. In dark mode the panel has the usual faint ring.
 
 **Who added it.** Plain muted text in the details on a record page, in mono for the email. On a timeline row it sits in the row's small print beside the time.
 

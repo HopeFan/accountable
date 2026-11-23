@@ -10,7 +10,7 @@ Part of the Accountable spec. The index is in `docs/spec.md`. Moving deals betwe
 - `organization_id` (required)
 - `contact_id` (optional; must belong to the same organization)
 - `stage` (`new`, `qualified`, `proposal`, `negotiation`, `won`, `lost`)
-- `value` (whole USD, 0 or more)
+- `value` (whole USD, 0 or more; always stored and edited in USD, and only displayed in the chosen currency, `docs/specs/currency.md`)
 - `probability` (0 to 100)
 - `close_date` (a date)
 - `position` (integer, order within its stage)

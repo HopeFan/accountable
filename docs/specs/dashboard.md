@@ -30,4 +30,4 @@ Part of the Accountable spec. The index is in `docs/spec.md`.
 
 ## Chart colors
 
-Revenue line: Sea Green. Deals bars: Cerulean. Funnel bars: the stage colors. All charts have plain labels and axis titles, light gridlines, and hover tooltips with the exact figure. Money axes use the compact form (`USD 50k`). In dark mode the labels, axis titles, gridlines and tooltips take the dark tokens (gridlines a faint Sea Mist, tooltips on the black panel color), and the series colors stay the same.
+Revenue line: Sea Green. Deals bars: Cerulean. Funnel bars: the stage colors. All charts have plain labels and axis titles, light gridlines, and hover tooltips with the exact figure. Money axes use the compact form (`USD 50k`, or `AUD 76k` in Australian dollars). In dark mode the labels, axis titles, gridlines and tooltips take the dark tokens (gridlines a faint Sea Mist, tooltips on the black panel color), and the series colors stay the same.
