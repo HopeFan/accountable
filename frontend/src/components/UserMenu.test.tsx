@@ -46,9 +46,15 @@ describe("UserMenu", () => {
     const user = setup();
     await user.click(trigger());
     expect(screen.getByText("ada@example.com")).toBeVisible();
-    const items = ["Light", "Dark", "System"].map((name) =>
-      screen.getByRole("menuitemradio", { name }),
-    );
+    const all = screen.getAllByRole("menuitemradio");
+    expect(all.map((i) => i.textContent)).toEqual([
+      "Light",
+      "Dark",
+      "System",
+      "🇺🇸US dollar",
+      "🇦🇺Australian dollar",
+    ]);
+    const items = all.slice(0, 3);
     expect(items.map((i) => i.getAttribute("aria-checked"))).toEqual([
       "false",
       "false",

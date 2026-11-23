@@ -39,7 +39,7 @@ Postgres on Supabase, reached through `DATABASE_URL`. The tests use their own SQ
 
 ### Other rules
 
-**Other rules.** A contact's organization is optional, because a new lead often has no company yet; a deal always has one. A deal's contact must work at the deal's organization, so the pipeline and the contact pages never disagree. Money reads `USD 48,000` in US dollars, the default, and `AUD 73,000` when the person has chosen Australian dollars (`docs/specs/currency.md`), and compact on chart axes, such as `USD 50k`. Stored values are always whole USD.
+**Other rules.** A contact's organization is optional, because a new lead often has no company yet; a deal always has one. A deal's contact must work at the deal's organization, so the pipeline and the contact pages never disagree. Money reads `USD 48,000` in US dollars, the default, and `AUD 72,960` when the person has chosen Australian dollars (`docs/specs/currency.md`), and compact on chart axes, such as `USD 50k`. Stored values are always whole USD.
 
 ## API
 

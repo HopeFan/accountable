@@ -15,7 +15,7 @@ Part of the Accountable spec. The index is in `docs/spec.md`. The menu it lives 
 ## Formats
 
 - US dollar: `USD 48,000`, compact `USD 50k`, as before.
-- Australian dollar: `AUD 73,000`, compact `AUD 76k`. The same shapes with `AUD` in place of `USD`, so the code is always in the text and a flag is never the only signal.
+- Australian dollar: `AUD 72,960`, compact `AUD 76k`. The same shapes with `AUD` in place of `USD`, so the code is always in the text and a flag is never the only signal.
 - Negative amounts keep their minus sign in front, as before.
 
 ## Design

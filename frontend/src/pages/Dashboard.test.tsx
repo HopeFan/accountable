@@ -147,10 +147,10 @@ const data: DashboardData = {
 
 afterEach(() => vi.unstubAllGlobals());
 
-function renderDashboard() {
+function renderDashboard(body: DashboardData = data) {
   vi.stubGlobal(
     "fetch",
-    vi.fn(async () => new Response(JSON.stringify(data), { status: 200 })),
+    vi.fn(async () => new Response(JSON.stringify(body), { status: 200 })),
   );
   const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   return render(
@@ -179,6 +179,18 @@ describe("Dashboard", () => {
     expect(screen.getByText("2 deals won this month")).toBeInTheDocument();
     expect(screen.getByTestId("tile-overdue")).toHaveTextContent("3");
     expect(screen.getByText("Tuesday 17 November 2026")).toBeInTheDocument();
+  });
+
+  it("shrinks a long figure to keep it on one line", async () => {
+    setCurrency("AUD");
+    const big = {
+      ...data,
+      tiles: { ...data.tiles, open_pipeline_value: 5_000_000 },
+    };
+    renderDashboard(big);
+    const long = await screen.findByTestId("tile-pipeline");
+    expect(long).toHaveClass("text-[22px]");
+    expect(screen.getByTestId("tile-won")).toHaveClass("text-[26px]");
   });
 
   it("shows one block per open stage and one row per funnel stage", async () => {
@@ -269,7 +281,12 @@ describe("axis ticks", () => {
     }
   });
 
-  it("copes with no revenue", () => {
-    expect(axisTicks(0).length).toBeGreaterThan(1);
+  it("copes with no revenue, with distinct labels in both currencies", () => {
+    for (const code of ["USD", "AUD"] as const) {
+      setCurrency(code);
+      const labels = axisTicks(0).map(moneyCompact);
+      expect(labels.length).toBeGreaterThan(1);
+      expect(new Set(labels).size).toBe(labels.length);
+    }
   });
 });

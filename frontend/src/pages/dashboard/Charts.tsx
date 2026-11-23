@@ -31,7 +31,7 @@ export function chartData(monthly: Month[]) {
 
 /** Round steps (1, 2, 5, 10 times a power of ten) in the displayed currency, as stored USD. */
 export function axisTicks(maxUsd: number): number[] {
-  const top = Math.max(convert(maxUsd), 1);
+  const top = Math.max(convert(maxUsd), 4);
   const power = 10 ** Math.floor(Math.log10(top / 4));
   const ratio = top / 4 / power;
   const step = ([1, 2, 5, 10].find((m) => m >= ratio) ?? 10) * power;
