@@ -1,17 +1,13 @@
-# Independent review: multi-user
+# Independent review: currency switch
 
-Reviewed the current `multi-user` branch against `fork/main`, including the latest commit `549c717` and the review policy in `docs/REVIEW.md`. Focus: code quality and readability, with checks for bugs, security, spec and plan alignment, standards, and test coverage.
+Reviewed the current `currency` branch against `main`, using `docs/REVIEW.md`. Focus: bugs, security, spec and plan alignment, standards, and test coverage. Style findings were skipped as requested.
 
-## Important findings
+## Findings
 
-### Contact changes clear a deal's contact without updating its audit author
+No Important findings.
 
-`backend/app/routes/contacts.py` clears `deal.contact_id` when a contact moves to another organization, and `backend/app/common.py` does the same when a contact is deleted. Both are writes to the deal record, but neither sets `updated_by` to the signed-in user. The deal's “Last changed by” can therefore be stale after its main contact changes. This contradicts `docs/specs/accounts.md`, which says every record write updates `updated_by`.
-
-Pass the current user into these related-row updates and set `updated_by` there. Add coverage for both moving and deleting a contact with an associated deal, asserting the deal's contact is cleared and its `updated_by` is the acting user.
+The shared formatter covers the amount display call sites, the currency choice is stored only in browser local storage, and the changed docs describe the feature. The added unit and end-to-end tests cover conversion, selection, persistence, dashboard/table/pipeline displays, and the USD deal form. No security issue or untested changed behavior found in the reviewed diff.
 
 ## Nits
 
-### The production build still emits the test auth module as a dynamic-import chunk
-
-`frontend/src/lib/config.ts` now dynamically imports `./testAuth`, which keeps it out of the initial JavaScript chunk. Since the import is statically analyzable, the frontend build still emits a separate chunk for that module. The comment that the production bundle “never carries the test client” overstates the effect. The test credential is not accepted by the production backend unless test auth is enabled, so this is a wording and packaging clarity issue rather than an auth bypass. If excluding it from the production artifact is the goal, gate the module through a build-time test-only entry or revise the comment to say it is code-split.
+None reported.
