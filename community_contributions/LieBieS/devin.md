@@ -132,7 +132,7 @@ Create `.devin/config.json` with the same three rules as the lesson:
 
 `Exec(npm test)` matches `npm test` and `npm test -- --watch` but not `npm testfoo`. `Read(/**/.env*)` blocks reads of `.env` files anywhere: the agent reads files by their absolute path, so a relative pattern like `Read(.env*)` never matches anything.
 
-Tested on 3000.6.7: the `.env` deny fires exactly as written from `~/.config/devin/config.json`, but the project's `.devin/config.json` rules did not take effect in `-p` sessions. Add the deny line to your user config's `permissions.deny` as well if you want it enforced today, and keep the project file for sharing.
+Tested on 3000.6.7: the project's `.devin/config.json` permission rules did not take effect at all, and the agent read `.env` in both `-p` and interactive sessions. The deny fires exactly as written from `~/.config/devin/config.json`, so put `Read(/**/.env*)` in your user config's `permissions.deny` to enforce it today. Keep the project file anyway: it's the documented shared location, harmless, and presumably fixed in a later release.
 
 **Permission modes.** Press Shift+Tab to cycle through them, or use `/mode`:
 
